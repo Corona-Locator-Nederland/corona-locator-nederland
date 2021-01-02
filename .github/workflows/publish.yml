@@ -14,8 +14,6 @@ jobs:
       with:
         access_token: ${{ github.token }}
     - uses: actions/checkout@v1
-      with:
-        fetch-depth: 0
     - name: Set up Python
       uses: actions/setup-python@v1
       with:
@@ -26,9 +24,29 @@ jobs:
       run: papermill --progress-bar Corona_locator.ipynb /dev/null 
       env:
         PYTHONUNBUFFERED: true
-    - uses: stefanzweifel/git-auto-commit-action@v4
+    - name: Get current date
+      id: date
+      run: echo "name=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+    - name: Create Release
+      id: release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        commit_message: Publish notebook results
-        file_pattern: corona.csv
-        skip_dirty_check: false
-
+        tag_name: ${{ steps.date.outputs.date }}
+        release_name: ${{ steps.date.outputs.date }}
+        draft: false
+        prerelease: false
+    - name: Upload stats to new release
+      id: upload-release-asset 
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: covid.csv
+        asset_name: covid.csv
+        asset_content_type: text/csv
+    - uses: eregon/keep-last-n-releases
+      with:
+        n: 7
