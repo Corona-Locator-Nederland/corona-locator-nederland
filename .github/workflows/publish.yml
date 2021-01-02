@@ -19,33 +19,23 @@ jobs:
       with:
         python-version: "3.6" # match Colab
     - name: Install requirements
-      run: pip3 install jupyterlab pandas numpy papermill
+      run: pip3 install jupyterlab pandas numpy papermill githubrelease
     - name: Run notebook
       run: papermill --progress-bar Corona_locator.ipynb output.ipynb
       env:
         PYTHONUNBUFFERED: true
+    - name: Make place for latest csv
+      run: githubrelease --github-token ${{ github.token }} asset ${{ github.repository }} delete covid covid.csv
+      continue-on-error: true
+    - name: Upload latest csv
+      run: githubrelease --github-token ${{ github.token }} asset ${{ github.repository }} upload covid covid.csv
     - name: Get current date
       id: date
       run: echo "name=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
-    - name: Create Release
-      id: release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        release_name: ${{ steps.date.outputs.date }} (${{ github.ref }})
-        draft: false
-        prerelease: false
-    - name: Upload stats to new release
-      id: upload-release-asset 
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: covid.csv
-        asset_name: covid.csv
-        asset_content_type: text/csv
-    - uses: eregon/keep-last-n-releases@master
-      with:
-        n: 7
+    - name: Make place for dated csv
+      run: githubrelease --github-token ${{ github.token }} asset ${{ github.repository }} delete covid ${{ steps.date.output.date }}.csv
+      continue-on-error: true
+    - name: Upload dated csv
+      run: |
+        mv covid.csv ${{ steps.date.output.date }}.csv
+        githubrelease --github-token ${{ github.token }} asset ${{ github.repository }} upload covid ${{ steps.date.output.date }}.csv
