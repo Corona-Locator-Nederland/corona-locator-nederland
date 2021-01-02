@@ -18,3 +18,10 @@ jobs:
       uses: actions/setup-python@v1
     - name: Run notebook
       run: jupyter nbconvert --to notebook --execute --ExecutePreprocessor.kernel_name=python3 --output output.ipynb Corona_locator.ipynb
+    - uses: stefanzweifel/git-auto-commit-action@v4
+      continue-on-error: true
+      with:
+        commit_message: Publish notebook results
+        file_pattern: corona.csv
+        skip_dirty_check: false
+
