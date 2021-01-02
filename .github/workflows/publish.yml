@@ -26,18 +26,3 @@ jobs:
       run: papermill --log-output Corona_locator.ipynb output.ipynb
       env:
         PYTHONUNBUFFERED: true
-    - name: Make place for latest csv
-      run: githubrelease asset ${{ github.repository }} delete covid covid.csv
-      continue-on-error: true
-    - name: Upload latest csv
-      run: githubrelease asset ${{ github.repository }} upload covid covid.csv
-    - name: Get current date
-      id: date
-      run: echo "name=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
-    - name: Make place for dated csv
-      run: githubrelease asset ${{ github.repository }} delete covid ${{ steps.date.output.date }}.csv
-      continue-on-error: true
-    - name: Upload dated csv
-      run: |
-        mv covid.csv ${{ steps.date.output.date }}.csv
-        githubrelease asset ${{ github.repository }} upload covid ${{ steps.date.output.date }}.csv
