@@ -21,7 +21,7 @@ jobs:
     - name: Install requirements
       run: pip3 install jupyterlab pandas numpy papermill
     - name: Run notebook
-      run: papermill --progress-bar Corona_locator.ipynb /dev/null 
+      run: papermill --progress-bar Corona_locator.ipynb output.ipynb
       env:
         PYTHONUNBUFFERED: true
     - name: Get current date
