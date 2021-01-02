@@ -19,7 +19,7 @@ jobs:
       with:
         python-version: "3.6" # match Colab
     - name: Install requirements
-      run: pip3 install jupyterlab
+      run: pip3 install jupyterlab pandas numpy
     - name: Run notebook
       run: jupyter nbconvert --to notebook --execute --ExecutePreprocessor.kernel_name=python3 --output output.ipynb Corona_locator.ipynb
     - uses: stefanzweifel/git-auto-commit-action@v4
