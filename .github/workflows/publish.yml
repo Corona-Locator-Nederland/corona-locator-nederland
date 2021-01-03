@@ -20,6 +20,16 @@ jobs:
       uses: actions/setup-python@v1
       with:
         python-version: "3.6" # match Colab
+    - name: Cache python dependencies and data downloads
+      id: cache
+      uses: actions/cache@v2
+      env:
+        cache-name: v1
+      with:
+        path: |
+          ~/.cache/pip
+          downloads
+        key: ${{ runner.os }}-build-${{ env.cache-name }}
     - name: Install requirements
       run: pip3 install jupyterlab pandas numpy papermill github3.py seaborn
     - name: Run notebook
