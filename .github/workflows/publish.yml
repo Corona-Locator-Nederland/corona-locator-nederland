@@ -33,6 +33,6 @@ jobs:
     - name: Install requirements
       run: pip3 install -r requirements.txt
     - name: Run notebook
-      run: papermill --log-output Corona_locator.ipynb output.ipynb
+      run: papermill --log-output CoronaLocator.ipynb output.ipynb
       env:
         PYTHONUNBUFFERED: true
