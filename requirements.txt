@@ -1,0 +1,6 @@
+github3.py
+jupyterlab
+numpy
+pandas
+papermill
+seaborn
