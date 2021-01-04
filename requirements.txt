@@ -3,4 +3,5 @@ jupyterlab
 numpy
 pandas
 papermill
+python-dotenv
 seaborn
