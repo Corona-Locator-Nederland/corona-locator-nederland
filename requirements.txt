@@ -1,5 +1,7 @@
 github3.py
 jupyterlab
+knackpy
+nbdime
 numpy
 pandas
 papermill
