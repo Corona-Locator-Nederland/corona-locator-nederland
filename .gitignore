@@ -1,3 +1,5 @@
+.~lock*
+*.swp
 downloads
 .vscode
 Playground.ipynb

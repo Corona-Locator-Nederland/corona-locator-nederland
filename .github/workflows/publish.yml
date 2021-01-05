@@ -36,3 +36,7 @@ jobs:
       run: papermill --log-output CoronaLocator.ipynb output.ipynb
       env:
         PYTHONUNBUFFERED: true
+    - name: store build artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        path: artifacts
