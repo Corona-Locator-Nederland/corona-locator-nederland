@@ -4,6 +4,7 @@ downloads
 .vscode
 Playground.ipynb
 .DS_store
+.idea
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
