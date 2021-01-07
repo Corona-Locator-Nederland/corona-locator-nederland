@@ -7,4 +7,5 @@ numpy
 pandas
 papermill
 python-dotenv
+ruamel.yaml
 seaborn
