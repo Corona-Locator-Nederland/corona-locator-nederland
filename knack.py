@@ -6,7 +6,7 @@ from retry import retry
 from requests import HTTPError
 import time
 import requests
-from time import sleep
+from json import JSONDecodeError
 
 def in_notebook():
   from IPython import get_ipython
@@ -37,8 +37,8 @@ class Knack:
     try:
       msg = res.json()
       if type(msg) == dict and 'errors' in msg: raise ValueError(json.dumps(msg['errors']))
-    except HTTPError as e:
-      raise e
+    except JSONDecodeError:
+      pass
     res.raise_for_result()
 
   @retry(HTTPError, delay=1, tries=2) # absolutely ridiculous
@@ -112,5 +112,5 @@ class Knack:
     for data in progress([rec.record for rec in soll.values() if rec.key not in ist], desc='creating records'):
       self._create(object_key=obj.key, data=data)
 
-    for record_id, data in progress([(ist[rec.key].record.id, rec.record) for rec in soll.values() if rec.key in ist and {**rec.record, 'id': None} != {**ist[rec.key].record, 'id': None}], desc='updating records'):
+    for record_id, data in progress([(ist[rec.key].record.id, rec.record) for rec in soll.values() if rec.key in ist and {**rec.record, 'id': None} != {**ist[rec.key].record, 'id': 1}], desc='updating records'):
       self._update(object_key=obj.key, record_id=record_id, data=data)
