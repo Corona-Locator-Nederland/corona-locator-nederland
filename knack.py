@@ -112,5 +112,5 @@ class Knack:
     for data in progress([rec.record for rec in soll.values() if rec.key not in ist], desc='creating records'):
       self._create(object_key=obj.key, data=data)
 
-    for record_id, data in progress([(ist[rec.key].record.id, rec.record) for rec in soll.values() if rec.key in ist and {**rec.record, 'id': None} != {**ist[rec.key].record, 'id': 1}], desc='updating records'):
+    for record_id, data in progress([(ist[rec.key].record.id, rec.record) for rec in soll.values() if rec.key in ist and {**rec.record, 'id': None} != {**ist[rec.key].record, 'id': None}], desc='updating records'):
       self._update(object_key=obj.key, record_id=record_id, data=data)
