@@ -1,4 +1,3 @@
-from tqdm.notebook import tqdm as progress
 from urllib.request import urlopen
 from munch import Munch
 from jsonpath import JSONPath
@@ -9,10 +8,13 @@ import time
 import requests
 from time import sleep
 
-def is_running_from_ipython():
+def in_notebook():
   from IPython import get_ipython
   return get_ipython() is not None
-print('notebook', is_running_from_ipython())
+if in_notebook():
+  from tqdm.notebook import tqdm as progress
+else:
+  from tqdm import tqdm as progress
 
 class Knack:
   def __init__(self, app_id, api_key):
