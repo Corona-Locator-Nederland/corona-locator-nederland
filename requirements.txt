@@ -1,11 +1,16 @@
 github3.py
+ipywidgets
+jsonpath-python
 jupyter_contrib_nbextensions
 jupyterlab
-knackpy
+munch
 nbdime
 numpy
 pandas
 papermill
 python-dotenv
+requests
+retry
 ruamel.yaml
 seaborn
+tqdm
