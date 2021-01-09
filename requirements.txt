@@ -3,6 +3,7 @@ ipywidgets
 jsonpath-python
 jupyter_contrib_nbextensions
 jupyterlab
+jupytext
 munch
 nbdime
 numpy

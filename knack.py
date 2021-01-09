@@ -39,7 +39,7 @@ class Knack:
       if type(msg) == dict and 'errors' in msg: raise ValueError(json.dumps(msg['errors']))
     except JSONDecodeError:
       pass
-    res.raise_for_result()
+    res.raise_for_status()
 
   @retry(HTTPError, delay=1, tries=2) # absolutely ridiculous
   def _create(self, object_key, data):
