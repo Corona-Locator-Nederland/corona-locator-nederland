@@ -6,6 +6,7 @@ jupyterlab
 jupytext
 munch
 nbdime
+nbparameterise
 numpy
 pandas
 papermill
