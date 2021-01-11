@@ -35,7 +35,7 @@ jobs:
     - name: Run notebook
       run: |
         python -m ipykernel install --name python3 --user
-        cat LeeftijdsGroepen.py | jupytext --from py --to ipynb --set-kernel - | papermill --log-output - output.ipynb
+        cat LeeftijdsgroepenLandelijk.py | jupytext --from py --to ipynb --set-kernel - | papermill --log-output - output.ipynb
       env:
         PYTHONUNBUFFERED: true
     - name: store build artifacts
