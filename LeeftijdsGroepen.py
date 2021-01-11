@@ -265,20 +265,20 @@ def cell():
   latest = 'artifacts/covid.csv'
   tabel.fillna(0).to_csv(latest, index=False)
 
-if 'GITHUB_TOKEN' in os.environ:
-  print('Publishing to', os.environ['GITHUB_REPOSITORY'])
-  import github3 as github
-  gh = github.GitHub(token=os.environ['GITHUB_TOKEN'], session=github.session.GitHubSession(default_read_timeout=60))
-  repo = gh.repository(*os.environ['GITHUB_REPOSITORY'].split('/'))
-  release = repo.release_from_tag('covid')
-  assets = { asset.name: asset for asset in release.assets() }
+  if 'GITHUB_TOKEN' in os.environ:
+    print('Publishing to', os.environ['GITHUB_REPOSITORY'])
+    import github3 as github
+    gh = github.GitHub(token=os.environ['GITHUB_TOKEN'], session=github.session.GitHubSession(default_read_timeout=60))
+    repo = gh.repository(*os.environ['GITHUB_REPOSITORY'].split('/'))
+    release = repo.release_from_tag('covid')
+    assets = { asset.name: asset for asset in release.assets() }
 
-  # remove existing
-  for asset in [today, latest]:
-    if os.path.basename(asset) in assets:
-      assets[os.path.basename(asset)].delete()
-    with open(latest) as f:
-      release.upload_asset(asset=f, name=os.path.basename(asset), content_type='text/csv')
+    # remove existing
+    for asset in [today, latest]:
+      if os.path.basename(asset) in assets:
+        assets[os.path.basename(asset)].delete()
+      with open(latest) as f:
+        release.upload_asset(asset=f, name=os.path.basename(asset), content_type='text/csv')
 
 # %%
 if knack:
