@@ -33,7 +33,9 @@ jobs:
     - name: Install requirements
       run: pip3 install -r requirements.txt
     - name: Run notebook
-      run: cat LeeftijdsGroepen.py | jupytext --from py --to ipynb --set-kernel - | papermill --log-output - output.ipynb
+      run: |
+        python -m ipykernel install --name python3
+        cat LeeftijdsGroepen.py | jupytext --from py --to ipynb --set-kernel - | papermill --log-output - output.ipynb
       env:
         PYTHONUNBUFFERED: true
     - name: store build artifacts
