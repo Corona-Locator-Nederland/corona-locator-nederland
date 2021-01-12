@@ -27,7 +27,7 @@ for change in run('git diff --cached --name-status'.split(' ')).split('\n'):
     status, path = change.split("\t")
 
   src = None
-  if os.path.splitext(path)[1] == '.py' and os.path.isfile(nb_path):
+  if os.path.splitext(path)[1] == '.py' and os.path.isfile(path):
     with open(path, 'r', encoding='utf-8') as f:
       for line in range(10):
         if f.readline().replace(' ', '').startswith('#%%'):
@@ -36,15 +36,15 @@ for change in run('git diff --cached --name-status'.split(' ')).split('\n'):
   if src is None:
     continue
 
-  if action == 'R':
+  if status == 'R':
     tgt = to_notebook(new)
     print(src, '=>', new , '=>', tgt)
     run(['jupytext', new, '--to', 'ipynb', '--set-kernel', '-', '--output', tgt])
     run(['git', 'add', tgt])
     remove(to_notebook(src))
   elif status in ['M', 'A']:
-    print(src, '=>', tgt)
     tgt = to_notebook(src)
+    print(src, '=>', tgt)
     run(['jupytext', src, '--to', 'ipynb', '--set-kernel', '-', '--output', tgt])
     run(['git', 'add', tgt])
   elif status == 'D':

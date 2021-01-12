@@ -27,11 +27,8 @@ def cell():
   rivm = pd.read_csv(latest, sep=';', header=0 )
   display(rivm.head())
 
-# %% [markdown]
-# Download de bevolkings cijfers van CBS, uitgesplitst op de leeftijds categorien in de dataset van het RIVM
-
 # %%
-# https://www.cbs.nl/nl-nl/onze-diensten/open-data/open-data-v4/snelstartgids-odata-v4
+# Download de bevolkings cijfers van CBS, uitgesplitst op de leeftijds categorien in de dataset van het RIVM
 @run('leeftijdsgroepen: download demografische data van CBS')
 def cell():
   def roundup(x):
