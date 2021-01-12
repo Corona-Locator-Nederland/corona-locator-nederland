@@ -43,6 +43,7 @@ def run(*args):
     print(*args)
     return lambda func: func()
 
+# https://www.cbs.nl/nl-nl/onze-diensten/open-data/open-data-v4/snelstartgids-odata-v4
 def get_odata(url):
   data = pd.DataFrame()
   while url:

@@ -1,4 +1,6 @@
+df2gspread
 github3.py
+gspread
 ipywidgets
 jsonpath-python
 jupyter_contrib_nbextensions
