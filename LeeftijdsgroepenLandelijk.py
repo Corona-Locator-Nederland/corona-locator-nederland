@@ -71,7 +71,7 @@ def cell():
   filter = ' and '.join([query(f) for f in filter[filter.Type != 'Topic']['Key'].values])
 
   global bevolking
-  bevolking = get_odata(cbs + f"/TypedDataSet?$top=100&$filter={filter}&$select=Leeftijd, BevolkingOpDeEersteVanDeMaand_1")
+  bevolking = get_odata(cbs + f"/TypedDataSet?$filter={filter}&$select=Leeftijd, BevolkingOpDeEersteVanDeMaand_1")
   # die _1 betekent waarschijnlijk dat het gedrag ooit gewijzigd is en er een nieuwe "versie" van die kolom is gepubliceerd
   bevolking.rename(columns = {'BevolkingOpDeEersteVanDeMaand_1': 'BevolkingOpDeEersteVanDeMaand'}, inplace = True)
   # merge de categoriecodes met de van-tot waarden
