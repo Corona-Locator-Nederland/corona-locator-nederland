@@ -58,3 +58,18 @@ def get_odata(url):
     else:
       url = None
   return data
+
+def rivm_cijfers(naam):
+  os.makedirs('downloads', exist_ok = True)
+  url = f'https://data.rivm.nl/covid-19/{naam}.csv'
+  rivm = requests.head(url)
+  latest = os.path.join('downloads', parsedate(rivm.headers['last-modified']).strftime(naam + '-%Y-%m-%d@%H-%M.csv'))
+  if not os.path.exists(latest):
+    print('downloading', latest)
+    urlretrieve(url, latest)
+  else:
+    print(latest, 'exists')
+  for f in sorted(glob.glob(os.path.join('downloads', f'{naam}*.csv')), reverse=True)[7:]:
+    print('removing', f)
+    os.remove(f)
+  return pd.read_csv(latest, sep=';', header=0 )

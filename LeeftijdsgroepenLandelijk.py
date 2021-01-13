@@ -12,19 +12,7 @@ get_ipython().run_line_magic('run', 'setup')
 @run('leeftijdsgroepen: download RIVM data')
 def cell():
   global rivm
-  os.makedirs('downloads', exist_ok = True)
-
-  rivm = requests.head('https://data.rivm.nl/covid-19/COVID-19_casus_landelijk.csv')
-  latest = os.path.join('downloads', parsedate(rivm.headers['last-modified']).strftime('%Y-%m-%d@%H-%M.csv'))
-  if not os.path.exists(latest):
-    print('downloading', latest)
-    for f in glob.glob('downloads/*.csv'):
-      if f != latest:
-        os.remove(f)
-    urlretrieve('https://data.rivm.nl/covid-19/COVID-19_casus_landelijk.csv', latest)
-  else:
-    print(latest, 'exists')
-  rivm = pd.read_csv(latest, sep=';', header=0 )
+  rivm = rivm_cijfers('COVID-19_casus_landelijk')
   display(rivm.head())
 
 # %%
