@@ -44,7 +44,13 @@ def run(*args):
 def get_odata(url):
   data = pd.DataFrame()
   while url:
-    r = requests.get(url).json()
+    print(url)
+    r = requests.get(url)
+    try:
+      r = r.json()
+    except json.JSONDecodeError:
+      raise ValueError(r.content.decode('utf-8'))
+
     data = data.append(pd.DataFrame(r['value']))
 
     if '@odata.nextLink' in r:
