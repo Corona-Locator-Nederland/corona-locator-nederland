@@ -9,6 +9,7 @@ jupytext
 munch
 nbdime
 nbparameterise
+nbstripout
 numpy
 pandas
 papermill
