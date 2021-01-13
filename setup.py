@@ -46,13 +46,14 @@ def run(*args):
 # https://www.cbs.nl/nl-nl/onze-diensten/open-data/open-data-v4/snelstartgids-odata-v4
 def get_odata(url):
   data = pd.DataFrame()
-  while url:
-    r = requests.get(url).json()
+  top = 100
+  skip = 0
+  sep = '?' if not '?' in url else '&'
+  while True
+    r = requests.get(f'{url}{sep}$top={top}&$skip={skip}').json()
+    if len(r['value']) == 0:
+      break
     data = data.append(pd.DataFrame(r['value']))
-
-    if '@odata.nextLink' in r:
-      url = r['@odata.nextLink']
-    else:
-      url = None
+    skip += top
   return data
 
