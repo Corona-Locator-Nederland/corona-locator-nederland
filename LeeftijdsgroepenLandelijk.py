@@ -204,12 +204,15 @@ def section():
 #
 # %%
 # publish
-@run('leeftijdsgroepen: exporteer naar release')
+@run('leeftijdsgroepen: exporteer en upload naar release en Knack')
 def cell():
+  name = 'LeeftijdsgroepenLandelijk'
+  df=tabel.fillna(0).assign(Datum=tabel.Datum.dt.strftime('%Y-%m-%d'))
+
   os.makedirs('artifacts', exist_ok = True)
-  today = os.path.join('artifacts', datetime.date.today().strftime('%Y-%m-%d') + '.csv')
-  latest = 'artifacts/covid.csv'
-  tabel.fillna(0).to_csv(latest, index=False)
+  today = os.path.join('artifacts', name + '-' + datetime.date.today().strftime('%Y-%m-%d') + '.csv')
+  latest = f'artifacts/{name}.csv'
+  df.to_csv(latest, index=False)
 
   if 'GITHUB_TOKEN' in os.environ:
     print('Publishing to', os.environ['GITHUB_REPOSITORY'])
@@ -226,8 +229,5 @@ def cell():
       with open(latest) as f:
         release.upload_asset(asset=f, name=os.path.basename(asset), content_type='text/csv')
 
-# %%
-if knack:
-  @run('leeftijdsgroepen: update Knack')
-  def section():
-    knack.update(scene='Leeftijdsgroepen', view='Leeftijdsgroepen', df=tabel.fillna(0).assign(Datum=tabel.Datum.dt.strftime('%Y-%m-%d')))
+  if knack:
+    knack.update(scene='Leeftijdsgroepen', view='Leeftijdsgroepen', df=df)
