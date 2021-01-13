@@ -49,7 +49,7 @@ def get_odata(url):
   top = 100
   skip = 0
   sep = '?' if not '?' in url else '&'
-  while True
+  while True:
     r = requests.get(f'{url}{sep}$top={top}&$skip={skip}').json()
     if len(r['value']) == 0:
       break
