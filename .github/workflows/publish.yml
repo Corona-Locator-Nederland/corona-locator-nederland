@@ -34,11 +34,12 @@ jobs:
       run: pip3 install -r requirements.txt
     - name: Run notebook
       run: |
-        if [ ! -f downloads/COVID-19_aantallen_gemeente_per_dag-2021-01-13@14-15.csv ]; then
-          mkdir -p downloads
-          curl -L -o yesterday.zip https://file.io/tpEjRjClGWDv
-          (cd downloads && unzip ../yesterday.zip)
-        fi
+        # seed history
+        #if [ ! -f downloads/COVID-19_aantallen_gemeente_per_dag-2021-01-13@14-15.csv ]; then
+        #  mkdir -p downloads
+        #  curl -L -o yesterday.zip https://file.io/tpEjRjClGWDv
+        #  (cd downloads && unzip ../yesterday.zip)
+        #fi
         python -m ipykernel install --name python3 --user
         jupytext LeeftijdsgroepenLandelijk.py --to ipynb --set-kernel - --output - | papermill --log-output - output.ipynb
         jupytext Regios.py --to ipynb --set-kernel - --output - | papermill --log-output - output.ipynb
