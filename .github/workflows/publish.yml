@@ -36,10 +36,6 @@ jobs:
       run: |
         set -x
         echo ${{ steps.cache.outputs.cache-hit }}
-        cat manifest.txt
-        if [ ! -f manifest.txt ]; then
-          cat manifest.txt
-        fi
         mkdir -p downloads
         ls downloads
         # seed history
