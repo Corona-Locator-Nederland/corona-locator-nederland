@@ -15,12 +15,13 @@ if not 'CI' in os.environ:
 
 def publish(df):
   if 'CI' in os.environ:
+    os.makedirs('artifacts', exist_ok = True)
+    df.to_csv('artifacts/regios.csv', index=True)
+  else:
     df = df.reset_index(level=0)
     sh.values_clear("'Regios'!A1:ZZ10000")
     sh.values_clear("'Regios'!A1:ZZ10000")
     ws.update([df.columns.values.tolist()] + df.values.tolist())
-  else:
-    display(df)
 
 
 # %%
@@ -121,17 +122,14 @@ def cell():
         for col in df.columns:
             gemeenten[col + ' per 100.000'] = (gemeenten[col] * (100000 / gemeenten.Personen)).replace(np.inf, 0)
     
-    days = (pd.to_datetime(aantallen_gemeenten['Date_of_publication']).max() - pd.to_datetime(aantallen_gemeenten['Date_of_publication']).min()) / np.timedelta64(1, 'D')
-    gemeenten['Positief getest 1d/100k'] = gemeenten['Positief getest per 100.000'] / days
+    gemeenten['Positief getest 1d/100k'] = gemeenten['Positief getest (toename)'] / gemeenten['Personen']
 
     gemeenten['Positief getest percentage'] = (gemeenten['Positief getest'] / gemeenten['Personen']).replace(np.inf, 0)
     gemeenten['Positief getest per km2'] = (gemeenten['Positief getest'] / gemeenten['Opp land km2']).replace(np.inf, 0)
 
-    display(gemeenten.head())
-    publish(gemeenten.fillna(0))
-
-
+    
 # %%
-
+display(gemeenten.head())
+publish(gemeenten.fillna(0))
 
 
