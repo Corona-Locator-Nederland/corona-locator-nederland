@@ -67,10 +67,11 @@ def rivm_cijfers(naam, n=0):
   if not os.path.exists(latest):
     print('downloading', latest)
     urlretrieve(url, latest)
-  else:
+  elif n == 0:
     print(latest, 'exists')
   history = sorted(glob.glob(os.path.join('downloads', f'{naam}*.csv')), reverse=True)
   for f in history[7:]:
     print('removing', f)
     os.remove(f)
+  print('loading', history[n])
   return pd.read_csv(history[n], sep=';', header=0 )
