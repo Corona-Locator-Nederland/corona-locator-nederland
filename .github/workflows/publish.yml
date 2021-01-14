@@ -34,11 +34,16 @@ jobs:
       run: pip3 install -r requirements.txt
     - name: Run notebook
       run: |
+        set -x
+        cat manifest.txt
+        if [ ! -f manifest.txt ]; then
+          cat manifest.txt
+        fi
         mkdir -p downloads
         ls downloads
         # seed history
         if [ ! -f downloads/COVID-19_aantallen_gemeente_per_dag-2021-01-13@14-15.csv ]; then
-          curl -L -o yesterday.zip https://file.io/HDEcSnqjYkH2
+          curl -L -o yesterday.zip https://file.io/E0iieKfeOOpz
           (cd downloads && unzip ../yesterday.zip)
         fi
         python -m ipykernel install --name python3 --user
