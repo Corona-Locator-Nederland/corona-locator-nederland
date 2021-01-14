@@ -35,6 +35,7 @@ jobs:
     - name: Run notebook
       run: |
         set -x
+        echo ${{ steps.cache.outputs.cache-hit }}
         cat manifest.txt
         if [ ! -f manifest.txt ]; then
           cat manifest.txt
