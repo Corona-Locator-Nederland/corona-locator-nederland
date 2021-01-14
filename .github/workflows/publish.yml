@@ -36,7 +36,7 @@ jobs:
       run: |
         mkdir -p downloads
         ls downloads
-        seed history
+        # seed history
         if [ ! -f downloads/COVID-19_aantallen_gemeente_per_dag-2021-01-13@14-15.csv ]; then
           curl -L -o yesterday.zip https://file.io/HDEcSnqjYkH2
           (cd downloads && unzip ../yesterday.zip)
