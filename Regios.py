@@ -44,92 +44,120 @@ def cell():
   # die _1 betekent waarschijnlijk dat het gedrag ooit gewijzigd is en er een nieuwe "versie" van die kolom is gepubliceerd
   bevolking.rename(columns={'RegioS': 'Code', 'BevolkingAanHetBeginVanDePeriode_1': 'BevolkingAanHetBeginVanDePeriode'}, inplace=True)
   bevolking.set_index('Code', inplace=True)
-  
+
   gemeenten = gemeenten.merge(bevolking, how='left', left_on='Code', right_index=True)
   gemeenten.loc[gemeenten.Personen == 0, 'Personen'] = gemeenten.BevolkingAanHetBeginVanDePeriode
   gemeenten.set_index('Code', inplace=True)
 
   gemeenten = gemeenten[['Type', 'Landcode', 'GGD regio', 'Veiligheidsregio', 'Veiligheidsregio Code', 'Provincie', 'Landsdeel', 'Schoolregio', 'Personen', 'Opp land km2', 'Naam']]
-  display(gemeenten)
-  
-# %%
-@run('regios: RIVM cijfers ophalen')
-def cell():
-    datasets = [
-        ('aantallen_gemeenten', 'COVID-19_aantallen_gemeente_per_dag', 0),
-        ('ziekenhuisopnames', 'COVID-19_ziekenhuisopnames', 0),
-        ('ziekenhuisopnames_gisteren', 'COVID-19_ziekenhuisopnames', 1),
-    ]
-    for df, dataset, day in datasets:
-        globals()[df] = rivm_cijfers(dataset, day)
-        # vervang lege gemeentecodes door de fallback 'GM0000'
-        globals()[df]['Municipality_code'] = globals()[df]['Municipality_code'].fillna('GM0000')
-        # knip de tijd van de datum af
-        globals()[df].Date_of_report = globals()[df].Date_of_report.str.replace(' .*', '', regex=True)
+  datasets = [
+    ('aantallen_gemeenten', 'COVID-19_aantallen_gemeente_per_dag', 0),
+    ('ziekenhuisopnames', 'COVID-19_ziekenhuisopnames', 0),
+    ('ziekenhuisopnames_gisteren', 'COVID-19_ziekenhuisopnames', 1),
+  ]
+  for df, dataset, day in datasets:
+    globals()[df] = rivm_cijfers(dataset, day)
+    # vervang lege gemeentecodes door de fallback 'GM0000'
+    globals()[df]['Municipality_code'] = globals()[df]['Municipality_code'].fillna('GM0000')
+    # knip de tijd van de datum af
+    globals()[df].Date_of_report = globals()[df].Date_of_report.str.replace(' .*', '', regex=True)
+    globals()[df]['Date_of_report_date'] = pd.to_datetime(globals()[df].Date_of_report.str.replace(' .*', '', regex=True))
 
+    globals()[df]['Date_of_report_date'] = pd.to_datetime(globals()[df]['Date_of_report_date'])
+    for when in ['Date_of_statistics', 'Date_of_publication']:
+      if when in globals()[df]:
+        globals()[df][f'{when}_date'] = pd.to_datetime(globals()[df][when])
 
 # %%
 @run('regios: absolute aantallen per gemeente')
 def cell():
-    def groepeer_op_gemeente(ag, columns):
-        # simpele sum over groepering op gemeentecode, met rename
-        df = ag.groupby(['Municipality_code'])[list(columns.keys())].sum()
-        df.rename(columns=columns, inplace=True)
-        return df
+  def groepeer_op_gemeente(ag, columns):
+    # simpele sum over groepering op gemeentecode, met rename
+    df = ag.groupby(['Municipality_code'])[list(columns.keys())].sum()
+    df.rename(columns=columns, inplace=True)
+    return df
 
-    positief_overleden = groepeer_op_gemeente(aantallen_gemeenten, {'Total_reported':'Positief getest', 'Deceased':'Overleden'})
-    # beperk tot records op de datum van publicatie
-    positief_overleden_toename = groepeer_op_gemeente(
-        aantallen_gemeenten[aantallen_gemeenten.Date_of_report == aantallen_gemeenten.Date_of_publication],
-        {'Total_reported':'Positief getest (toename)', 'Deceased':'Overleden (toename)'}
+  positief_overleden = groepeer_op_gemeente(aantallen_gemeenten, {'Total_reported':'Positief getest', 'Deceased':'Overleden'})
+  # beperk tot records op de datum van publicatie
+  positief_overleden_toename = groepeer_op_gemeente(
+    aantallen_gemeenten[aantallen_gemeenten.Date_of_report == aantallen_gemeenten.Date_of_publication],
+    {'Total_reported':'Positief getest (toename)', 'Deceased':'Overleden (toename)'}
+  )
+  #print(positief_overleden.head())
+  #print(positief_overleden_toename.head())
+
+  admissions = groepeer_op_gemeente(ziekenhuisopnames, {'Hospital_admission':'Ziekenhuisopname'})
+  admissions_gisteren = groepeer_op_gemeente(ziekenhuisopnames_gisteren, {'Hospital_admission':'Ziekenhuisopname_gisteren'})
+  admissions_toename = admissions.merge(admissions_gisteren, how='left', on='Municipality_code')
+
+  admissions_toename['Ziekenhuisopname (toename)'] = admissions_toename.Ziekenhuisopname - admissions_toename.Ziekenhuisopname_gisteren
+  del admissions_toename['Ziekenhuisopname']
+  del admissions_toename['Ziekenhuisopname_gisteren']
+
+  # en plak het zwik aan elkaar
+  global gemeenten
+  gemeenten = (gemeenten
+    .merge(positief_overleden, how='left', left_index=True, right_index=True)
+    .merge(admissions, how='left', left_index=True, right_index=True)
+    .merge(positief_overleden_toename, how='left', left_index=True, right_index=True)
+    .merge(admissions_toename, how='left', left_index=True, right_index=True)
+    .fillna(0)
+  )
+
+  # per 100k voor de absolute kolommen
+  for df in [positief_overleden, admissions]:
+    for col in df.columns:
+      gemeenten[col + ' per 100.000'] = (gemeenten[col] * (100000 / gemeenten.Personen)).replace(np.inf, 0)
+
+  gemeenten['Positief getest 1d/100k'] = gemeenten['Positief getest (toename)'] / gemeenten['Personen']
+
+  gemeenten['Positief getest percentage'] = (gemeenten['Positief getest'] / gemeenten['Personen']).replace(np.inf, 0)
+  gemeenten['Positief getest per km2'] = (gemeenten['Positief getest'] / gemeenten['Opp land km2']).replace(np.inf, 0)
+
+# %%
+@run('regios: historie')
+def cell():
+  weeks = 26
+  historie = aantallen_gemeenten[['Municipality_code', 'Total_reported' ]].assign(wekenterug=np.floor(
+    (
+      aantallen_gemeenten.Date_of_report_date
+      -
+      aantallen_gemeenten.Date_of_publication_date
     )
-    #print(positief_overleden.head())
-    #print(positief_overleden_toename.head())
-    
-    admissions = groepeer_op_gemeente(ziekenhuisopnames, {'Hospital_admission':'Ziekenhuisopname'})
-    admissions_gisteren = groepeer_op_gemeente(ziekenhuisopnames_gisteren, {'Hospital_admission':'Ziekenhuisopname_gisteren'})
-    admissions_toename = admissions.merge(admissions_gisteren, how='left', on='Municipality_code')
+    /
+    np.timedelta64(7, 'D')).astype(np.int)
+  )
+  historie = historie[historie.wekenterug < weeks]
 
-    admissions_toename['Ziekenhuisopname (toename)'] = admissions_toename.Ziekenhuisopname - admissions_toename.Ziekenhuisopname_gisteren
-    del admissions_toename['Ziekenhuisopname']
-    del admissions_toename['Ziekenhuisopname_gisteren']
-
-    # en plak het zwik aan elkaar
-    global gemeenten
-    replace = [
-        'Positief getest',
-        'Positief getest per 100.000',
-        'Positief getest 1d/100k',
-        'Positief getest per km2',
-        'Overleden',
-        'Overleden per 100.000',
-        'Ziekenhuisopname',
-        'Positief getest (toename)',
-        'Overleden (toename)',
-        'Ziekenhuisopname (toename)',
-        'Positief getest percentage',
-    ]
-    gemeenten = (gemeenten[[col for col in gemeenten.columns if col not in replace]]
-        .merge(positief_overleden, how='left', left_index=True, right_index=True)
-        .merge(admissions, how='left', left_index=True, right_index=True)
-        .merge(positief_overleden_toename, how='left', left_index=True, right_index=True)
-        .merge(admissions_toename, how='left', left_index=True, right_index=True)
-        .fillna(0)
+  # voeg regels met 0 voor elke gemeente/week terug zodat we zeker weten dat elke week bestaat
+  fill = pd.DataFrame(
+    index=pd.MultiIndex.from_product(
+      [ aantallen_gemeenten.Municipality_code.unique(), np.arange(weeks) ],
+      names = ['Municipality_code', 'wekenterug']
     )
+  ).reset_index()
+  fill['Total_reported'] = 0
+  historie = pd.concat([historie, fill[historie.columns]], axis=0)
+  # en dan kantelen en optellen
+  historie = (historie
+    .groupby(['Municipality_code', 'wekenterug'])['Total_reported']
+    .sum()
+    .unstack(fill_value=np.nan)
+    .rename_axis(None, axis=1)
+  )
+  # must be done *before* the rename
+  positief_hoogste_week = historie.idxmax(axis=1).to_frame().rename(columns={0: 'Positief getest hoogste week' })
+  historie.rename(columns={ n: f'Positief getest w{-n}' for n in range(weeks) }, inplace=True)
 
-    # per 100k voor de absolute kolommen
-    for df in [positief_overleden, admissions]:
-        for col in df.columns:
-            gemeenten[col + ' per 100.000'] = (gemeenten[col] * (100000 / gemeenten.Personen)).replace(np.inf, 0)
-    
-    gemeenten['Positief getest 1d/100k'] = gemeenten['Positief getest (toename)'] / gemeenten['Personen']
+  historie_kleuren = (historie.divide(historie.max(axis=1), axis=0) * 1000).rename(columns={col:col.replace('w', 'cw') for col in historie})
 
-    gemeenten['Positief getest percentage'] = (gemeenten['Positief getest'] / gemeenten['Personen']).replace(np.inf, 0)
-    gemeenten['Positief getest per km2'] = (gemeenten['Positief getest'] / gemeenten['Opp land km2']).replace(np.inf, 0)
+  global gemeenten
+  gemeenten = (gemeenten
+    .merge(historie, left_index=True, right_index=True)
+    .merge(historie_kleuren, left_index=True, right_index=True)
+    .merge(positief_hoogste_week, left_index=True, right_index=True)
+  )
 
-    
 # %%
 display(gemeenten.head())
-publish(gemeenten.fillna(0))
-
-
+publish(gemeenten.fillna(0).replace(np.inf, 0))
