@@ -117,16 +117,23 @@ def cell():
 # %%
 @run('gemeenten: historie')
 def cell():
-  def add_history(df, colors, label):
+  def add_history(df, column, colors, label):
     weeks = 26
     if 'scale' in df:
-      df = df.assign(Total_reported=df.Total_reported * df.scale)
+      df = df.assign(count=df[column] * df.scale)
+    else:
+      df = df.assign(count=df[column])
 
-    historie = df[['Municipality_code', 'Total_reported' ]].assign(wekenterug=np.floor(
+    if 'Date_of_statistics' in df:
+      datefield = 'Date_of_statistics_date'
+    else:
+      datefield = 'Date_of_publication_date'
+
+    historie = df[['Municipality_code', 'count' ]].assign(wekenterug=np.floor(
         (
           df.Date_of_report_date
           -
-          df.Date_of_publication_date
+          df[datefield]
         )
         /
         np.timedelta64(7, 'D')
@@ -141,11 +148,11 @@ def cell():
         names = ['Municipality_code', 'wekenterug']
       )
     ).reset_index()
-    fill['Total_reported'] = 0
+    fill['count'] = 0
     historie = pd.concat([historie, fill[historie.columns]], axis=0)
     # en dan kantelen en optellen
     historie = (historie
-      .groupby(['Municipality_code', 'wekenterug'])['Total_reported']
+      .groupby(['Municipality_code', 'wekenterug'])['count']
       .sum()
       .unstack(fill_value=np.nan)
       .rename_axis(None, axis=1)
@@ -166,14 +173,28 @@ def cell():
   add_history(
     aantallen_gemeenten,
     colors=True,
-    label='Positief getest'
+    label='Positief getest',
+    column='Total_reported'
   )
   add_history(
     aantallen_gemeenten.merge(
       gemeenten.assign(scale=100000 / gemeenten.Personen)[['scale']], left_on='Municipality_code', right_index=True
     ),
     colors=False,
-    label='Positief getest per 100.000'
+    label='Positief getest per 100.000',
+    column='Total_reported'
+  )
+  add_history(
+    aantallen_gemeenten,
+    colors=True,
+    label='Overleden',
+    column='Deceased'
+  )
+  add_history(
+    ziekenhuisopnames,
+    colors=True,
+    label='Ziekenhuisopname',
+    column='Hospital_admission'
   )
 # %%
 display(gemeenten.head())
