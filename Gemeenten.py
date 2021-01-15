@@ -16,7 +16,7 @@ if not 'CI' in os.environ:
 def publish(df):
   if 'CI' in os.environ:
     os.makedirs('artifacts', exist_ok = True)
-    df.to_csv('artifacts/regios.csv', index=True)
+    df.to_csv('artifacts/gemeenten.csv', index=True)
   else:
     df = df.reset_index(level=0)
     sh.values_clear("'Regios'!A1:ZZ10000")
@@ -25,7 +25,7 @@ def publish(df):
 
 
 # %%
-@run('regios: download gemeenten en hun codes')
+@run('gemeenten: download gemeenten en hun codes')
 def cell():
   global gemeenten
   global bevolking
@@ -69,7 +69,7 @@ def cell():
         globals()[df][f'{when}_date'] = pd.to_datetime(globals()[df][when])
 
 # %%
-@run('regios: absolute aantallen per gemeente')
+@run('gemeenten: absolute aantallen per gemeente')
 def cell():
   def groepeer_op_gemeente(ag, columns):
     # simpele sum over groepering op gemeentecode, met rename
@@ -115,7 +115,7 @@ def cell():
   gemeenten['Positief getest per km2'] = (gemeenten['Positief getest'] / gemeenten['Opp land km2']).replace(np.inf, 0)
 
 # %%
-@run('regios: historie')
+@run('gemeenten: historie')
 def cell():
   weeks = 26
   historie = aantallen_gemeenten[['Municipality_code', 'Total_reported' ]].assign(wekenterug=np.floor(
@@ -157,6 +157,7 @@ def cell():
     .merge(historie_kleuren, left_index=True, right_index=True)
     .merge(positief_hoogste_week, left_index=True, right_index=True)
   )
+  gemeenten['Positief getest t.o.v. vorige week'] = gemeenten['Positief getest w0'] / gemeenten['Positief getest w-1']
 
 # %%
 display(gemeenten.head())
