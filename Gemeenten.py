@@ -117,48 +117,66 @@ def cell():
 # %%
 @run('gemeenten: historie')
 def cell():
-  weeks = 26
-  historie = aantallen_gemeenten[['Municipality_code', 'Total_reported' ]].assign(wekenterug=np.floor(
-    (
-      aantallen_gemeenten.Date_of_report_date
-      -
-      aantallen_gemeenten.Date_of_publication_date
+  def add_history(df, colors, label):
+    weeks = 26
+    if 'scale' in df:
+      df = df.assign(Total_reported=df.Total_reported * df.scale)
+
+    historie = df[['Municipality_code', 'Total_reported' ]].assign(wekenterug=np.floor(
+        (
+          df.Date_of_report_date
+          -
+          df.Date_of_publication_date
+        )
+        /
+        np.timedelta64(7, 'D')
+      ).astype(np.int)
     )
-    /
-    np.timedelta64(7, 'D')).astype(np.int)
-  )
-  historie = historie[historie.wekenterug < weeks]
-
-  # voeg regels met 0 voor elke gemeente/week terug zodat we zeker weten dat elke week bestaat
-  fill = pd.DataFrame(
-    index=pd.MultiIndex.from_product(
-      [ aantallen_gemeenten.Municipality_code.unique(), np.arange(weeks) ],
-      names = ['Municipality_code', 'wekenterug']
+    historie = historie[historie.wekenterug < weeks]
+  
+    # voeg regels met 0 voor elke gemeente/week terug zodat we zeker weten dat elke week bestaat
+    fill = pd.DataFrame(
+      index=pd.MultiIndex.from_product(
+        [ df.Municipality_code.unique(), np.arange(weeks) ],
+        names = ['Municipality_code', 'wekenterug']
+      )
+    ).reset_index()
+    fill['Total_reported'] = 0
+    historie = pd.concat([historie, fill[historie.columns]], axis=0)
+    # en dan kantelen en optellen
+    historie = (historie
+      .groupby(['Municipality_code', 'wekenterug'])['Total_reported']
+      .sum()
+      .unstack(fill_value=np.nan)
+      .rename_axis(None, axis=1)
     )
-  ).reset_index()
-  fill['Total_reported'] = 0
-  historie = pd.concat([historie, fill[historie.columns]], axis=0)
-  # en dan kantelen en optellen
-  historie = (historie
-    .groupby(['Municipality_code', 'wekenterug'])['Total_reported']
-    .sum()
-    .unstack(fill_value=np.nan)
-    .rename_axis(None, axis=1)
+    # must be done *before* the rename
+    positief_hoogste_week = historie.idxmax(axis=1).to_frame().rename(columns={0: f'{label} hoogste week' })
+    historie.rename(columns={ n: f'{label} w{-n}' for n in range(weeks) }, inplace=True)
+  
+    historie_kleuren = (historie.divide(historie.max(axis=1), axis=0) * 1000).rename(columns={col:col.replace('w', 'cw') for col in historie})
+  
+    global gemeenten
+    gemeenten = (gemeenten.merge(historie, left_index=True, right_index=True))
+    if colors:
+      gemeenten = gemeenten.merge(historie_kleuren, left_index=True, right_index=True)
+    gemeenten = gemeenten.merge(positief_hoogste_week, left_index=True, right_index=True)
+    gemeenten[f'{label} t.o.v. vorige week'] = gemeenten[f'{label} w0'] / gemeenten[f'{label} w-1']
+
+  add_history(
+    aantallen_gemeenten,
+    colors=True,
+    label='Positief getest'
   )
-  # must be done *before* the rename
-  positief_hoogste_week = historie.idxmax(axis=1).to_frame().rename(columns={0: 'Positief getest hoogste week' })
-  historie.rename(columns={ n: f'Positief getest w{-n}' for n in range(weeks) }, inplace=True)
-
-  historie_kleuren = (historie.divide(historie.max(axis=1), axis=0) * 1000).rename(columns={col:col.replace('w', 'cw') for col in historie})
-
-  global gemeenten
-  gemeenten = (gemeenten
-    .merge(historie, left_index=True, right_index=True)
-    .merge(historie_kleuren, left_index=True, right_index=True)
-    .merge(positief_hoogste_week, left_index=True, right_index=True)
+  add_history(
+    aantallen_gemeenten.merge(
+      gemeenten.assign(scale=100000 / gemeenten.Personen)[['scale']], left_on='Municipality_code', right_index=True
+    ),
+    colors=False,
+    label='Positief getest per 100.000'
   )
-  gemeenten['Positief getest t.o.v. vorige week'] = gemeenten['Positief getest w0'] / gemeenten['Positief getest w-1']
-
 # %%
 display(gemeenten.head())
 publish(gemeenten.fillna(0).replace(np.inf, 0))
+
+# %%
