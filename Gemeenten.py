@@ -168,7 +168,8 @@ def cell():
     if colors:
       gemeenten = gemeenten.merge(historie_kleuren, left_index=True, right_index=True)
     gemeenten = gemeenten.merge(positief_hoogste_week, left_index=True, right_index=True)
-    gemeenten[f'{label} t.o.v. vorige week'] = gemeenten[f'{label} w0'] / gemeenten[f'{label} w-1']
+    # bij ontbreken van w-1 vaste waarde 9.99
+    gemeenten[f'{label} t.o.v. vorige week'] = (gemeenten[f'{label} w0'] / gemeenten[f'{label} w-1']).replace(np.inf, 9.99)
 
   add_history(
     aantallen_gemeenten,
@@ -185,19 +186,24 @@ def cell():
     column='Total_reported'
   )
   add_history(
-    aantallen_gemeenten,
-    colors=True,
-    label='Overleden',
-    column='Deceased'
-  )
-  add_history(
     ziekenhuisopnames,
     colors=True,
     label='Ziekenhuisopname',
     column='Hospital_admission'
   )
+  add_history(
+    aantallen_gemeenten,
+    colors=True,
+    label='Overleden',
+    column='Deceased'
+  )
 # %%
 display(gemeenten.head())
 publish(gemeenten.fillna(0).replace(np.inf, 0))
+
+# %%
+
+gemeenten[(gemeenten['Overleden w-1'] == 0) & (gemeenten['Overleden w0'] > 0)][['Overleden t.o.v. vorige week']]
+
 
 # %%
