@@ -14,24 +14,27 @@ jobs:
     - name: Cancel other runs
       uses: styfle/cancel-workflow-action@0.6.0
       with:
-        access_token: ${{ github.token }}
+        access_token: ${{ secrets.GITHUB_TOKEN }}
     - uses: actions/checkout@v2
     - name: Set up Python
       uses: actions/setup-python@v1
       with:
         python-version: "3.9"
+    - uses: actions/setup-go@v2
     - name: Cache python dependencies and data downloads
       id: cache
       uses: actions/cache@v2
       env:
         cache-name: v1
       with:
-        path:
-          - ~/.cache/pip
-          - downloads
+        path: ~/.cache/pip
         key: ${{ runner.os }}-build-${{ env.cache-name }}
     - name: Install requirements
-      run: pip3 install -r requirements.txt
+      run: |
+        pip3 install -r requirements.txt
+        go get github.com/pauldotknopf/github-release-sync
+    - name: restore cache
+      run: go run github-release-sync --access-token $GITHUB_TOKEN --owner `dirname $GITHUB_REPOSITORY` --repo `basename $GITHUB_REPOSITORY` --tag rivm --dir downloads
     - name: Run notebook
       run: |
         #set -x
@@ -52,6 +55,8 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         path: artifacts
+    - name: save cache
+      run: go run github-release-sync --access-token $GITHUB_TOKEN --owner `dirname $GITHUB_REPOSITORY` --repo `basename $GITHUB_REPOSITORY` --tag rivm --dir downloads --prune
 
     - name: Check for notebook changes
       uses: dorny/paths-filter@v2
