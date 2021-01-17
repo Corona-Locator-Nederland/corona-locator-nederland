@@ -66,12 +66,10 @@ jobs:
             - modified: '[A-Z]*.py'
           deleted:
             - deleted: '[A-Z]*.py'
-      if: steps.notebooks.outputs.notebooks == 'true'
     - name: convert notebooks
       run: ./util/convert-notebooks --added ${{ steps.notebooks.outputs.added_files }} --modified ${{ steps.notebooks.outputs.modified_files }} --deleted ${{ steps.notebooks.outputs.deleted_files }} 
     - uses: stefanzweifel/git-auto-commit-action@v4
       name: update ipynb from py
-      if: steps.notebooks.outputs.notebooks == 'true'
       with:
         commit_message: Convert percent-py notebooks
         file_pattern: '*.ipynb'
