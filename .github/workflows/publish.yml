@@ -45,8 +45,8 @@ jobs:
         #fi
         ls downloads
         python -m ipykernel install --name python3 --user
-        jupytext LeeftijdsgroepenLandelijk.py --to ipynb --set-kernel - --output - | papermill --log-output - output.ipynb
-        jupytext Gemeenten.py --to ipynb --set-kernel - --output - | papermill --log-output - output.ipynb
+        jupytext LeeftijdsgroepenLandelijk.py --to ipynb --set-kernel - --output - | papermill --log-output - /tmp/output.ipynb
+        jupytext Gemeenten.py --to ipynb --set-kernel - --output - | papermill --log-output - /tmp/output.ipynb
       env:
         PYTHONUNBUFFERED: true
     - name: store build artifacts
