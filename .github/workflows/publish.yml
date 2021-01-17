@@ -15,7 +15,7 @@ jobs:
       uses: styfle/cancel-workflow-action@0.6.0
       with:
         access_token: ${{ github.token }}
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Set up Python
       uses: actions/setup-python@v1
       with:
@@ -69,10 +69,10 @@ jobs:
     - name: convert notebooks
       id: notebooks
       run: ./util/convert-notebooks --added ${{ steps.committed.outputs.added_files }} --modified ${{ steps.committed.outputs.modified_files }} --deleted ${{ steps.committed.outputs.deleted_files }}
-    - name: update ipynb from py
+    - uses: stefanzweifel/git-auto-commit-action@v4
       if: steps.notebooks.outputs.updated == 'true'
-      run: |
-        git commit -m 'notebooks converted from py -> ipynb'
-        git push "https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        commit_message: Update converted notebooks
+        file_pattern: ./*.ipynb
+        skip_dirty_check: false
+
