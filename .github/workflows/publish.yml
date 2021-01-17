@@ -26,9 +26,9 @@ jobs:
       env:
         cache-name: v1
       with:
-        path: |
-          ~/.cache/pip
-          downloads
+        path:
+          - ~/.cache/pip
+          - downloads
         key: ${{ runner.os }}-build-${{ env.cache-name }}
     - name: Install requirements
       run: pip3 install -r requirements.txt
