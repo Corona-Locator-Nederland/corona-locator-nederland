@@ -218,5 +218,4 @@ def cell():
         release.upload_asset(asset=f, name=os.path.basename(asset), content_type='text/csv')
 
   if knack:
-    # search on object name
     knack.update(objectName='Leeftijdsgroep', df=df)

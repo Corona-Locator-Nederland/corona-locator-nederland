@@ -28,6 +28,7 @@ def run(cmd):
 def to_notebook(path):
   return os.path.splitext(path)[0] + '.ipynb'
 
+updated = 'false'
 for change, files in changes.items():
   for path in files:
     src = None
@@ -40,6 +41,7 @@ for change, files in changes.items():
     if src is None:
       continue
 
+    updated = 'true'
     tgt = to_notebook(src)
     if change in ['modified', 'added']:
       print(src, '=>', tgt)
@@ -49,3 +51,4 @@ for change, files in changes.items():
       if os.path.exists(tgt):
         print(src, '=>', 'None')
         run(['git', 'rm', tgt])
+print(f'::set-output name=updated::{updated}')

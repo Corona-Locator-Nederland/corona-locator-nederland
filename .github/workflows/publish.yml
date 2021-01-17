@@ -56,7 +56,7 @@ jobs:
 
     - name: Check for notebook changes
       uses: dorny/paths-filter@v2
-      id: notebooks
+      id: committed
       with:
         list-files: shell
         filters: |
@@ -67,10 +67,12 @@ jobs:
           deleted:
             - deleted: '[A-Z]*.py'
     - name: convert notebooks
-      run: ./util/convert-notebooks --added ${{ steps.notebooks.outputs.added_files }} --modified ${{ steps.notebooks.outputs.modified_files }} --deleted ${{ steps.notebooks.outputs.deleted_files }} 
-    - uses: stefanzweifel/git-auto-commit-action@v4
-      name: update ipynb from py
-      with:
-        commit_message: Convert percent-py notebooks
-        file_pattern: ./*.ipynb
-        skip_dirty_check: false
+      id: notebooks
+      run: ./util/convert-notebooks --added ${{ steps.committed.outputs.added_files }} --modified ${{ steps.committed.outputs.modified_files }} --deleted ${{ steps.committed.outputs.deleted_files }}
+    - name: update ipynb from py
+      if: steps.notebooks.outputs.updated == 'true'
+      run: |
+        git commit -m 'notebooks converted from py -> ipynb'
+        git push "https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
