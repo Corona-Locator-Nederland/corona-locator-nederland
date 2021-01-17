@@ -218,4 +218,4 @@ def cell():
         release.upload_asset(asset=f, name=os.path.basename(asset), content_type='text/csv')
 
   if knack:
-    knack.update(scene='Hoofdscherm', view='Update status', df=df)
+    knack.update(objectName='Leeftijdsgroep', df=df)

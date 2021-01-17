@@ -95,10 +95,17 @@ class Knack:
     else:
       raise ValueError(f'Unexpected type {str(type(records))}')
 
-  def update(self, scene, view, df, verbose=False):
-    view = self.find(f'$.application.scenes[?(@.name=={json.dumps(scene)})].views[?(@.name=={json.dumps(view)})]')
-    source = view.source.object
-    obj = self.find(f'$.application.objects[?(@.key=="{source}")]')
+  def update(self, sceneName=None, viewName=None, objectName=None, df=None, verbose=False):
+    assert df is not None, 'df parameter is required'
+
+    assert (sceneName is not None and viewName is not None) != (objectName is not None), 'Specify either viewName and sceneName, or objectName'
+
+    if objectName:
+      obj = self.find(f'$.application.objects[?(@.name=={json.dumps(objectName)})]')
+    else:
+      view = self.find(f'$.application.scenes[?(@.name=={json.dumps(sceneName)})].views[?(@.name=={json.dumps(viewName)})]')
+      source = view.source.object
+      obj = self.find(f'$.application.objects[?(@.key=="{source}")]')
     mapping = { field.name: field.key for field in obj.fields }
 
     soll = { rec[obj.identifier]: Munch(record=rec, key=rec[obj.identifier]) for rec in df.rename(columns=mapping).to_dict('records') }
