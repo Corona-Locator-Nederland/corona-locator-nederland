@@ -43,7 +43,6 @@ jobs:
         #  curl -L -o yesterday.zip https://file.io/E0iieKfeOOpz
         #  (cd downloads && unzip ../yesterday.zip)
         #fi
-        ls downloads
         python -m ipykernel install --name python3 --user
         jupytext LeeftijdsgroepenLandelijk.py --to ipynb --set-kernel - --output - | papermill --log-output - /tmp/output.ipynb
         jupytext Gemeenten.py --to ipynb --set-kernel - --output - | papermill --log-output - /tmp/output.ipynb

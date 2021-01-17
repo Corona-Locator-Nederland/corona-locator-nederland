@@ -73,5 +73,8 @@ def rivm_cijfers(naam, n=0):
   for f in history[7:]:
     print('removing', f)
     os.remove(f)
+  for f in history:
+    if os.path.exists(f):
+      print('keeping', f)
   print('loading', history[n])
   return pd.read_csv(history[n], sep=';', header=0 )
