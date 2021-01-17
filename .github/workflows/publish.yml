@@ -72,5 +72,5 @@ jobs:
       name: update ipynb from py
       with:
         commit_message: Convert percent-py notebooks
-        file_pattern: '*.ipynb'
+        file_pattern: ./*.ipynb
         skip_dirty_check: false
