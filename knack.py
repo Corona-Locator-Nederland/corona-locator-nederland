@@ -29,8 +29,9 @@ class Knack:
 
   def find(self, path):
     found = JSONPath(path).parse(self.metadata)
-    assert len(found) == 1, (len(found), path)
-    return self.munch(found[0])
+    if len(found) == 1:
+      return self.munch(found[0])
+    raise ValueError(f'{path} yields {len(found)} results, expected 1')
 
   def _check(self, res):
     if res.status_code >= 200 and res.status_code < 300: return res
