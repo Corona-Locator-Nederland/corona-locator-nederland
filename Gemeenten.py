@@ -18,7 +18,7 @@ def publish(df):
     os.makedirs('artifacts', exist_ok = True)
     df.to_csv('artifacts/gemeenten.csv', index=True)
   else:
-    df = df.reset_index(level=0)
+    df = df.reset_index(level=0).rename(columns={'index': 'Code'})
     sh.values_clear("'Regios'!A1:ZZ10000")
     sh.values_clear("'Regios'!A1:ZZ10000")
     ws.update([df.columns.values.tolist()] + df.values.tolist())
@@ -30,6 +30,7 @@ def cell():
   global gemeenten
   global bevolking
   gemeenten = pd.read_csv('gemeenten.csv')
+  regiocodes = 
 
   base = 'https://opendata.cbs.nl/ODataApi/OData/37230ned'
 
@@ -202,8 +203,9 @@ display(gemeenten.head())
 publish(gemeenten.fillna(0).replace(np.inf, 0))
 
 # %%
-
-gemeenten[(gemeenten['Overleden w-1'] == 0) & (gemeenten['Overleden w0'] > 0)][['Overleden t.o.v. vorige week']]
-
-
+regiocodes = pd.read_csv('regiocodes.csv')
+regios = regiocodes[regiocodes.Type == 'GGD']
+df = aantallen_gemeenten.merge(regiocodes, how='left', left_on='Municipal_health_service', right_on='GGD Regio')
+df[pd.isnull(df['GGD Regio'])]['Municipal_health_service'].unique()
+gemeenten['GGD regio'].unique()
 # %%

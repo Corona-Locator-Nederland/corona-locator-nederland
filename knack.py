@@ -44,13 +44,6 @@ class Knack:
 
   @retry(HTTPError, delay=1, tries=2) # absolutely ridiculous
   def _create(self, object_key, data):
-    #curl = ' '.join(['-H ' + shlex.quote(f'{k}: {v}') for k, v in self.headers.items()])
-    #curl = f'curl -X POST https://api.knack.com/v1/objects/{object_key}/records {curl} --data-binary {shlex.quote(json.dumps(data))}'
-    #print(curl)
-    #curl = subprocess.run(curl, shell=True)
-    #if curl.returncode != 0: raise ValueError(str(curl.returncode))
-    #return
-
     url = f'https://api.knack.com/v1/objects/{object_key}/records'
     self._check(requests.post(url=url, json=data, headers=self.headers))
 
