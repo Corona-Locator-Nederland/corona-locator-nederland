@@ -39,7 +39,7 @@ def filesize(path, suffix='B'):
   return "%.1f%s%s" % (num, 'Yi', suffix)
 
 if args.update:
-  print('updating cache to', os.environ['GITHUB_REPOSITORY'] + '@' + args.release, 'from', self.target)
+  print('updating cache to', os.environ['GITHUB_REPOSITORY'] + '@' + args.release, 'from', args.target)
   for f in glob.glob(os.path.join(args.target, '*')):
     if not os.path.basename(f) in assets:
       print(' +', os.path.basename(f), end='')
