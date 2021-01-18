@@ -42,9 +42,10 @@ if args.update:
   print('updating cache to', args.release)
   for f in glob.glob(os.path.join(args.target, '*')):
     if not os.path.basename(f) in assets:
+      print(' +', os.path.basename(f), end='')
       content_type, encoding = mimetypes.guess_type(f)
       release.upload_asset(asset=f, name=os.path.basename(f), content_type=content_type)
-      print(' +', os.path.basename(f), f'({filesize(f)})')
+      print(f' ({filesize(f)})')
   for name, asset in assets.items():
     if not os.path.exists(os.path.join(args.target, name)):
       asset.delete()
@@ -53,6 +54,7 @@ else:
   print('restoring cache from', args.release)
   for name, asset in assets.items():
     with requests.get(asset.url, auth=HTTPBasicAuth(token, ''), allow_redirects=True, stream=True, headers={'Accept': 'application/octet-stream'}) as r:
-      print(' +', name, f'({filesize(os.path.join(args.target, name))})')
+      print(' +', name, end='')
       with open(os.path.join(args.target, name), 'wb') as f:
         shutil.copyfileobj(r.raw, f)
+      print(f' ({filesize(os.path.join(args.target, name))})')
