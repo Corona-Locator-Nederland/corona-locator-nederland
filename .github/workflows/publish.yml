@@ -58,6 +58,8 @@ jobs:
       run: |
         (cd downloads && gzip *.csv)
         ./util/cache --min 1k --release rivm downloads --update
+      env:
+        PYTHONUNBUFFERED: true
 
     - name: Check for notebook changes
       uses: dorny/paths-filter@v2
