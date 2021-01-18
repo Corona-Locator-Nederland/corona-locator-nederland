@@ -44,8 +44,9 @@ repo = gh.repository(*os.environ['GITHUB_REPOSITORY'].split('/'))
 release = repo.release_from_tag(args.release)
 assets = { asset.name: asset for asset in release.assets() }
 
-def humanize(path, suffix='B'):
-  num = os.path.getsize(path)
+def humanize(num, suffix='B'):
+  if type(num) == str:
+    num = os.path.getsize(path)
   for unit in ['','Ki','Mi','Gi','Ti','Pi','Ei','Zi']:
     if abs(num) < 1024.0:
       return "%3.1f%s%s" % (num, unit, suffix)
