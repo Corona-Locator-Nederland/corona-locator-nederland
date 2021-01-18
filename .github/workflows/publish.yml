@@ -30,10 +30,6 @@ jobs:
         key: ${{ runner.os }}-build-${{ env.cache-name }}
     - name: Install python requirements
       run: pip3 install -r requirements.txt
-    - name: restore cache
-      run: |
-        ./util/cache --min 1k --release rivm downloads
-        (cd downloads && gzip -d *.gz)
     - name: Run notebook
       run: |
         #set -x
@@ -54,12 +50,6 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         path: artifacts
-    - name: save cache
-      run: |
-        (cd downloads && gzip *.csv)
-        ./util/cache --min 1k --release rivm downloads --update
-      env:
-        PYTHONUNBUFFERED: true
 
     - name: Check for notebook changes
       uses: dorny/paths-filter@v2
