@@ -32,7 +32,7 @@ jobs:
       run: pip3 install -r requirements.txt
     - name: restore cache
       run: |
-        ./util/cache --min 1K --release rivm downloads
+        ./util/cache --min 1k --release rivm downloads
         (cd downloads && gzip -d *.gz)
     - name: Run notebook
       run: |
@@ -57,10 +57,11 @@ jobs:
     - name: save cache
       run: |
         (cd downloads && gzip *.csv)
-        ./util/cache --min 1K --release rivm downloads --update
+        ./util/cache --min 1k --release rivm downloads --update
 
     - name: Check for notebook changes
       uses: dorny/paths-filter@v2
+      if: github.event_name != 'workflow_dispatch'
       id: committed
       with:
         list-files: shell
@@ -72,6 +73,7 @@ jobs:
           deleted:
             - deleted: '[A-Z]*.py'
     - name: convert notebooks
+      if: github.event_name != 'workflow_dispatch'
       id: notebooks
       run: ./util/convert-notebooks --added ${{ steps.committed.outputs.added_files }} --modified ${{ steps.committed.outputs.modified_files }} --deleted ${{ steps.committed.outputs.deleted_files }}
     - uses: stefanzweifel/git-auto-commit-action@v4
