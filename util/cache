@@ -39,7 +39,7 @@ def filesize(path, suffix='B'):
   return "%.1f%s%s" % (num, 'Yi', suffix)
 
 if args.update:
-  print('updating cache to', os.environ['GITHUB_REPOSITORY'], args.release)
+  print('updating cache to', os.environ['GITHUB_REPOSITORY'] + '@' + args.release, 'from', self.target)
   for f in glob.glob(os.path.join(args.target, '*')):
     if not os.path.basename(f) in assets:
       print(' +', os.path.basename(f), end='')
@@ -51,15 +51,13 @@ if args.update:
       asset.delete()
       print(' -', name)
 else:
-  print('restoring cache from', os.environ['GITHUB_REPOSITORY'], args.release)
+  print('restoring cache from', os.environ['GITHUB_REPOSITORY'] + '@' + args.release, 'to', args.target)
   headers = {
     'User-Agent': 'requests',
     'Accept': 'application/octet-stream',
     'Authorization': f'token {token}',
   }
   for name, asset in assets.items():
-    #with requests.get(asset.url, auth=HTTPBasicAuth(token, ''), allow_redirects=True, stream=True, headers={'Accept': 'application/octet-stream'}) as r:
-    #with requests.get(asset.url.replace('https://', f'https://{token}:@'), allow_redirects=True, stream=True, headers={'Accept': 'application/octet-stream'}) as r:
     with requests.get(asset.url, allow_redirects=True, stream=True, headers=headers) as r:
       print(' +', name, end='')
       with open(os.path.join(args.target, name), 'wb') as f:
