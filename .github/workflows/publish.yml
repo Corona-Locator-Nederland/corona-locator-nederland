@@ -34,7 +34,7 @@ jobs:
     - name: Install cache sync
       run: go get github.com/pauldotknopf/github-release-sync
     - name: restore cache
-      run: go run github-release-sync --access-token $GITHUB_TOKEN --owner `dirname $GITHUB_REPOSITORY` --repo `basename $GITHUB_REPOSITORY` --tag rivm --dir downloads
+      run: github-release-sync --access-token $GITHUB_TOKEN --owner `dirname $GITHUB_REPOSITORY` --repo `basename $GITHUB_REPOSITORY` --tag rivm --dir downloads
     - name: Run notebook
       run: |
         #set -x
