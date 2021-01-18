@@ -11,9 +11,23 @@ import requests
 from requests.auth import HTTPBasicAuth
 import shutil
 
+def filesize(arg):
+  factor = 1
+  if not arg[-1].isdigit():
+    try :
+      factor = {'k': 1024, 'M': 1024**2, 'G': 1024**3}[arg[-1]]
+      arg = arg[:-1]
+    except KeyError:
+      raise argparse.ArgumentTypeError(f'{arg[-1]} is not a valid size unit')
+  try:
+    return factor * int(arg)
+  except ValueError:
+    raise argparse.ArgumentTypeError(f'{arg} is not a valid size')
+
 parser = argparse.ArgumentParser(description='sync release files')
 parser.add_argument('--release', help='release to sync with', required=True)
 parser.add_argument('--update', help='update release', action='store_true')
+parser.add_argument('--min', help='minimum size', type=filesize)
 parser.add_argument('target', nargs='*')
 args = parser.parse_args()
 
@@ -30,16 +44,20 @@ repo = gh.repository(*os.environ['GITHUB_REPOSITORY'].split('/'))
 release = repo.release_from_tag(args.release)
 assets = { asset.name: asset for asset in release.assets() }
 
-for name, asset in assets.items():
-  print(asset.name, asset.content_type, asset.size)
-
-def filesize(path, suffix='B'):
+def humanize(path, suffix='B'):
   num = os.path.getsize(path)
   for unit in ['','Ki','Mi','Gi','Ti','Pi','Ei','Zi']:
     if abs(num) < 1024.0:
       return "%3.1f%s%s" % (num, unit, suffix)
     num /= 1024.0
   return "%.1f%s%s" % (num, 'Yi', suffix)
+
+if args.size:
+  for name, asset in list(assets.items()):
+    if asset.size < args.min:
+      print(' - removing undersized', name, 'of size', humanize(asset.size), 'where I need at least', humanize(args.size))
+      asset.delete()
+      del assets[name]
 
 if args.update:
   print('updating cache to', os.environ['GITHUB_REPOSITORY'] + '@' + args.release, 'from', args.target)
@@ -48,7 +66,7 @@ if args.update:
       print(' +', os.path.basename(f), end='')
       content_type, encoding = mimetypes.guess_type(f)
       release.upload_asset(asset=f, name=os.path.basename(f), content_type=content_type)
-      print(f' ({filesize(f)})')
+      print(f' ({humanize(f)})')
   for name, asset in assets.items():
     if not os.path.exists(os.path.join(args.target, name)):
       asset.delete()
@@ -65,4 +83,4 @@ else:
       print(' +', name, end='')
       with open(os.path.join(args.target, name), 'wb') as f:
         shutil.copyfileobj(r.raw, f)
-      print(f' ({filesize(os.path.join(args.target, name))})')
+      print(f' ({humanize(os.path.join(args.target, name))})')
