@@ -10,6 +10,7 @@ import glob
 import requests
 from requests.auth import HTTPBasicAuth
 import shutil
+import time
 
 def filesize(arg):
   factor = 1
@@ -71,9 +72,12 @@ if args.update:
       content_type, encoding = mimetypes.guess_type(f)
       release.upload_asset(asset=f, name=os.path.basename(f), content_type=content_type)
       print(f' ({humanize(f)})')
+      time.sleep(5)
+
   for name, asset in assets.items():
     if not os.path.exists(os.path.join(args.target, name)):
       asset.delete()
+      time.sleep(5)
       print(' -', name)
 else:
   print('restoring cache from', os.environ['GITHUB_REPOSITORY'] + '@' + args.release, 'to', args.target)
