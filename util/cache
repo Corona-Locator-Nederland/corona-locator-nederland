@@ -12,6 +12,7 @@ from requests.auth import HTTPBasicAuth
 import shutil
 import time
 from tempfile import NamedTemporaryFile
+import sys
 
 def filesize(arg):
   factor = 1
@@ -95,9 +96,9 @@ if args.update:
 
   for f in glob.glob(os.path.join(args.target, '*')):
     if not os.path.basename(f) in assets:
-      attempts = 0
-      while attempts < 5:
-        attempts += 1
+      attempts = 5
+      while attempts > 0:
+        attempts -= 1
         print(' +', os.path.basename(f), end='')
         content_type, encoding = mimetypes.guess_type(f)
         release.upload_asset(asset=f, name=os.path.basename(f), content_type=content_type)
@@ -110,6 +111,10 @@ if args.update:
           time.sleep(5)
         else:
           break
+
+      if attempts <= 0:
+        print(' ? verify: persistent undersized', os.path.basename(f), 'of size', humanize(s), 'where I need', humanize(os.path.getsize(f)), '-- giving up')
+        sys.exit(1)
 
       print(' -', name)
 else:
