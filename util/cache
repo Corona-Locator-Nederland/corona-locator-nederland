@@ -1,0 +1,39 @@
+#!/usr/bin/env python3
+
+import github3 as github
+import argparse
+import os
+import mimetypes
+from urllib.request import urlretrieve
+import sys
+
+parser = argparse.ArgumentParser(description='sync release files')
+parser.add_argument('--release', help='release to sync with', required=True)
+parser.add_argument('--update', help='update release', action='store_true')
+parser.add_argument('target', nargs='*')
+args = parser.parse_args()
+
+assert len(args.target) == 1 and os.path.isdir(args.target[0]), args.target
+args.target = args.target[0]
+
+gh = github.GitHub(token=os.environ['GITHUB_TOKEN'], session=github.session.GitHubSession(default_read_timeout=60))
+repo = gh.repository(*os.environ['GITHUB_REPOSITORY'].split('/'))
+release = repo.release_from_tag(args.release)
+assets = { asset.name: asset for asset in release.assets() }
+
+if args.update:
+  print('updating cache to', args.release)
+  for f in glob.glob(os.path.join(args.target, '*')):
+    if not os.path.basename(f) in assets:
+      content_type, encoding = mimetypes.guess_type(f)
+      release.upload_asset(asset=f, name=os.path.basename(f), content_type=content_type)
+      print(' +', os.path.basename(f))
+  for name, asset in assets.items():
+    if not os.path.exists(os.path.join(args.target, name)):
+      asset.delete()
+      print(' -', name)
+else:
+  print('restoring cache from', args.release)
+  for name, asset in assets.items():
+    print(' +', name)
+    urlretrieve(asset.browser_download_url, os.path.join(args.target, name))
