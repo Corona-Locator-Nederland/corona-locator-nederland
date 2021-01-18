@@ -64,6 +64,9 @@ if args.update:
   print('updating cache to', os.environ['GITHUB_REPOSITORY'] + '@' + args.release, 'from', args.target)
   for f in glob.glob(os.path.join(args.target, '*')):
     if not os.path.basename(f) in assets:
+      if args.min and os.path.getsize(f) < args.min:
+        print(' ? skipping undersized', os.path.basename(f), 'of size', humanize(f), 'where I need at least', humanize(args.min))
+        continue
       print(' +', os.path.basename(f), end='')
       content_type, encoding = mimetypes.guess_type(f)
       release.upload_asset(asset=f, name=os.path.basename(f), content_type=content_type)
