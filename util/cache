@@ -13,9 +13,10 @@ parser.add_argument('--update', help='update release', action='store_true')
 parser.add_argument('target', nargs='*')
 args = parser.parse_args()
 
-assert len(args.target) == 1 and (not os.path.exists(args.target) or os.path.isdir(args.target[0])), args.target
-
+assert len(args.target) == 1, args.target
 args.target = args.target[0]
+
+assert os.path.isdir(args.target) or not os.path.exists(args.target), args.target
 os.makedirs(args.target, exist_ok = True)
 
 gh = github.GitHub(token=os.environ['GITHUB_TOKEN'], session=github.session.GitHubSession(default_read_timeout=60))
