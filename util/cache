@@ -52,10 +52,10 @@ def humanize(path, suffix='B'):
     num /= 1024.0
   return "%.1f%s%s" % (num, 'Yi', suffix)
 
-if args.size:
+if args.min:
   for name, asset in list(assets.items()):
     if asset.size < args.min:
-      print(' - removing undersized', name, 'of size', humanize(asset.size), 'where I need at least', humanize(args.size))
+      print(' - removing undersized', name, 'of size', humanize(asset.size), 'where I need at least', humanize(args.min))
       asset.delete()
       del assets[name]
 
