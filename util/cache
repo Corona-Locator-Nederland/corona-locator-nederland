@@ -52,9 +52,15 @@ if args.update:
       print(' -', name)
 else:
   print('restoring cache from', os.environ['GITHUB_REPOSITORY'], args.release)
+  headers = {
+    'User-Agent': 'requests',
+    'Accept': 'application/octet-stream',
+    'Authorization': f'token {token}',
+  }
   for name, asset in assets.items():
     #with requests.get(asset.url, auth=HTTPBasicAuth(token, ''), allow_redirects=True, stream=True, headers={'Accept': 'application/octet-stream'}) as r:
-    with requests.get(asset.url.replace('https://', f'https://{token}:@'), allow_redirects=True, stream=True, headers={'Accept': 'application/octet-stream'}) as r:
+    #with requests.get(asset.url.replace('https://', f'https://{token}:@'), allow_redirects=True, stream=True, headers={'Accept': 'application/octet-stream'}) as r:
+    with requests.get(asset.url, allow_redirects=True, stream=True, headers=headers}) as r:
       print(' +', name, end='')
       with open(os.path.join(args.target, name), 'wb') as f:
         shutil.copyfileobj(r.raw, f)
