@@ -72,11 +72,13 @@ def rivm_cijfers(naam, n=0):
   elif n == 0:
     print(latest, 'exists')
 
-  for f in glob.glob(os.path.join('rivm', f'{naam}*.csv')):
-    with open(f, 'rb') as f_in, gzip.open(f + '.gz', 'wb') as f_out:
-      shutil.copyfileobj(f_in, f_out)
-      os.remove(f)
+  if 'CI' in os.environ:
+    for f in glob.glob(os.path.join('rivm', f'{naam}*.csv')):
+      with open(f, 'rb') as f_in, gzip.open(f + '.gz', 'wb') as f_out:
+        shutil.copyfileobj(f_in, f_out)
+        os.remove(f)
 
-  history = sorted(glob.glob(os.path.join('rivm', f'{naam}*.csv.gz')), reverse=True)
+  history = sorted(glob.glob(os.path.join('rivm', f'{naam}*.csv*')), reverse=True)
+  history = [f for f in history if not f + '.gz' in history]
   print('loading', history[n])
   return pd.read_csv(history[n], sep=';', header=0 )
