@@ -97,7 +97,7 @@ if args.update:
     if not os.path.basename(f) in assets:
       attempts = 0
       while attempts < 5:
-        attempt += 1
+        attempts += 1
         print(' +', os.path.basename(f), end='')
         content_type, encoding = mimetypes.guess_type(f)
         release.upload_asset(asset=f, name=os.path.basename(f), content_type=content_type)
