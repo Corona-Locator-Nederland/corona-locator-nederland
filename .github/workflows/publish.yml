@@ -31,7 +31,9 @@ jobs:
     - name: Install python requirements
       run: pip3 install -r requirements.txt
     - name: restore cache
-      run: ./util/cache --min 1M --release rivm downloads
+      run: |
+        ./util/cache --min 1K --release rivm downloads
+        (cd downloads && gzip -d *.gz)
     - name: Run notebook
       run: |
         #set -x
@@ -53,7 +55,9 @@ jobs:
       with:
         path: artifacts
     - name: save cache
-      run: ./util/cache --min 1M --release rivm downloads --update
+      run: |
+        (cd downloads && gzip *.csv)
+        ./util/cache --min 1K --release rivm downloads --update
 
     - name: Check for notebook changes
       uses: dorny/paths-filter@v2
