@@ -4,8 +4,12 @@ import github3 as github
 import argparse
 import os
 import mimetypes
-from urllib.request import urlretrieve
-import sys
+import urllib.request
+import urllib.parse
+import glob
+import requests
+from requests.auth import HTTPBasicAuth
+import shutil
 
 parser = argparse.ArgumentParser(description='sync release files')
 parser.add_argument('--release', help='release to sync with', required=True)
@@ -19,7 +23,9 @@ args.target = args.target[0]
 assert os.path.isdir(args.target) or not os.path.exists(args.target), args.target
 os.makedirs(args.target, exist_ok = True)
 
-gh = github.GitHub(token=os.environ['GITHUB_TOKEN'], session=github.session.GitHubSession(default_read_timeout=60))
+token = os.environ['GITHUB_TOKEN']
+
+gh = github.GitHub(token=token, session=github.session.GitHubSession(default_read_timeout=60))
 repo = gh.repository(*os.environ['GITHUB_REPOSITORY'].split('/'))
 release = repo.release_from_tag(args.release)
 assets = { asset.name: asset for asset in release.assets() }
@@ -38,5 +44,7 @@ if args.update:
 else:
   print('restoring cache from', args.release)
   for name, asset in assets.items():
-    print(' +', name)
-    urlretrieve(asset.browser_download_url, os.path.join(args.target, name))
+    with requests.get(asset.url, auth=HTTPBasicAuth(token, ''), allow_redirects=True, stream=True, headers={'Accept': 'application/octet-stream'}) as r:
+      print(' +', name)
+      with open(os.path.join(args.target, name), 'wb') as f:
+        shutil.copyfileobj(r.raw, f)
