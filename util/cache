@@ -30,6 +30,9 @@ repo = gh.repository(*os.environ['GITHUB_REPOSITORY'].split('/'))
 release = repo.release_from_tag(args.release)
 assets = { asset.name: asset for asset in release.assets() }
 
+for name, asset of assets.items():
+  print(asset.name, asset.content_type, asset.size)
+
 def filesize(path, suffix='B'):
   num = os.path.getsize(path)
   for unit in ['','Ki','Mi','Gi','Ti','Pi','Ei','Zi']:
