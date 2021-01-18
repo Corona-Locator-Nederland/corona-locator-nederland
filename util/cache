@@ -30,13 +30,21 @@ repo = gh.repository(*os.environ['GITHUB_REPOSITORY'].split('/'))
 release = repo.release_from_tag(args.release)
 assets = { asset.name: asset for asset in release.assets() }
 
+def filesize(path, suffix='B'):
+  num = os.path.getsize(path)
+  for unit in ['','Ki','Mi','Gi','Ti','Pi','Ei','Zi']:
+    if abs(num) < 1024.0:
+      return "%3.1f%s%s" % (num, unit, suffix)
+    num /= 1024.0
+  return "%.1f%s%s" % (num, 'Yi', suffix)
+
 if args.update:
   print('updating cache to', args.release)
   for f in glob.glob(os.path.join(args.target, '*')):
     if not os.path.basename(f) in assets:
       content_type, encoding = mimetypes.guess_type(f)
       release.upload_asset(asset=f, name=os.path.basename(f), content_type=content_type)
-      print(' +', os.path.basename(f))
+      print(' +', os.path.basename(f), f'({filesize(f)})')
   for name, asset in assets.items():
     if not os.path.exists(os.path.join(args.target, name)):
       asset.delete()
@@ -45,6 +53,6 @@ else:
   print('restoring cache from', args.release)
   for name, asset in assets.items():
     with requests.get(asset.url, auth=HTTPBasicAuth(token, ''), allow_redirects=True, stream=True, headers={'Accept': 'application/octet-stream'}) as r:
-      print(' +', name)
+      print(' +', name, f'({filesize(os.path.join(args.target, name))})')
       with open(os.path.join(args.target, name), 'wb') as f:
         shutil.copyfileobj(r.raw, f)
