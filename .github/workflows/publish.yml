@@ -79,9 +79,9 @@ jobs:
       id: notebooks
       run: ./util/convert-notebooks --added ${{ steps.committed.outputs.added_files }} --modified ${{ steps.committed.outputs.modified_files }} --deleted ${{ steps.committed.outputs.deleted_files }}
     - uses: stefanzweifel/git-auto-commit-action@v4
-      if: steps.notebooks.outputs.updated == 'true'
+      if: github.event_name != 'workflow_dispatch'
       with:
-        commit_message: Update converted notebooks
-        file_pattern: ./*.ipynb
+        commit_message: Update converted notebooks, save RIVM history
+        file_pattern: rivm/*.gz *.ipynb
         skip_dirty_check: false
 

@@ -25,6 +25,8 @@ import glob
 from dateutil.parser import parse as parsedate
 import functools
 import matplotlib.colors as colors
+import gzip
+import shutil
 #from types import SimpleNamespace
 
 if 'KNACK_APP_ID' in os.environ:
@@ -60,21 +62,21 @@ def get_odata(url):
   return data
 
 def rivm_cijfers(naam, n=0):
-  os.makedirs('downloads', exist_ok = True)
+  os.makedirs('rivm', exist_ok = True)
   url = f'https://data.rivm.nl/covid-19/{naam}.csv'
   rivm = requests.head(url)
-  latest = os.path.join('downloads', parsedate(rivm.headers['last-modified']).strftime(naam + '-%Y-%m-%d@%H-%M.csv'))
-  if not os.path.exists(latest):
+  latest = os.path.join('rivm', parsedate(rivm.headers['last-modified']).strftime(naam + '-%Y-%m-%d@%H-%M.csv'))
+  if not os.path.exists(latest) and not os.path.exists(latest + '.gz'):
     print('downloading', latest)
     urlretrieve(url, latest)
   elif n == 0:
     print(latest, 'exists')
-  history = sorted(glob.glob(os.path.join('downloads', f'{naam}*.csv')), reverse=True)
-  for f in history[7:]:
-    print('removing', f)
-    os.remove(f)
-  for f in history:
-    if os.path.exists(f):
-      print('keeping', f)
+
+  for f in glob.glob(os.path.join('rivm', f'{naam}*.csv')):
+    with open(f, 'rb') as f_in, gzip.open(f + '.gz', 'wb') as f_out:
+      shutil.copyfileobj(f_in, f_out)
+      os.remove(f)
+
+  history = sorted(glob.glob(os.path.join('rivm', f'{naam}*.csv.gz')), reverse=True)
   print('loading', history[n])
   return pd.read_csv(history[n], sep=';', header=0 )

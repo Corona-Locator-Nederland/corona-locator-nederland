@@ -1,6 +1,5 @@
 .~lock*
 *.swp
-downloads
 .vscode
 Playground.ipynb
 .DS_store
