@@ -18,12 +18,12 @@ def orderedprefix(df, prefix, exclude=[]):
 
 def publish(df):
   display(df.head())
-  if 'CI' in os.environ:
-    os.makedirs('artifacts', exist_ok = True)
-    df.to_csv('artifacts/gemeenten.csv', index=True)
-  else:
+  if 'GSHEET' in os.environ:
     sh.values_clear("'Regios'!A1:ZZ10000")
     ws.update('A1', [df.columns.values.tolist()] + df.values.tolist())
+  else:
+    os.makedirs('artifacts', exist_ok = True)
+    df.to_csv('artifacts/gemeenten.csv', index=True)
 
 
 # %%
