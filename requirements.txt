@@ -1,4 +1,3 @@
-df2gspread
 github3.py
 gspread
 ipywidgets
