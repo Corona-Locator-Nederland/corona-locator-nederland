@@ -7,7 +7,7 @@ import itertools
 
 if 'GSHEET' in os.environ:
   gc = gspread.service_account()
-  sh = gc.open_by_key(os.environ['1OOXPXubXqnsOdNckUvVqt5M6b6q9oMwJMKhSbK4BQyk']
+  sh = gc.open_by_key(os.environ['GSHEET'])
   ws = sh.get_worksheet(0)
 
 def sortcolumns(df):
