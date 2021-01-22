@@ -3,7 +3,7 @@ name: Execute notebook
 on:
   push: null
   schedule:
-  - cron: '0 */2 * * *'
+  - cron: '0 */8 * * *'
 
 jobs:
   run:
@@ -16,6 +16,11 @@ jobs:
       with:
         access_token: ${{ secrets.GITHUB_TOKEN }}
     - uses: actions/checkout@v2
+      if: github.event_name == 'push'
+    - uses: actions/checkout@v2
+      with:
+        ref: ${{ github.head_ref }}
+      if: github.event_name != 'push'
     - name: Set up Python
       uses: actions/setup-python@v1
       with:
@@ -60,7 +65,6 @@ jobs:
       id: notebooks
       run: ./util/convert-notebooks --added ${{ steps.committed.outputs.added_files }} --modified ${{ steps.committed.outputs.modified_files }} --deleted ${{ steps.committed.outputs.deleted_files }}
     - uses: stefanzweifel/git-auto-commit-action@v4
-      if: github.event_name != 'schedule'
       with:
         commit_message: Update converted notebooks, save RIVM history
         file_pattern: rivm/*.gz *.ipynb
