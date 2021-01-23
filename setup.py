@@ -118,7 +118,7 @@ class CBS:
 
 class RIVM:
   @classmethod
-  def load(naam, n=0):
+  def load(cls, naam, n=0):
     os.makedirs('rivm', exist_ok = True)
     url = f'https://data.rivm.nl/covid-19/{naam}.csv'
     rivm = requests.head(url)
