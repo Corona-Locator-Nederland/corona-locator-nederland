@@ -12,7 +12,7 @@ get_ipython().run_line_magic('run', 'setup')
 @run('leeftijdsgroepen: download RIVM data')
 def cell():
   global rivm
-  rivm = rivm_cijfers('COVID-19_casus_landelijk')
+  rivm = RIVM.load('COVID-19_casus_landelijk')
   display(rivm.head())
 
 # %%
@@ -20,7 +20,7 @@ def cell():
 @run('leeftijdsgroepen: download demografische data van CBS')
 def cell():
   global bevolking
-  bevolking = CBS.bevolking()
+  bevolking = CBS.leeftijdsgroepen_bevolking()
 
 # %% [markdown]
 # Bereken de stand van zaken van besmettingen / hospitalisaties / overlijden, per cohort in absolute aantallen en aantallen per 100k, met een kleur indicator voor de aantallen.

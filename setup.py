@@ -65,7 +65,7 @@ class CBS:
     return data
 
   @classmethod
-  def bevolking(cls):
+  def leeftijdsgroepen_bevolking(cls):
     def roundup(x):
       return int(math.ceil(x / 10.0)) * 10
     def rounddown(x):
