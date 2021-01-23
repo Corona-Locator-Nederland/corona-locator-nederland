@@ -85,7 +85,7 @@ def cell():
 
   # prepareer een RIVM dataset
   def prepare(dataset, day):
-    df = rivm_cijfers(dataset, day)
+    df = RIVM.load(dataset, day)
     # hernoem kolommen voor makkelijker uniforme data bewerking
     df[['GemeenteCode', 'VeiligheidsregioCode', 'Veiligheidsregio']] = df[['Municipality_code', 'Security_region_code', 'Security_region_name']]
     df['GemeenteCode'] = df['GemeenteCode'].fillna('GM0000')
