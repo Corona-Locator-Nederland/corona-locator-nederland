@@ -18,6 +18,7 @@ def cell():
 # %%
 # Download de bevolkings cijfers van CBS, uitgesplitst op de leeftijds categorien in de dataset van het RIVM
 @run('leeftijdsgroepen: download demografische data van CBS')
+def cell():
   global bevolking
   bevolking = cbs_bevolking()
 
@@ -27,7 +28,7 @@ def cell():
 # %%
 # vervang <50 en Unknown door Onbekend
 @run('leeftijdsgroepen: prepareer tabel')
-def section():
+def cell():
   rivm['Cohort'] = rivm['Agegroup'].replace({'<50': 'Onbekend', 'Unknown': 'Onbekend'})
   # aangenomen 'gemiddelde' leeftijd van een cohort: minimum waarde + 5
   assumed_cohort_age = [(cohort, [int(n) for n in cohort.replace('+', '').split('-')]) for cohort in rivm['Cohort'].unique() if cohort[0].isdigit()]
