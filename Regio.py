@@ -67,11 +67,11 @@ def cell():
   base = 'https://opendata.cbs.nl/ODataApi/OData/37230ned'
   
   # voor perioden pak de laatste
-  periode = get_odata(base + '/Perioden').iloc[[-1]]['Key'].values[0]
+  periode = CBS.odata(base + '/Perioden').iloc[[-1]]['Key'].values[0]
   
   # startsWith would have been better to do in the filter but then the CBS "odata-ish" server responds with
   # "Object reference not set to an instance of an object."
-  bevolking = get_odata(base + f"/TypedDataSet?$filter=(Perioden eq '{periode}')&$select=RegioS, BevolkingAanHetBeginVanDePeriode_1")
+  bevolking = CBS.odata(base + f"/TypedDataSet?$filter=(Perioden eq '{periode}')&$select=RegioS, BevolkingAanHetBeginVanDePeriode_1")
   # want de CBS odata API snap startsWith niet...
   bevolking = bevolking[bevolking.RegioS.str.startswith('GM')]
   # die _1 betekent waarschijnlijk dat het gedrag ooit gewijzigd is en er een nieuwe "versie" van die kolom is gepubliceerd
