@@ -49,7 +49,6 @@ class CBS:
   def odata(cls, url):
     data = pd.DataFrame()
     while url:
-      print(url)
       r = requests.get(url)
       try:
         r = r.json()

@@ -23,7 +23,6 @@ def publish(df):
     os.makedirs('artifacts', exist_ok = True)
     df.to_csv('artifacts/gemeenten.csv', index=True)
 
-
 # %%
 @run('regio: load regios en hun basisgegevens')
 def cell():
@@ -39,6 +38,14 @@ def cell():
   # niet nodig want die voegen we vanzelf toe bij de per-type constructie van de cijfers
   del gemeenten['Type']
   
+  global leeftijdsgroepen
+  leeftijdsgroepen = pd.read_csv('leeftijdsgroepen.csv')
+  del leeftijdsgroepen['Type']
+  lgb = CBS.leeftijdsgroepen_bevolking().reset_index()
+  lgb['Code'] = 'LE' + lgb['Range'].replace({'0-9': '00-09'}).replace('-', '', regex=True).astype(str)
+  lgb = lgb.rename(columns={'BevolkingOpDeEersteVanDeMaand': 'Personen'})
+  leeftijdsgroepen = leeftijdsgroepen.merge(lgb[['Code', 'Personen']], how='left', on='Code')
+
   global regiocodes
   regiocodes = pd.read_csv('regiocodes.csv')
   # sluit aan bij de uniforme naamgeving van hierboven
@@ -87,29 +94,45 @@ def cell():
   def prepare(dataset, day):
     df = RIVM.load(dataset, day)
     # hernoem kolommen voor makkelijker uniforme data bewerking
-    df[['GemeenteCode', 'VeiligheidsregioCode', 'Veiligheidsregio']] = df[['Municipality_code', 'Security_region_code', 'Security_region_name']]
-    df['GemeenteCode'] = df['GemeenteCode'].fillna('GM0000')
-  
+    for old, new in [('Municipality_code', 'GemeenteCode'), ('Security_region_code', 'VeiligheidsregioCode'), ('Security_region_name', 'Veiligheidsregio')]:
+      if old in df:
+        df[new] = df[old]
+    if 'GemeenteCode' in df:
+      df['GemeenteCode'] = df['GemeenteCode'].fillna('GM0000')
+
+    if 'Agegroup' in df:
+      df['LeeftijdCode'] = 'LE' + df['Agegroup'].replace({'0-9': '00-09', '<50': '00-00', 'Unknown': '00-00', 'Onbekend': '00-00'}).replace('-', '', regex=True).astype(str)
+      df['Total_reported'] = 1 # impliciet in casus-landelijk
+      df = df.replace({'Hospital_admission': {'Yes': 1, 'No': 0, 'Unknown': 0}, 'Deceased': {'Yes': 1, 'No': 0, 'Unknown': 0}})
+
     # voeg regiocodes to aan elke regel in de dataset
-    for regiotype in ['GGDregio', 'Provincie', 'Landsdeel', 'Schoolregio']:
-      df = df.merge(gemeenten[['GemeenteCode', f'{regiotype}Code']].drop_duplicates(), on='GemeenteCode')
+    if 'GemeenteCode' in df:
+      for regiotype in ['GGDregio', 'Provincie', 'Landsdeel', 'Schoolregio']:
+        df = df.merge(gemeenten[['GemeenteCode', f'{regiotype}Code']].drop_duplicates(), on='GemeenteCode')
+
     df['LandCode'] = 'NL'
   
     # knip de tijd van de datum af, en stop hem in 'Today' (referentiepunt metingen)
-    df['Today'] = pd.to_datetime(df.Date_of_report.str.replace(' .*', '', regex=True))
+    if 'Date_of_report' in df:
+      df['Today'] = pd.to_datetime(df.Date_of_report.str.replace(' .*', '', regex=True))
+    elif 'Date_file' in df:
+      df['Today'] = pd.to_datetime(df.Date_file.str.replace(' .*', '', regex=True))
   
     # zet 'Date' naar de bij de betreffende dataset horende meetdatum-kolom
-    for when in ['Date_of_statistics', 'Date_of_publication']:
+    for when in ['Date_statistics', 'Date_of_statistics', 'Date_of_publication']:
       if when in df:
         df['Date'] = pd.to_datetime(df[when])
         # en direct maar weken terug, die hebben we vaker nodig
         df['WekenTerug'] = ((df.Today - df.Date) / np.timedelta64(7, 'D')).astype(np.int)
+
     return sortcolumns(df)
 
-  global aantallen, ziekenhuisopnames, ziekenhuisopnames_1
+  global aantallen, ziekenhuisopnames, ziekenhuisopnames_1, casus_landelijk, casus_landelijk_1
   aantallen = prepare('COVID-19_aantallen_gemeente_per_dag', 0)
   ziekenhuisopnames = prepare('COVID-19_ziekenhuisopnames', 0)
   ziekenhuisopnames_1 = prepare('COVID-19_ziekenhuisopnames', 1)
+  casus_landelijk = prepare('COVID-19_casus_landelijk', 0)
+  casus_landelijk_1 = prepare('COVID-19_casus_landelijk', 1)
 
 # %% Ondersteunde code voor de regio berekeningen
 def groupregio(regiotype):
@@ -136,6 +159,12 @@ def groupregio(regiotype):
   if regiotype == 'Gemeente':
     # hier hoeven we niets te doen dan de juiste kolommen te selecteren
     df = gemeenten[grouping + columns + ['Personen', 'Opp land km2']].rename(columns={'Gemeente': 'Naam', 'GemeenteCode': 'Code'})
+  elif regiotype == 'Leeftijd':
+    df = (leeftijdsgroepen
+      # voeg de lege kolommen toe
+      .assign(**{ col: '' for col in columns})
+      .assign(**{'Opp land km2': 0})
+    )
   else:
     df = (gemeenten[gemeenten.GemeenteCode != 'GM0000']
       # groupeer op regiotype, sommeer oppervlakte en personen
@@ -227,7 +256,15 @@ def collect(regiotype):
   """
   regiotype_code = f'{regiotype}Code'
 
-  global aantallen, ziekenhuisopnames, ziekenhuisopnames_1
+  def datasets():
+    if regiotype == 'Leeftijd':
+      global casus_landelijk, casus_landelijk_1
+      return (casus_landelijk, casus_landelijk, casus_landelijk_1)
+    else:
+      global aantallen, ziekenhuisopnames, ziekenhuisopnames_1
+      return (aantallen, ziekenhuisopnames, ziekenhuisopnames_1)
+
+  aantallen, ziekenhuisopnames, ziekenhuisopnames_1 = datasets()
 
   # sommeer Total_reported en Deceased voor gegeven regiotype
   pos_dec = sumcols(aantallen, regiotype, {'Total_reported':'Positief getest', 'Deceased':'Overleden'})
@@ -304,7 +341,16 @@ def cell():
   regios = pd.concat([
     collect(regiotype)
     for regiotype in
-    [ 'Gemeente', 'GGDregio', 'Veiligheidsregio', 'Provincie', 'Landsdeel', 'Schoolregio', 'Land' ]
+    [
+      'Gemeente',
+      'GGDregio',
+      'Veiligheidsregio',
+      'Provincie',
+      'Landsdeel',
+      'Schoolregio',
+      'Land',
+      'Leeftijd',
+    ]
   ])
   # maak de kolommen leeg voor GM0000
   regios.loc[regios.Code == 'GM0000']['VeiligheidsregioCode'] = ''
