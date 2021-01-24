@@ -302,7 +302,7 @@ def collect(regiotype):
     for col in cat.columns:
       df[col + ' per 100.000'] = ((df[col] * 100000) / df.Personen).replace(np.inf, 0)
 
-  df['Positief getest 1d/100k'] = (df['Positief getest (toename)'] / df.Personen).replace(np.inf, 0)
+  df['Positief getest 1d/100k'] = ((df['Positief getest (toename)'] * 100000) / df.Personen).replace(np.inf, 0)
   df['Positief getest percentage'] = (df['Positief getest'] / df.Personen).replace(np.inf, 0)
   df['Positief getest per km2'] = (df['Positief getest'] / df['Opp land km2']).replace(np.inf, 0)
 
