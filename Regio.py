@@ -221,7 +221,7 @@ def histcols(df, regiotype, maxweeks, column, colors=False, highestweek=False):
 
   df = (df
     # groepeer op reguitype en wekenterug
-    .groupby([regiotype_code, 'WekenTerug'])[datacolumn]
+    .groupby([regiotype_code, 'WekenTerug'])['count']
     # optellen (de aantallen zijn eventueel hierboven al geschaald)
     .sum()
     # maak de week nummers kolommen
