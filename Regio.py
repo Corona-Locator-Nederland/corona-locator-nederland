@@ -113,7 +113,13 @@ def cell():
       for regiotype in ['GGDregio', 'Provincie', 'Landsdeel', 'Schoolregio']:
         df = df.merge(gemeenten[['GemeenteCode', f'{regiotype}Code']].drop_duplicates(), on='GemeenteCode')
 
+    # als er geen gemeentecode is, maar misschien wel een VR code, vervang die door VR00
+    if 'GemeenteCode' in df and 'VeiligheidsregioCode' in df:
+      df.loc[df.GemeenteCode == 'GM0000', 'VeiligheidsregioCode'] = 'VR00'
+      df.loc[df.GemeenteCode == 'GM0000', 'Veiligheidsregio'] = ''
+
     df['LandCode'] = 'NL'
+    df['Land'] = 'Nederland'
   
     # knip de tijd van de datum af, en stop hem in 'Today' (referentiepunt metingen)
     if 'Date_of_report' in df:
@@ -356,7 +362,6 @@ def cell():
     ]
   ])
   # maak de kolommen leeg voor GM0000
-  regios.loc[regios.Code == 'GM0000']['VeiligheidsregioCode'] = ''
   # hernoem de eerder geuniformeerde kolomen terug naar de gewenste output
   regios = regios.rename(columns={
     'LandCode': 'Landcode',
@@ -368,5 +373,3 @@ def cell():
 # load de gewenste kolom volgorde uit een file en publiceer
 order = pd.read_csv('columnorder.csv')
 publish(regios[order.columns.values].fillna(0))
-
-# %%
