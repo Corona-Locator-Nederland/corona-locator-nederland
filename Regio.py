@@ -15,7 +15,10 @@ def sortcolumns(df):
   return df[sorted(df.columns)]
 
 def publish(df):
-  display(df.head())
+  df2 = df.set_index('Code')
+  m = (df2 == np.inf)
+  df2 = df2.loc[m.any(axis=1), m.any(axis=0)]
+  display(df2.head())
   if 'GSHEET' in os.environ:
     sh.values_clear("'Regios'!A1:ZZ10000")
     ws.update('A1', [df.columns.values.tolist()] + df.values.tolist())
@@ -215,7 +218,7 @@ def histcols(df, regiotype, maxweeks, column, colors=False, highestweek=False):
 
   # als we schalen naar 100.000, voor hoeveel telt elke melding dan mee
   if 'scale' in df:
-    df = df.assign(count=df[datacolumn] * df.scale)
+    df = df.assign(count=df[datacolumn] * df.scale).replace(np.inf, 0)
   else:
     df = df.assign(count=df[datacolumn])
 
