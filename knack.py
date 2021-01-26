@@ -7,6 +7,7 @@ from requests import HTTPError
 import time
 import requests
 from json import JSONDecodeError
+import hashlib
 
 def in_notebook():
   from IPython import get_ipython
@@ -26,6 +27,8 @@ class Knack:
     }
     with urlopen(f'https://loader.knack.com/v1/applications/{app_id}') as response:
       self.metadata = json.load(response)
+      with open('metadata.json', 'w') as f:
+        json.dump(self.metadata, f, indent='  ')
 
   def find(self, path):
     found = JSONPath(path).parse(self.metadata)
@@ -69,14 +72,14 @@ class Knack:
       else:
         break
     # echt mensen dit geloof je niet.
-    for rec in records:
-      for k, v in list(rec.items()):
-        if not k.endswith('_raw'):
-          continue
-        if type(v) == dict and 'date' in v:
-          v = v['iso_timestamp'].replace('T00:00:00.000Z', '')
-        rec[k.replace('_raw', '')] = v
-        rec.pop(k)
+    #for rec in records:
+    #  for k, v in list(rec.items()):
+    #    if not k.endswith('_raw'):
+    #      continue
+    #    if type(v) == dict and 'date' in v:
+    #      v = v['iso_timestamp'].replace('T00:00:00.000Z', '')
+    #    rec[k.replace('_raw', '')] = v
+    #    rec.pop(k)
 
     return self.munch(records)
 
@@ -88,6 +91,14 @@ class Knack:
     else:
       raise ValueError(f'Unexpected type {str(type(records))}')
 
+  def _dict(self, kv):
+    m = Munch()
+    for k, v in kv:
+      if k in m:
+        raise KeyError(f'duplicate key {json.dumps(k)}')
+      m[k] = v
+    return m
+
   def update(self, sceneName=None, viewName=None, objectName=None, df=None, verbose=False):
     assert df is not None, 'df parameter is required'
 
@@ -95,23 +106,53 @@ class Knack:
 
     if objectName:
       obj = self.find(f'$.application.objects[?(@.name=={json.dumps(objectName)})]')
+      with open(objectName + '.json', 'w') as f:
+        json.dump(obj, f, indent='  ')
     else:
       view = self.find(f'$.application.scenes[?(@.name=={json.dumps(sceneName)})].views[?(@.name=={json.dumps(viewName)})]')
       source = view.source.object
       obj = self.find(f'$.application.objects[?(@.key=="{source}")]')
-    mapping = { field.name: field.key for field in obj.fields }
 
-    soll = { rec[obj.identifier]: Munch(record=rec, key=rec[obj.identifier]) for rec in df.rename(columns=mapping).to_dict('records') }
-    ist = self._getall(obj.key)
-    # fetch these separately as the key does not need to be unique?
-    delete = [rec.id for rec in ist if rec.get(obj.identifier) not in soll]
-    ist  = { rec[obj.identifier]: Munch(record=rec, key=rec[obj.identifier]) for rec in ist if not rec.id in delete }
-   
-    for record_id in progress(delete, desc='deleting obsolete records'):
-      self._delete(object_key=obj.key, record_id=record_id)
+    mapping = self._dict([ (field.name, field.key) for field in obj.fields ])
+    key = [field.name for field in obj.fields if field.get('unique')]
+    assert len(key) == 1
 
-    for data in progress([rec.record for rec in soll.values() if rec.key not in ist], desc='creating records'):
-      self._create(object_key=obj.key, data=data)
+    key = Munch(name=key[0])
+    key.field = mapping[key.name]
 
-    for record_id, data in progress([(ist[rec.key].record.id, rec.record) for rec in soll.values() if rec.key in ist and {**rec.record, 'id': None} != {**ist[rec.key].record, 'id': None}], desc='updating records'):
-      self._update(object_key=obj.key, record_id=record_id, data=data)
+    assert key.name in df, f'{json.dumps(key.name)} not present in {str(df.columns)}'
+    assert df.rename(columns=mapping).loc[:, key.field].is_unique, f'{json.dumps(key.name)}/{json.dumps(key.field)} is not unique in the dataset'
+
+    data = self.munch(df.rename(columns=mapping).to_dict('records'))
+    if 'Hash' in mapping:
+      for rec in data:
+        assert mapping.Hash not in rec
+        rec[mapping.Hash] = hashlib.sha256(json.dumps(rec, sort_keys=True).encode('utf-8')).hexdigest()
+
+      create = self._dict([ (rec[key.field], rec) for rec in data ])
+      update = []
+      delete = []
+      for ist in self._getall(obj.key):
+        if soll:= create.get(ist[key.field]):
+          ist[mapping.Hash]
+          soll[mapping.Hash]
+          if ist[mapping.Hash] != soll[mapping.Hash]:
+            update.append((ist.id, soll))
+          del create[soll[key.field]]
+        else:
+          delete.append(rec.id)
+    else:
+      delete = [rec.id for rec in self._getall(obj.key)]
+
+    print(len(delete), 'deletes', len(update), 'updates', len(create), 'creates')
+    if len(delete) > 0:
+      for ist in progress(ist, desc='deleting records'):
+        self._delete(object_key=obj.key, record_id=ist)
+
+    if len(update) > 0:
+      for ist, soll in progress(update, desc='updating records'):
+        self._update(object_key=obj.key, record_id=ist, data=soll)
+
+    if len(create) > 0:
+      for soll in progress(soll.values(), desc='creating records'):
+        self._create(object_key=obj.key, data=soll)

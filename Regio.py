@@ -20,11 +20,15 @@ def publish(df):
   df2 = df2.loc[m.any(axis=1), m.any(axis=0)]
   display(df2.head())
   if 'GSHEET' in os.environ:
+    print('updating GSheet')
     sh.values_clear("'Regios'!A1:ZZ10000")
     ws.update('A1', [df.columns.values.tolist()] + df.values.tolist())
   else:
     os.makedirs('artifacts', exist_ok = True)
     df.to_csv('artifacts/gemeenten.csv', index=True)
+  if knack:
+    print('updating knack')
+    knack.update(objectName='RegioV2', df=df)
 
 # %%
 @run('regio: load regios en hun basisgegevens')
@@ -371,5 +375,8 @@ def cell():
 
 # %%
 # load de gewenste kolom volgorde uit een file en publiceer
+get_ipython().run_line_magic('run', 'setup')
 order = pd.read_csv('columnorder.csv')
 publish(regios[order.columns.values].fillna(0))
+
+# %%
