@@ -144,16 +144,12 @@ def cell():
 #
 # %%
 # publish
-@run('leeftijdsgroepen: exporteer en upload naar release en Knack')
-def cell():
-  name = 'LeeftijdsgroepenLandelijk'
+async def publish():
   df=tabel.fillna(0).assign(Datum=tabel.Datum.dt.strftime('%Y-%m-%d'))
 
   os.makedirs('artifacts', exist_ok = True)
-  today = os.path.join('artifacts', name + '-' + datetime.date.today().strftime('%Y-%m-%d') + '.csv')
-  latest = f'artifacts/{name}.csv'
-  df.to_csv(latest, index=False)
+  df.to_csv('artifacts/LeeftijdsgroepenLandelijk.csv', index=False)
 
   if knack:
-    # zoek op object naam
     await knack.update(objectName='Leeftijdsgroep', df=df)
+await publish()
