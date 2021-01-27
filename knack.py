@@ -16,9 +16,11 @@ def in_notebook():
   from IPython import get_ipython
   return get_ipython() is not None
 if in_notebook():
-  import tqdm.notebook as tqdm
+  #import tqdm.notebook as tqdm
+  import tqdm.asyncio as tqdm
 else:
-  import tqdm
+  #import tqdm
+  import tqdm.asyncio as tqdm
 
 class Knack:
   def __init__(self, app_id, api_key):
@@ -109,7 +111,7 @@ class Knack:
       m[k] = v
     return m
 
-  async def update(self, sceneName=None, viewName=None, objectName=None, df=None, verbose=False):
+  async def update(self, sceneName=None, viewName=None, objectName=None, df=None, force=False):
     self.calls = 0
     assert df is not None, 'df parameter is required'
 
@@ -156,7 +158,7 @@ class Knack:
         if soll:= create.get(ist[key.field]):
           ist[mapping.Hash]
           soll[mapping.Hash]
-          if ist[mapping.Hash] != soll[mapping.Hash]:
+          if force or ist[mapping.Hash] != soll[mapping.Hash]:
             update.append((ist.id, soll))
           del create[soll[key.field]]
         else:
