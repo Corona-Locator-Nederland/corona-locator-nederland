@@ -145,7 +145,11 @@ class RIVM:
           shutil.copyfileobj(f_in, f_out)
           os.remove(f)
 
-    history = sorted(glob.glob(os.path.join('rivm', f'{naam}*.csv*')), reverse=True)
-    history = [f for f in history if not f + '.gz' in history]
+    datafiles = os.path.join('rivm', f'{naam}*.csv*')
+    # delete local duplicates
+    for f in glob.glob(datafiles):
+      if os.path.exists(f + '.gz'):
+        os.remove(f)
+    history = sorted(glob.glob(datafiles), reverse=True)
     print('loading', history[n])
     return pd.read_csv(history[n], sep=';', header=0 )
