@@ -10,6 +10,7 @@ load_dotenv(dot_env, override=True)
 from ruamel.yaml import YAML
 yaml = YAML(typ='safe')
 
+import gspread
 from urllib.request import urlopen
 from urllib.request import urlretrieve
 import pandas as pd
@@ -34,6 +35,16 @@ if 'KNACK_APP_ID' in os.environ:
   knack = Knack(app_id = os.environ['KNACK_APP_ID'], api_key = os.environ['KNACK_API_KEY'])
 else:
   knack = None
+
+if 'GSHEET' in os.environ:
+  def gsheet(df):
+    print('updating GSheet')
+    gc = gspread.service_account()
+    sh = gc.open_by_key(os.environ['GSHEET'])
+    ws = sh.get_worksheet(0)
+
+    sh.values_clear("'Regios'!A1:ZZ10000")
+    ws.update('A1', [df.columns.values.tolist()] + df.values.tolist())
 
 def run(*args):
   if len(args) == 1 and callable(args[0]):

@@ -2,18 +2,11 @@
 from IPython import get_ipython
 from IPython.display import clear_output
 get_ipython().run_line_magic('run', 'setup')
-import gspread
 import itertools
-
-if 'GSHEET' in os.environ:
-  gc = gspread.service_account()
-  sh = gc.open_by_key(os.environ['GSHEET'])
-  ws = sh.get_worksheet(0)
 
 # sorteert de kolommen alfabetisch, is makkelijker visueel te debuggen.
 def sortcolumns(df):
   return df[sorted(df.columns)]
-
 
 # %%
 @run('regio: load regios en hun basisgegevens')
@@ -374,11 +367,6 @@ def publish(df):
 
   os.makedirs('artifacts', exist_ok = True)
   df.to_csv('artifacts/gemeenten.csv', index=True)
-
-  if 'GSHEET' in os.environ:
-    print('updating GSheet')
-    sh.values_clear("'Regios'!A1:ZZ10000")
-    ws.update('A1', [df.columns.values.tolist()] + df.values.tolist())
 
   if knack:
     print('updating knack')
