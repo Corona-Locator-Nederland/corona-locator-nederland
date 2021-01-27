@@ -359,7 +359,7 @@ def cell():
 
 # %%
 # load de gewenste kolom volgorde uit een file en publiceer
-def publish(df):
+async def publish(df):
   df2 = df.set_index('Code')
   m = (df2 == np.inf)
   df2 = df2.loc[m.any(axis=1), m.any(axis=0)]
@@ -370,7 +370,7 @@ def publish(df):
 
   if knack:
     print('updating knack')
-    knack.update(objectName='RegioV2', df=df)
+    await knack.update(objectName='RegioV2', df=df)
 
 order = pd.read_csv('columnorder.csv')
-publish(regios[order.columns.values].fillna(0))
+await publish(regios[order.columns.values].fillna(0))

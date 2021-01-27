@@ -2,20 +2,23 @@ from urllib.request import urlopen
 from munch import Munch
 from jsonpath import JSONPath
 import json
-from retry import retry
 from requests import HTTPError
 import time
 import requests
 from json import JSONDecodeError
 import hashlib
 
+import asyncio
+import aiohttp
+import backoff
+
 def in_notebook():
   from IPython import get_ipython
   return get_ipython() is not None
 if in_notebook():
-  from tqdm.notebook import tqdm as progress
+  import tqdm.notebook as tqdm
 else:
-  from tqdm import tqdm as progress
+  import tqdm
 
 class Knack:
   def __init__(self, app_id, api_key):
@@ -45,20 +48,26 @@ class Knack:
       pass
     res.raise_for_status()
 
-  @retry(HTTPError, delay=1, tries=2) # absolutely ridiculous
-  def _create(self, object_key, data):
-    url = f'https://api.knack.com/v1/objects/{object_key}/records'
-    self._check(requests.post(url=url, json=data, headers=self.headers))
+  @backoff.on_exception(backoff.expo, aiohttp.ClientError, max_tries=8)
+  async def _create(self, object_key, data):
+    self.calls += 1
+    async with self.semaphore:
+      async with self.session.post(f'https://api.knack.com/v1/objects/{object_key}/records', json=data, headers=self.headers, raise_for_status=True) as response:
+        return await response.read()
 
-  @retry(HTTPError, delay=1, tries=2) # absolutely ridiculous
-  def _update(self, object_key, record_id, data):
-    url = f'https://api.knack.com/v1/objects/{object_key}/records/{record_id}'
-    self._check(requests.put(url=url, json=data, headers=self.headers))
+  @backoff.on_exception(backoff.expo, aiohttp.ClientError, max_tries=8)
+  async def _update(self, object_key, record_id, data):
+    self.calls += 1
+    async with self.semaphore:
+      async with self.session.put(f'https://api.knack.com/v1/objects/{object_key}/records/{record_id}', json=data, headers=self.headers, raise_for_status=True) as response:
+        return await response.read()
 
-  @retry(HTTPError, delay=1, tries=2) # absolutely ridiculous
-  def _delete(self, object_key, record_id):
-    url = f'https://api.knack.com/v1/objects/{object_key}/records/{record_id}'
-    self._check(requests.delete(url=url, headers=self.headers))
+  @backoff.on_exception(backoff.expo, aiohttp.ClientError, max_tries=8)
+  async def _delete(self, object_key, record_id):
+    self.calls += 1
+    async with self.semaphore:
+      async with self.session.delete(f'https://api.knack.com/v1/objects/{object_key}/records/{record_id}', headers=self.headers, raise_for_status=True) as response:
+        return await response.read()
 
   def _getall(self, object_key):
     url = f'https://api.knack.com/v1/objects/{object_key}/records?rows_per_page=1000'
@@ -66,6 +75,7 @@ class Knack:
     page = 1
     while True:
       res = self._check(requests.get(url=f'{url}&page={page}', headers=self.headers)).json()
+      self.calls += 1
       records += res['records']
       if res['current_page'] != res['total_pages'] and res['total_pages'] != 0: # what the actual...
         page += 1
@@ -99,7 +109,8 @@ class Knack:
       m[k] = v
     return m
 
-  def update(self, sceneName=None, viewName=None, objectName=None, df=None, verbose=False):
+  async def update(self, sceneName=None, viewName=None, objectName=None, df=None, verbose=False):
+    self.calls = 0
     assert df is not None, 'df parameter is required'
 
     assert (sceneName is not None and viewName is not None) != (objectName is not None), 'Specify either viewName and sceneName, or objectName'
@@ -153,15 +164,19 @@ class Knack:
     else:
       delete = [rec.id for rec in self._getall(obj.key)]
 
-    print(len(delete), 'deletes', len(update), 'updates', len(create), 'creates')
-    if len(delete) > 0:
-      for ist in progress(ist, desc='deleting records'):
-        self._delete(object_key=obj.key, record_id=ist)
-
-    if len(update) > 0:
-      for ist, soll in progress(update, desc='updating records'):
-        self._update(object_key=obj.key, record_id=ist, data=soll)
-
-    if len(create) > 0:
-      for soll in progress(soll.values(), desc='creating records'):
-        self._create(object_key=obj.key, data=soll)
+    self.semaphore = asyncio.Semaphore(9)
+    async with aiohttp.ClientSession() as session:
+      self.session = session
+      tasks = [
+        asyncio.create_task(self._delete(object_key=obj.key, record_id=ist)) for ist in delete
+      ] + [
+        asyncio.create_task(self._update(object_key=obj.key, record_id=ist, data=soll)) for ist, soll in update
+      ] + [
+        asyncio.create_task(self._create(object_key=obj.key, data=soll)) for soll in create.values()
+      ]
+      if len(tasks) == 0:
+        print('nothing to do')
+      else:
+        responses = [await req for req in tqdm.tqdm(asyncio.as_completed(tasks), total=len(tasks))]
+      print(self.calls, 'API calls')
+    return len(tasks)

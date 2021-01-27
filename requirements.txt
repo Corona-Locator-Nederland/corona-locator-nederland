@@ -1,3 +1,6 @@
+aiohttp
+asyncio
+backoff
 github3.py
 gspread
 ipywidgets
