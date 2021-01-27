@@ -14,21 +14,6 @@ if 'GSHEET' in os.environ:
 def sortcolumns(df):
   return df[sorted(df.columns)]
 
-def publish(df):
-  df2 = df.set_index('Code')
-  m = (df2 == np.inf)
-  df2 = df2.loc[m.any(axis=1), m.any(axis=0)]
-  display(df2.head())
-  if 'GSHEET' in os.environ:
-    print('updating GSheet')
-    sh.values_clear("'Regios'!A1:ZZ10000")
-    ws.update('A1', [df.columns.values.tolist()] + df.values.tolist())
-  else:
-    os.makedirs('artifacts', exist_ok = True)
-    df.to_csv('artifacts/gemeenten.csv', index=True)
-  if knack:
-    print('updating knack')
-    knack.update(objectName='RegioV2', df=df)
 
 # %%
 @run('regio: load regios en hun basisgegevens')
@@ -127,9 +112,10 @@ def cell():
   
     # knip de tijd van de datum af, en stop hem in 'Today' (referentiepunt metingen)
     if 'Date_of_report' in df:
-      df['Today'] = pd.to_datetime(df.Date_of_report.str.replace(' .*', '', regex=True))
+      df['Datum'] = df.Date_of_report.str.replace(' .*', '', regex=True)
     elif 'Date_file' in df:
-      df['Today'] = pd.to_datetime(df.Date_file.str.replace(' .*', '', regex=True))
+      df['Datum'] = df.Date_file.str.replace(' .*', '', regex=True)
+    df['Today'] = pd.to_datetime(df.Datum)
   
     # zet 'Date' naar de bij de betreffende dataset horende meetdatum-kolom
     for when in ['Date_statistics', 'Date_of_statistics', 'Date_of_publication']:
@@ -279,6 +265,10 @@ def collect(regiotype):
 
   aantallen, ziekenhuisopnames, ziekenhuisopnames_1 = datasets()
 
+  assert len(aantallen.Datum.unique()) == 1
+  assert len(ziekenhuisopnames_1.Datum.unique()) == 1
+  assert list(aantallen.Datum.unique()) == list(ziekenhuisopnames.Datum.unique()), list(aantallen.Datum.unique()) + list(ziekenhuisopnames.Datum.unique())
+
   # sommeer Total_reported en Deceased voor gegeven regiotype
   pos_dec = sumcols(aantallen, regiotype, {'Total_reported':'Positief getest', 'Deceased':'Overleden'})
   # toename is precies hetzelfde maar dan alleen voor de metingen van 'vandaag'
@@ -343,6 +333,7 @@ def collect(regiotype):
       colors=True,
       column={'Deceased':'Overleden'}), how='left', left_on='Code', right_index=True)
   )
+  df['Datum'] = aantallen.Datum.unique()[0]
 
   return df
 
@@ -375,8 +366,23 @@ def cell():
 
 # %%
 # load de gewenste kolom volgorde uit een file en publiceer
-get_ipython().run_line_magic('run', 'setup')
+def publish(df):
+  df2 = df.set_index('Code')
+  m = (df2 == np.inf)
+  df2 = df2.loc[m.any(axis=1), m.any(axis=0)]
+  display(df2.head())
+
+  os.makedirs('artifacts', exist_ok = True)
+  df.to_csv('artifacts/gemeenten.csv', index=True)
+
+  if 'GSHEET' in os.environ:
+    print('updating GSheet')
+    sh.values_clear("'Regios'!A1:ZZ10000")
+    ws.update('A1', [df.columns.values.tolist()] + df.values.tolist())
+
+  if knack:
+    print('updating knack')
+    knack.update(objectName='RegioV2', df=df)
+
 order = pd.read_csv('columnorder.csv')
 publish(regios[order.columns.values].fillna(0))
-
-# %%

@@ -123,7 +123,16 @@ class Knack:
     assert key.name in df, f'{json.dumps(key.name)} not present in {str(df.columns)}'
     assert df.rename(columns=mapping).loc[:, key.field].is_unique, f'{json.dumps(key.name)}/{json.dumps(key.field)} is not unique in the dataset'
 
-    data = self.munch(df.rename(columns=mapping).to_dict('records'))
+    connections = {}
+    for field in obj.fields:
+      if field.type == 'connection':
+        assert 'relationship' in field and field.relationship.get('has') == 'one' and field.relationship.get('belongs_to') == 'many'
+        domain = [ f for f in self.find(f'$.application.objects[?(@.key=={json.dumps(field.relationship.object)})].fields') if f.get('unique') ]
+        assert len(domain) == 1
+        domain = domain[0]['key']
+        connections[field.name] = { d.get(domain + '_raw', d[domain]): d['id'] for d in self._getall(field.relationship.object) }
+
+    data = self.munch(df.replace(connections).rename(columns=mapping).to_dict('records'))
     if 'Hash' in mapping:
       for rec in data:
         assert mapping.Hash not in rec
