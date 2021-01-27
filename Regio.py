@@ -366,7 +366,7 @@ async def publish(df):
   display(df2.head())
 
   os.makedirs('artifacts', exist_ok = True)
-  df.to_csv('artifacts/gemeenten.csv', index=True)
+  df.to_csv('artifacts/RegioV2.csv', index=True)
 
   if knack:
     print('updating knack')

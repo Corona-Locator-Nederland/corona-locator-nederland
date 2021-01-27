@@ -7,10 +7,17 @@ import time
 import requests
 from json import JSONDecodeError
 import hashlib
+import logging
 
 import asyncio
 import aiohttp
 import backoff
+
+#formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+#fh = logging.FileHandler('backoff.log')
+#fh.setLevel(level=logging.DEBUG)
+#fh.setFormatter(formatter)
+#logging.getLogger('backoff').addHandler(fh)
 
 def in_notebook():
   from IPython import get_ipython
@@ -30,6 +37,7 @@ class Knack:
       'X-Knack-Application-Id': app_id,
       'X-Knack-REST-API-KEY': api_key,
     }
+    self.connection_field_map = {}
     with urlopen(f'https://loader.knack.com/v1/applications/{app_id}') as response:
       self.metadata = json.load(response)
       with open('metadata.json', 'w') as f:
@@ -52,21 +60,21 @@ class Knack:
 
   @backoff.on_exception(backoff.expo, aiohttp.ClientError, max_tries=8)
   async def _create(self, object_key, data):
-    self.calls += 1
+    self.calls['create'] += 1
     async with self.semaphore:
       async with self.session.post(f'https://api.knack.com/v1/objects/{object_key}/records', json=data, headers=self.headers, raise_for_status=True) as response:
         return await response.read()
 
   @backoff.on_exception(backoff.expo, aiohttp.ClientError, max_tries=8)
   async def _update(self, object_key, record_id, data):
-    self.calls += 1
+    self.calls['update'] += 1
     async with self.semaphore:
       async with self.session.put(f'https://api.knack.com/v1/objects/{object_key}/records/{record_id}', json=data, headers=self.headers, raise_for_status=True) as response:
         return await response.read()
 
   @backoff.on_exception(backoff.expo, aiohttp.ClientError, max_tries=8)
   async def _delete(self, object_key, record_id):
-    self.calls += 1
+    self.calls['delete'] += 1
     async with self.semaphore:
       async with self.session.delete(f'https://api.knack.com/v1/objects/{object_key}/records/{record_id}', headers=self.headers, raise_for_status=True) as response:
         return await response.read()
@@ -77,7 +85,7 @@ class Knack:
     page = 1
     while True:
       res = self._check(requests.get(url=f'{url}&page={page}', headers=self.headers)).json()
-      self.calls += 1
+      self.calls['read'] += 1
       records += res['records']
       if res['current_page'] != res['total_pages'] and res['total_pages'] != 0: # what the actual...
         page += 1
@@ -112,7 +120,7 @@ class Knack:
     return m
 
   async def update(self, sceneName=None, viewName=None, objectName=None, df=None, force=False):
-    self.calls = 0
+    self.calls = { crud: 0 for crud in ['create', 'read', 'update', 'delete']}
     assert df is not None, 'df parameter is required'
 
     assert (sceneName is not None and viewName is not None) != (objectName is not None), 'Specify either viewName and sceneName, or objectName'
@@ -126,39 +134,41 @@ class Knack:
       source = view.source.object
       obj = self.find(f'$.application.objects[?(@.key=="{source}")]')
 
-    mapping = self._dict([ (field.name, field.key) for field in obj.fields ])
+    self.mapping = self._dict([ (field.name, field.key) for field in obj.fields ])
     key = [field.name for field in obj.fields if field.get('unique')]
     assert len(key) == 1
 
     key = Munch(name=key[0])
-    key.field = mapping[key.name]
+    key.field = self.mapping[key.name]
 
     assert key.name in df, f'{json.dumps(key.name)} not present in {str(df.columns)}'
-    assert df.rename(columns=mapping).loc[:, key.field].is_unique, f'{json.dumps(key.name)}/{json.dumps(key.field)} is not unique in the dataset'
+    assert df.rename(columns=self.mapping).loc[:, key.field].is_unique, f'{json.dumps(key.name)}/{json.dumps(key.field)} is not unique in the dataset'
 
     connections = {}
     for field in obj.fields:
       if field.type == 'connection':
         assert 'relationship' in field and field.relationship.get('has') == 'one' and field.relationship.get('belongs_to') == 'many'
-        domain = [ f for f in self.find(f'$.application.objects[?(@.key=={json.dumps(field.relationship.object)})].fields') if f.get('unique') ]
-        assert len(domain) == 1
-        domain = domain[0]['key']
-        connections[field.name] = { d.get(domain + '_raw', d[domain]): d['id'] for d in self._getall(field.relationship.object) }
+        if field.relationship.object not in self.connection_field_map:
+          domain = [ f for f in self.find(f'$.application.objects[?(@.key=={json.dumps(field.relationship.object)})].fields') if f.get('unique') ]
+          assert len(domain) == 1
+          domain = domain[0]['key']
+          self.connection_field_map[field.relationship.object] = { d.get(domain + '_raw', d[domain]): d['id'] for d in self._getall(field.relationship.object) }
+        connections[field.name] = self.connection_field_map[field.relationship.object]
 
-    data = self.munch(df.replace(connections).rename(columns=mapping).to_dict('records'))
-    if 'Hash' in mapping:
+    data = self.munch(df.replace(connections).rename(columns=self.mapping).to_dict('records'))
+    if 'Hash' in self.mapping:
       for rec in data:
-        assert mapping.Hash not in rec
-        rec[mapping.Hash] = hashlib.sha256(json.dumps(rec, sort_keys=True).encode('utf-8')).hexdigest()
+        assert self.mapping.Hash not in rec
+        rec[self.mapping.Hash] = hashlib.sha256(json.dumps(rec, sort_keys=True).encode('utf-8')).hexdigest()
 
       create = self._dict([ (rec[key.field], rec) for rec in data ])
       update = []
       delete = []
       for ist in self._getall(obj.key):
         if soll:= create.get(ist[key.field]):
-          ist[mapping.Hash]
-          soll[mapping.Hash]
-          if force or ist[mapping.Hash] != soll[mapping.Hash]:
+          ist[self.mapping.Hash]
+          soll[self.mapping.Hash]
+          if force or ist[self.mapping.Hash] != soll[self.mapping.Hash]:
             update.append((ist.id, soll))
           del create[soll[key.field]]
         else:
@@ -166,7 +176,9 @@ class Knack:
     else:
       delete = [rec.id for rec in self._getall(obj.key)]
 
-    self.semaphore = asyncio.Semaphore(9)
+    # because the shoddy Knack platform cannot get to more than 2-3 calls per second without parallellism, but if you *do* use parallellism
+    # to any significant extent you get immediate backoff errors. And lots of 'em
+    self.semaphore = asyncio.Semaphore(3)
     async with aiohttp.ClientSession() as session:
       self.session = session
       tasks = [
@@ -180,5 +192,5 @@ class Knack:
         print('nothing to do')
       else:
         responses = [await req for req in tqdm.tqdm(asyncio.as_completed(tasks), total=len(tasks))]
-      print(self.calls, 'API calls')
+      print('API calls:', ', '.join([f'{k}: {v}' for k, v in self.calls.items()]))
     return len(tasks)
