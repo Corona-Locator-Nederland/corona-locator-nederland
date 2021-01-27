@@ -8,16 +8,11 @@ import requests
 from json import JSONDecodeError
 import hashlib
 import logging
+import sys
 
 import asyncio
 import aiohttp
 import backoff
-
-#formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-#fh = logging.FileHandler('backoff.log')
-#fh.setLevel(level=logging.DEBUG)
-#fh.setFormatter(formatter)
-#logging.getLogger('backoff').addHandler(fh)
 
 def in_notebook():
   from IPython import get_ipython
@@ -29,7 +24,44 @@ else:
   #import tqdm
   import tqdm.asyncio as tqdm
 
+import aiolimiter
+from aiolimiter.compat import get_running_loop
+class AsyncLimiter(aiolimiter.AsyncLimiter):
+  def pause(self):
+    self._level = self.max_rate
+    self._last_check = get_running_loop().time()
+
+def on_backoff(details):
+  ex_type, ex, ex_traceback = sys.exc_info()
+  if ex.status == 429:
+    details['args'][0].limiter.pause()
+    details['args'][0].calls.backoff += 1
+  else:
+    details['args'][0].calls.error(ex.status, ex.message)
+    #print('looks like Knack croaked again:', {'status': ex.status, 'message': ex.message})
+
 class Knack:
+  class Calls:
+    def __init__(self):
+      self.create = 0
+      self.read = 0
+      self.update = 0
+      self.delete = 0
+      self.backoff = 0
+      self.errors = {}
+    def error(self, status, message):
+      if status not in self.errors:
+        self.errors[status] = [message]
+      else:
+        self.errors[status].append(message)
+    def __repr__(self):
+      r = [', '.join([ f'{k}={v}' for k, v in self.__dict__.items() if k != 'errors' ])]
+      for status, messages in self.errors.items():
+        r.append(f'{status}:')
+        for m in messages:
+          r.append('  ' + m.replace('\n', ' '))
+      return '\n'.join(r)
+
   def __init__(self, app_id, api_key):
     self.app_id = app_id
     self.api_key = api_key
@@ -58,24 +90,24 @@ class Knack:
       pass
     res.raise_for_status()
 
-  @backoff.on_exception(backoff.expo, aiohttp.ClientError, max_tries=8)
+  @backoff.on_exception(backoff.expo, aiohttp.ClientError, max_time=60, on_backoff=on_backoff)
   async def _create(self, object_key, data):
-    self.calls['create'] += 1
-    async with self.semaphore:
+    self.calls.create += 1
+    async with self.limiter:
       async with self.session.post(f'https://api.knack.com/v1/objects/{object_key}/records', json=data, headers=self.headers, raise_for_status=True) as response:
         return await response.read()
 
-  @backoff.on_exception(backoff.expo, aiohttp.ClientError, max_tries=8)
+  @backoff.on_exception(backoff.expo, aiohttp.ClientError, max_time=60, on_backoff=on_backoff)
   async def _update(self, object_key, record_id, data):
-    self.calls['update'] += 1
-    async with self.semaphore:
+    self.calls.update += 1
+    async with self.limiter:
       async with self.session.put(f'https://api.knack.com/v1/objects/{object_key}/records/{record_id}', json=data, headers=self.headers, raise_for_status=True) as response:
         return await response.read()
 
-  @backoff.on_exception(backoff.expo, aiohttp.ClientError, max_tries=8)
+  @backoff.on_exception(backoff.expo, aiohttp.ClientError, max_time=60, on_backoff=on_backoff)
   async def _delete(self, object_key, record_id):
-    self.calls['delete'] += 1
-    async with self.semaphore:
+    self.calls.delete += 1
+    async with self.limiter:
       async with self.session.delete(f'https://api.knack.com/v1/objects/{object_key}/records/{record_id}', headers=self.headers, raise_for_status=True) as response:
         return await response.read()
 
@@ -85,7 +117,7 @@ class Knack:
     page = 1
     while True:
       res = self._check(requests.get(url=f'{url}&page={page}', headers=self.headers)).json()
-      self.calls['read'] += 1
+      self.calls.read += 1
       records += res['records']
       if res['current_page'] != res['total_pages'] and res['total_pages'] != 0: # what the actual...
         page += 1
@@ -119,8 +151,8 @@ class Knack:
       m[k] = v
     return m
 
-  async def update(self, sceneName=None, viewName=None, objectName=None, df=None, force=False):
-    self.calls = { crud: 0 for crud in ['create', 'read', 'update', 'delete']}
+  async def update(self, sceneName=None, viewName=None, objectName=None, df=None, force=False, rate_limit=7):
+    self.calls = self.Calls()
     assert df is not None, 'df parameter is required'
 
     assert (sceneName is not None and viewName is not None) != (objectName is not None), 'Specify either viewName and sceneName, or objectName'
@@ -178,7 +210,7 @@ class Knack:
 
     # because the shoddy Knack platform cannot get to more than 2-3 calls per second without parallellism, but if you *do* use parallellism
     # to any significant extent you get immediate backoff errors. And lots of 'em
-    self.semaphore = asyncio.Semaphore(3)
+    self.limiter = AsyncLimiter(max_rate=rate_limit, time_period=1)
     async with aiohttp.ClientSession() as session:
       self.session = session
       tasks = [
@@ -192,5 +224,5 @@ class Knack:
         print('nothing to do')
       else:
         responses = [await req for req in tqdm.tqdm(asyncio.as_completed(tasks), total=len(tasks))]
-      print('API calls:', ', '.join([f'{k}: {v}' for k, v in self.calls.items()]))
+      print('\nrate limit:', rate_limit, 'API calls:', self.calls)
     return len(tasks)

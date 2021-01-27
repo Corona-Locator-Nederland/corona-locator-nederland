@@ -1,4 +1,5 @@
 aiohttp
+aiolimiter
 asyncio
 backoff
 github3.py
