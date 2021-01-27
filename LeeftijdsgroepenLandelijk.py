@@ -156,4 +156,4 @@ def cell():
 
   if knack:
     # zoek op object naam
-    knack.update(objectName='Leeftijdsgroep', df=df)
+    await knack.update(objectName='Leeftijdsgroep', df=df)
