@@ -12,7 +12,7 @@ get_ipython().run_line_magic('run', 'setup')
 @run('leeftijdsgroepen: download RIVM data')
 def cell():
   global rivm
-  rivm = RIVM.load('COVID-19_casus_landelijk')
+  rivm = RIVM.csv('COVID-19_casus_landelijk')
   display(rivm.head())
 
 # %%
