@@ -41,7 +41,7 @@ def cell():
   rivm['Date_statistics_date'] = pd.to_datetime(rivm['Date_statistics'])
 
   # weken terug = verschil tussen Date_file en Date_statistcs, gedeeld door 7 dagen
-  rivm['Weken terug'] = np.floor((rivm['Date_file_date'] - rivm['Date_statistics_date'])/np.timedelta64(7, 'D')).astype(np.int)
+  rivm['Weken terug'] = np.floor((rivm['Date_file_date'] - rivm['Date_statistics_date'])/np.timedelta64(7, 'D')).astype(int)
 
   # voeg key, gem leeftijd, kleurnummer en totaal toe
   Date_file = rivm['Date_file_date'].unique()[0].astype('M8[D]').astype('O')
