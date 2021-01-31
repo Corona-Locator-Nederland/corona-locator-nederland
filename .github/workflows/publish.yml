@@ -39,7 +39,7 @@ jobs:
       run: |
         python -m ipykernel install --name python3 --user
         jupytext LeeftijdsgroepenLandelijk.py --to ipynb --set-kernel - --output - | papermill --log-output - /tmp/output.ipynb
-        jupytext Regio.py --to ipynb --set-kernel - --output - | papermill --log-output - /tmp/output.ipynb
+        jupytext RegioV2.py --to ipynb --set-kernel - --output - | papermill --log-output - /tmp/output.ipynb
         jupytext DagOverzicht.py --to ipynb --set-kernel - --output - | papermill --log-output - /tmp/output.ipynb
       env:
         PYTHONUNBUFFERED: true
