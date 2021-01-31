@@ -77,7 +77,7 @@ def cell():
 
   # prepareer een RIVM dataset
   def prepare(dataset, day):
-    df = RIVM.load(dataset, day)
+    df = RIVM.csv(dataset, day)
     # hernoem kolommen voor makkelijker uniforme data bewerking
     for old, new in [('Municipality_code', 'GemeenteCode'), ('Security_region_code', 'VeiligheidsregioCode'), ('Security_region_name', 'Veiligheidsregio')]:
       if old in df:
@@ -372,5 +372,5 @@ async def publish(df):
     print('updating knack')
     await knack.update(objectName='RegioV2', df=df)
 
-order = pd.read_csv('columnorder.csv')
+order = pd.read_csv('RegioV2.csv')
 await publish(regios[order.columns.values].fillna(0))

@@ -13,6 +13,7 @@ yaml = YAML(typ='safe')
 import gspread
 from urllib.request import urlopen
 from urllib.request import urlretrieve
+from urllib.parse import urlparse
 import pandas as pd
 import numpy as np
 import json
@@ -126,30 +127,50 @@ class CBS:
 
     return bevolking
 
+def load_and_cache(url, n=0):
+  domain = urlparse(url).netloc
+  provider = domain.split('.')[-2]
+  name, ext = os.path.splitext(os.path.basename(url))
+
+  os.makedirs(provider, exist_ok = True)
+  # without the user agent, LCPS won't answer HEAD requests
+  resource = requests.head(url, allow_redirects=True, headers={ 'User-Agent': 'curl/7.64.1'})
+  latest = os.path.join(provider, parsedate(resource.headers['last-modified']).strftime(f'{name}-%Y-%m-%d@%H-%M{ext}'))
+  if not os.path.exists(latest) and not os.path.exists(latest + '.gz'):
+    print('downloading', latest)
+    urlretrieve(url, latest)
+  elif n == 0:
+    print(latest, 'exists')
+
+  if 'CI' in os.environ:
+    for f in glob.glob(os.path.join(provider, f'{name}*{ext}')):
+      with open(f, 'rb') as f_in, gzip.open(f + '.gz', 'wb') as f_out:
+        shutil.copyfileobj(f_in, f_out)
+        os.remove(f)
+
+  datafiles = os.path.join(provider, f'{name}*{ext}*')
+  # delete local duplicates
+  for f in glob.glob(datafiles):
+    if os.path.exists(f + '.gz'):
+      os.remove(f)
+  history = sorted(glob.glob(datafiles), reverse=True)
+  return history[n]
+
 class RIVM:
   @classmethod
-  def load(cls, naam, n=0):
-    os.makedirs('rivm', exist_ok = True)
-    url = f'https://data.rivm.nl/covid-19/{naam}.csv'
-    rivm = requests.head(url)
-    latest = os.path.join('rivm', parsedate(rivm.headers['last-modified']).strftime(naam + '-%Y-%m-%d@%H-%M.csv'))
-    if not os.path.exists(latest) and not os.path.exists(latest + '.gz'):
-      print('downloading', latest)
-      urlretrieve(url, latest)
-    elif n == 0:
-      print(latest, 'exists')
+  def csv(cls, naam, n=0):
+    data = load_and_cache(f'https://data.rivm.nl/covid-19/{naam}.csv', n)
+    print('loading', data)
+    return pd.read_csv(data, sep=';', header=0)
+  @classmethod
+  def json(cls, naam, n=0):
+    data = load_and_cache(f'https://data.rivm.nl/covid-19/{naam}.json', n)
+    print('loading', data)
+    return pd.read_json(data)
 
-    if 'CI' in os.environ:
-      for f in glob.glob(os.path.join('rivm', f'{naam}*.csv')):
-        with open(f, 'rb') as f_in, gzip.open(f + '.gz', 'wb') as f_out:
-          shutil.copyfileobj(f_in, f_out)
-          os.remove(f)
-
-    datafiles = os.path.join('rivm', f'{naam}*.csv*')
-    # delete local duplicates
-    for f in glob.glob(datafiles):
-      if os.path.exists(f + '.gz'):
-        os.remove(f)
-    history = sorted(glob.glob(datafiles), reverse=True)
-    print('loading', history[n])
-    return pd.read_csv(history[n], sep=';', header=0 )
+class LCPS:
+  @classmethod
+  def csv(cls, naam, n=0):
+    data = load_and_cache(f'https://lcps.nu/wp-content/uploads/{naam}.csv', n)
+    print('loading', data)
+    return pd.read_csv(data, header=0)
