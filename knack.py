@@ -72,7 +72,8 @@ class Knack:
     self.connection_field_map = {}
     with urlopen(f'https://loader.knack.com/v1/applications/{app_id}') as response:
       self.metadata = json.load(response)
-      with open('metadata.json', 'w') as f:
+      os.makedirs('metadata', exist_ok = True)
+      with open('metadata/metadata.json', 'w') as f:
         json.dump(self.metadata, f, indent='  ')
 
   def find(self, path):
@@ -159,7 +160,8 @@ class Knack:
 
     if objectName:
       obj = self.find(f'$.application.objects[?(@.name=={json.dumps(objectName)})]')
-      with open(objectName + '.json', 'w') as f:
+      os.makedirs('metadata', exist_ok = True)
+      with open(os.path.join('metadata', objectName + '.json'), 'w') as f:
         json.dump(obj, f, indent='  ')
     else:
       view = self.find(f'$.application.scenes[?(@.name=={json.dumps(sceneName)})].views[?(@.name=={json.dumps(viewName)})]')

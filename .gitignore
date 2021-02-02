@@ -5,6 +5,7 @@ Playground.ipynb
 .DS_store
 .idea
 artifacts
+metadata
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
