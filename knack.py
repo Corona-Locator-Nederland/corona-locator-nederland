@@ -8,7 +8,7 @@ import requests
 from json import JSONDecodeError
 import hashlib
 import logging
-import sys
+import sys, os
 
 import asyncio
 import aiohttp
