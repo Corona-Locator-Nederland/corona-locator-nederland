@@ -38,6 +38,7 @@ jobs:
         python -m pip install --upgrade pip setuptools wheel
         pip3 install -r requirements.txt
         ./util/pip-upgrade
+        pip3 install nbformat --upgrade
     - name: Run notebook
       run: |
         set -x
@@ -49,9 +50,8 @@ jobs:
         python -m ipykernel install --name python3 --user
         for nb in ${notebooks[@]}; do
           jupytext $nb.py --to ipynb --set-kernel - --output $nb.ipynb
-          #papermill --log-output $nb.ipynb /tmp/output.ipynb
-          #jupytext $nb.py --to ipynb --set-kernel - --output - | papermill --log-output - /tmp/output.ipynb
-          jupyter nbconvert --to notebook --execute --output /tmp/output.ipynb $nb.ipynb
+          papermill --log-output $nb.ipynb /tmp/output.ipynb
+          #jupyter nbconvert --to notebook --execute $nb.ipynb
         done
 
         # remove obsolete conversions
