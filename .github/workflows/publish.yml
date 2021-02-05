@@ -51,8 +51,7 @@ jobs:
           jupytext $nb.py --to ipynb --set-kernel - --output $nb.ipynb
           #papermill --log-output $nb.ipynb /tmp/output.ipynb
           #jupytext $nb.py --to ipynb --set-kernel - --output - | papermill --log-output - /tmp/output.ipynb
-          #jupyter nbconvert --to html --stdout --execute --ExecutePreprocessor.kernel_name=python3 --output /tmp/output.html $nb.ipynb
-          jupyter nbconvert --to html --stdout --execute --output /tmp/output.html $nb.ipynb
+          jupyter nbconvert --to notebook --execute $nb.ipynb
         done
 
         # remove obsolete conversions
