@@ -37,6 +37,7 @@ jobs:
       run: pip3 install -r requirements.txt
     - name: Run notebook
       run: |
+        set -x
         python -m ipykernel install --name python3 --user
         for nb in LeeftijdsgroepenLandelijk RegioV2 DagOverzicht; do
           jupytext $nb.py --to ipynb --set-kernel - --output $nb.ipynb
