@@ -46,8 +46,8 @@ jobs:
         python -m ipykernel install --name python3 --user
         for nb in ${notebooks[@]}; do
           jupytext $nb.py --to ipynb --set-kernel - --output $nb.ipynb
-          #papermill --log-output $nb.ipynb /tmp/output.ipynb
-          jupyter nbconvert --to notebook --execute --ExecutePreprocessor.kernel_name=python3 --output /tmp/output.ipynb $nb.ipynb
+          papermill --log-output $nb.ipynb /tmp/output.ipynb
+          #jupyter nbconvert --to notebook --execute --ExecutePreprocessor.kernel_name=python3 --output /tmp/output.ipynb $nb.ipynb
         done
 
         # remove obsolete conversions
