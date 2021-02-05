@@ -51,8 +51,9 @@ jobs:
 
         # remove obsolete conversions
         for nb in *.ipynb; do
-          if [ ! -f "${nb%.ipynb}.py" ];
+          if [ ! -f "${nb%.ipynb}.py" ]; then
             rm $nb
+          fi
         done
       env:
         PYTHONUNBUFFERED: true
