@@ -27,7 +27,9 @@ def cell():
         .agg({'Positief getest': 'sum', 'Overleden': 'sum'})
   )
   df['Positief getest'] = df['Positief getest'].cumsum()
+  df['Positief getest (toename)'] = (df['Positief getest'] - df['Positief getest'].shift(1)).fillna(0).astype(int)
   df['Overleden'] = df['Overleden'].cumsum()
+  df['Overleden (toename)'] = (df['Overleden'] - df['Overleden'].shift(1)).fillna(0).astype(int)
   dagoverzicht = dagoverzicht.merge(df, how='left', left_index=True, right_index=True)
   display(dagoverzicht)
 
@@ -47,6 +49,7 @@ def cell():
   global dagoverzicht
   dagoverzicht = dagoverzicht.merge(df, how='left', left_index=True, right_index=True)
   dagoverzicht['Ziekenhuisopnames'] = dagoverzicht['Ziekenhuisopnames'].fillna(0).astype(int).cumsum()
+  dagoverzicht['Ziekenhuisopnames (toename)'] = (dagoverzicht['Ziekenhuisopnames'] - dagoverzicht['Ziekenhuisopnames'].shift(1)).fillna(0).astype(int)
 
   display(dagoverzicht)
 # %%
