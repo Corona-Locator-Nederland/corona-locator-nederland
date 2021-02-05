@@ -22,3 +22,4 @@ retry
 ruamel.yaml
 seaborn
 tqdm
+wheel
