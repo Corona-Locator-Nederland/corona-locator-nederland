@@ -46,7 +46,7 @@ jobs:
         python -m ipykernel install --name python3 --user
         for nb in ${notebooks[@]}; do
           jupytext $nb.py --to ipynb --set-kernel - --output $nb.ipynb
-          #papermill --log-output $nb.ipynb /tmp/output.ipynb
+          papermill --log-output $nb.ipynb /tmp/output.ipynb
         done
 
         # remove obsolete conversions
