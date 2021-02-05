@@ -127,7 +127,7 @@ class CBS:
 
     return bevolking
 
-def load_and_cache(url, n=0):
+def download_and_cache(url, n=0):
   domain = urlparse(url).netloc
   provider = domain.split('.')[-2]
   name, ext = os.path.splitext(os.path.basename(url))
@@ -159,18 +159,18 @@ def load_and_cache(url, n=0):
 class RIVM:
   @classmethod
   def csv(cls, naam, n=0):
-    data = load_and_cache(f'https://data.rivm.nl/covid-19/{naam}.csv', n)
+    data = download_and_cache(f'https://data.rivm.nl/covid-19/{naam}.csv', n)
     print('loading', data)
     return pd.read_csv(data, sep=';', header=0)
   @classmethod
   def json(cls, naam, n=0):
-    data = load_and_cache(f'https://data.rivm.nl/covid-19/{naam}.json', n)
+    data = download_and_cache(f'https://data.rivm.nl/covid-19/{naam}.json', n)
     print('loading', data)
     return pd.read_json(data)
 
 class LCPS:
   @classmethod
   def csv(cls, naam, n=0):
-    data = load_and_cache(f'https://lcps.nu/wp-content/uploads/{naam}.csv', n)
+    data = download_and_cache(f'https://lcps.nu/wp-content/uploads/{naam}.csv', n)
     print('loading', data)
     return pd.read_csv(data, header=0)
