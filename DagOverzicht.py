@@ -14,12 +14,20 @@ def cell():
   df = RIVM.csv('COVID-19_casus_landelijk')
 
   df = RIVM.csv('COVID-19_aantallen_gemeente_per_dag')
+  df = df.rename(columns={
+    'Total_reported': 'Positief getest',
+    'Deceased': 'Overleden',
+    'Date_of_publication': 'Datum',
+  })
+
   df = (df
-        .groupby(['Date_of_publication'])['Total_reported']
-        .sum()
+        .groupby(['Datum'])
+        .agg({'Positief getest': 'sum', 'Overleden': 'sum'})
         .reset_index()
   )
-  df['cumsum'] = df['Total_reported'].cumsum()
+  df['Key'] = df['Datum']
+  df['LandCode'] = 'NL'
+  df['cumsum'] = df['Positief getest'].cumsum()
   display(df.head())
 
 # %%

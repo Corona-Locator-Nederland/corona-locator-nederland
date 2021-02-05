@@ -26,41 +26,59 @@ else:
 
 import aiolimiter
 from aiolimiter.compat import get_running_loop
-class AsyncLimiter(aiolimiter.AsyncLimiter):
+class AsyncLimiter(aiolimiter.AsyncLimiter): # fills the bucket, forcing a backoff
   def pause(self):
     self._level = self.max_rate
     self._last_check = get_running_loop().time()
 
 def on_backoff(details):
   ex_type, ex, ex_traceback = sys.exc_info()
+  self = details['args'][0]
+
+  # on 429, pause and note the backoff
   if ex.status == 429:
-    details['args'][0].limiter.pause()
-    details['args'][0].calls.backoff += 1
+    self.limiter.pause()
+    self.calls.backoff()
   else:
-    details['args'][0].calls.error(ex.status, ex.message)
+    self.calls.error(ex.status, ex.message)
     #print('looks like Knack croaked again:', {'status': ex.status, 'message': ex.message})
 
 class Knack:
   class Calls:
     def __init__(self):
-      self.create = 0
-      self.read = 0
-      self.update = 0
-      self.delete = 0
-      self.backoff = 0
+      self.actions = Munch.fromDict({k: {} for k in ['create', 'read', 'update', 'delete']})
+      self.actions.backoff = 0
       self.errors = {}
+
+    # if we got a backoff, the actual CUD action that triggered it didn't go through
+    def backoff(self):
+      self.actions.backoff += 1
+
+    def hit(self, action, _id=None):
+      # no retry for this action, so every attempt is an unique id. Use negative IDs for this because those are not used by the re-attempted calls
+      if _id is None:
+        _id = -len(self.actions[action])
+      self.actions[action][_id] = True
+
     def error(self, status, message):
-      if status not in self.errors:
-        self.errors[status] = [message]
-      else:
-        self.errors[status].append(message)
+      msg = f'{status}: {message}'
+      if msg not in self.errors:
+        self.errors[msg] = 0
+      self.errors[msg] += 1
+
     def __repr__(self):
-      r = [', '.join([ f'{k}={v}' for k, v in self.__dict__.items() if k != 'errors' ])]
-      for status, messages in self.errors.items():
-        r.append(f'{status}:')
-        for m in messages:
-          r.append('  ' + m.replace('\n', ' '))
-      return '\n'.join(r)
+      calls = []
+      for k, n in self.actions.items():
+        if type(n) != int:
+          n = len(n)
+        calls.append(f'{k}: {n}')
+      calls = ', '.join(calls)
+      if len(self.errors) > 0:
+        calls += 'errors:\n'
+        for msg, n in self.errors.items():
+          msg = msg.replace("\n", " ")
+          calls += f"  {msg}: {n}\n"
+      return calls.strip()
 
   def __init__(self, app_id, api_key):
     self.app_id = app_id
@@ -82,57 +100,50 @@ class Knack:
       return self.munch(found[0])
     raise ValueError(f'{path} yields {len(found)} results, expected 1')
 
-  def _check(self, res):
-    if res.status_code >= 200 and res.status_code < 300: return res
-    try:
-      msg = res.json()
-      if type(msg) == dict and 'errors' in msg: raise ValueError(json.dumps(msg['errors']))
-    except JSONDecodeError:
-      pass
-    res.raise_for_status()
-
   @backoff.on_exception(backoff.expo, aiohttp.ClientError, max_time=60, on_backoff=on_backoff)
-  async def _create(self, object_key, data):
-    self.calls.create += 1
+  async def execute(self, task):
+    self.calls.hit(task.action, task.id)
     async with self.limiter:
-      async with self.session.post(f'https://api.knack.com/v1/objects/{object_key}/records', json=data, headers=self.headers, raise_for_status=True) as response:
-        return await response.read()
+      if task.action == 'create':
+        async with self.session.post(f'https://api.knack.com/v1/objects/{task.object_key}/records', json=task.data, headers=self.headers, raise_for_status=True) as response:
+          return await response.read()
+      elif task.action == 'update':
+        async with self.session.put(f'https://api.knack.com/v1/objects/{task.object_key}/records/{task.record_id}', json=task.data, headers=self.headers, raise_for_status=True) as response:
+          return await response.read()
+      elif task.action == 'delete':
+        async with self.session.delete(f'https://api.knack.com/v1/objects/{task.object_key}/records/{task.record_id}', headers=self.headers, raise_for_status=True) as response:
+          return await response.read()
+      else:
+        raise ValueError(f'Unexpected task action {json.dumps(task.action)}')
 
-  @backoff.on_exception(backoff.expo, aiohttp.ClientError, max_time=60, on_backoff=on_backoff)
-  async def _update(self, object_key, record_id, data):
-    self.calls.update += 1
-    async with self.limiter:
-      async with self.session.put(f'https://api.knack.com/v1/objects/{object_key}/records/{record_id}', json=data, headers=self.headers, raise_for_status=True) as response:
-        return await response.read()
-
-  @backoff.on_exception(backoff.expo, aiohttp.ClientError, max_time=60, on_backoff=on_backoff)
-  async def _delete(self, object_key, record_id):
-    self.calls.delete += 1
-    async with self.limiter:
-      async with self.session.delete(f'https://api.knack.com/v1/objects/{object_key}/records/{record_id}', headers=self.headers, raise_for_status=True) as response:
-        return await response.read()
-
-  def _getall(self, object_key):
+  def getall(self, object_key):
     url = f'https://api.knack.com/v1/objects/{object_key}/records?rows_per_page=1000'
     records = []
     page = 1
     while True:
-      res = self._check(requests.get(url=f'{url}&page={page}', headers=self.headers)).json()
-      self.calls.read += 1
-      records += res['records']
-      if res['current_page'] != res['total_pages'] and res['total_pages'] != 0: # what the actual...
-        page += 1
+      res = requests.get(url=f'{url}&page={page}', headers=self.headers)
+      res.raise_for_status()
+      self.calls.hit('read')
+
+      if res.status_code >= 200 and res.status_code < 300:
+        res = res.json()
+        records += res['records']
+        if res['current_page'] != res['total_pages'] and res['total_pages'] != 0: # what the actual...
+          page += 1
+        else:
+          break
       else:
-        break
-    # echt mensen dit geloof je niet.
-    #for rec in records:
-    #  for k, v in list(rec.items()):
-    #    if not k.endswith('_raw'):
-    #      continue
-    #    if type(v) == dict and 'date' in v:
-    #      v = v['iso_timestamp'].replace('T00:00:00.000Z', '')
-    #    rec[k.replace('_raw', '')] = v
-    #    rec.pop(k)
+        msg = None
+        try:
+          msg = res.json()
+          if type(msg) == dict and 'errors' in msg:
+            msg = json.dumps(msg['errors'])
+        except JSONDecodeError:
+          pass
+        if msg is None:
+          msg = res.text
+
+        self.calls.error(res.status_code, msg)
 
     return self.munch(records)
 
@@ -144,7 +155,7 @@ class Knack:
     else:
       raise ValueError(f'Unexpected type {str(type(records))}')
 
-  def _dict(self, kv):
+  def safe_dict(self, kv):
     m = Munch()
     for k, v in kv:
       if k in m:
@@ -168,7 +179,7 @@ class Knack:
       source = view.source.object
       obj = self.find(f'$.application.objects[?(@.key=="{source}")]')
 
-    self.mapping = self._dict([ (field.name, field.key) for field in obj.fields ])
+    self.mapping = self.safe_dict([ (field.name, field.key) for field in obj.fields ])
     key = [field.name for field in obj.fields if field.get('unique')]
     assert len(key) == 1
 
@@ -186,7 +197,7 @@ class Knack:
           domain = [ f for f in self.find(f'$.application.objects[?(@.key=={json.dumps(field.relationship.object)})].fields') if f.get('unique') ]
           assert len(domain) == 1
           domain = domain[0]['key']
-          self.connection_field_map[field.relationship.object] = { d.get(domain + '_raw', d[domain]): d['id'] for d in self._getall(field.relationship.object) }
+          self.connection_field_map[field.relationship.object] = { d.get(domain + '_raw', d[domain]): d['id'] for d in self.getall(field.relationship.object) }
         connections[field.name] = self.connection_field_map[field.relationship.object]
 
     data = self.munch(df.replace(connections).rename(columns=self.mapping).to_dict('records'))
@@ -195,10 +206,10 @@ class Knack:
         assert self.mapping.Hash not in rec
         rec[self.mapping.Hash] = hashlib.sha256(json.dumps(rec, sort_keys=True).encode('utf-8')).hexdigest()
 
-      create = self._dict([ (rec[key.field], rec) for rec in data ])
+      create = self.safe_dict([ (rec[key.field], rec) for rec in data ])
       update = []
       delete = []
-      for ist in self._getall(obj.key):
+      for ist in self.getall(obj.key):
         if soll:= create.get(ist[key.field]):
           ist[self.mapping.Hash]
           soll[self.mapping.Hash]
@@ -208,7 +219,7 @@ class Knack:
         else:
           delete.append(rec.id)
     else:
-      delete = [rec.id for rec in self._getall(obj.key)]
+      delete = [rec.id for rec in self.getall(obj.key)]
 
     # because the shoddy Knack platform cannot get to more than 2-3 calls per second without parallellism, but if you *do* use parallellism
     # to any significant extent you get immediate backoff errors. And lots of 'em
@@ -216,15 +227,18 @@ class Knack:
     async with aiohttp.ClientSession() as session:
       self.session = session
       tasks = [
-        asyncio.create_task(self._delete(object_key=obj.key, record_id=ist)) for ist in delete
+        Munch(action='delete', object_key=obj.key, record_id=ist) for ist in delete
       ] + [
-        asyncio.create_task(self._update(object_key=obj.key, record_id=ist, data=soll)) for ist, soll in update
+        Munch(action='update', object_key=obj.key, record_id=ist, data=soll) for ist, soll in update
       ] + [
-        asyncio.create_task(self._create(object_key=obj.key, data=soll)) for soll in create.values()
+        Munch(action='create', object_key=obj.key, data=soll) for soll in create.values()
       ]
+      for i, task in enumerate(tasks):
+        task.id = i + 1 # skip 0 to avoid confusion between -0 and 0 in the call tracking
+      tasks = [asyncio.create_task(self.execute(task)) for task in tasks]
       if len(tasks) == 0:
         print('nothing to do')
       else:
         responses = [await req for req in tqdm.tqdm(asyncio.as_completed(tasks), total=len(tasks))]
-      print('\nrate limit:', rate_limit, 'API calls:', self.calls)
+      print('\nrate limit:', rate_limit, '\nAPI calls:', self.calls)
     return len(tasks)

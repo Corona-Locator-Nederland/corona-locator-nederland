@@ -38,9 +38,16 @@ jobs:
     - name: Run notebook
       run: |
         python -m ipykernel install --name python3 --user
-        jupytext LeeftijdsgroepenLandelijk.py --to ipynb --set-kernel - --output - | papermill --log-output - /tmp/output.ipynb
-        jupytext RegioV2.py --to ipynb --set-kernel - --output - | papermill --log-output - /tmp/output.ipynb
-        jupytext DagOverzicht.py --to ipynb --set-kernel - --output - | papermill --log-output - /tmp/output.ipynb
+        for nb in LeeftijdsgroepenLandelijk RegioV2 DagOverzicht; do
+          jupytext $nb.py --to ipynb --set-kernel - --output $nb.ipynb
+          papermill --log-output $nb.ipynb /tmp/output.ipynb
+        done
+
+        # remove obsolete conversions
+        for nb in *.ipynb; do
+          if [ ! -f "${nb%.ipynb}.py" ];
+            rm $nb
+        done
       env:
         PYTHONUNBUFFERED: true
     - name: store build artifacts
@@ -48,26 +55,9 @@ jobs:
       with:
         path: artifacts
 
-    - name: Check for notebook changes
-      uses: dorny/paths-filter@v2
-      if: github.event_name != 'schedule'
-      id: committed
-      with:
-        list-files: shell
-        filters: |
-          added:
-            - added: '[A-Z]*.py'
-          modified:
-            - modified: '[A-Z]*.py'
-          deleted:
-            - deleted: '[A-Z]*.py'
-    - name: convert notebooks
-      if: github.event_name != 'schedule'
-      id: notebooks
-      run: ./util/convert-notebooks --added ${{ steps.committed.outputs.added_files }} --modified ${{ steps.committed.outputs.modified_files }} --deleted ${{ steps.committed.outputs.deleted_files }}
     - uses: stefanzweifel/git-auto-commit-action@v4
       with:
         commit_message: Update converted notebooks, save RIVM history
-        file_pattern: rivm/*.gz *.ipynb
+        file_pattern: rivm/*.gz lcps/*.gz *.ipynb
         skip_dirty_check: false
 
