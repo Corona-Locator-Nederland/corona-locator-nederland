@@ -3,15 +3,18 @@ from IPython import get_ipython
 from IPython.display import clear_output
 get_ipython().run_line_magic('run', 'setup')
 
-display(CBS.bevolking())
+bevolking = CBS.bevolking().iloc[0]
+#display(bevolking.BevolkingOpDeEersteVanDeMaand)
+#display(bevolking['per 100k'])
 
 def addstats(df):
   global dagoverzicht
 
   dagoverzicht = dagoverzicht.merge(df, how='left', left_index=True, right_index=True)
   for stat in df.columns:
-    dagoverzicht[stat] = dagoverzicht[stat].fillna(0).astype(int).cumsum()
-    dagoverzicht[f'{stat} (toename)'] = (dagoverzicht[stat] - dagoverzicht[stat].shift(1)).fillna(0).astype(int)
+    dagoverzicht[f'{stat} (niew)'] = dagoverzicht[stat].fillna(0).astype(int)
+    dagoverzicht[stat] = dagoverzicht[f'{stat} (niew)'].cumsum()
+    dagoverzicht[f'{stat} per 100.000'] = dagoverzicht[stat] * bevolking['per 100k']
 
 # %%
 @run('set up base frame + overleden + positief getest')
