@@ -82,6 +82,8 @@ def cell():
   df['Datum'] = pd.to_datetime(df['Datum'])
   df.set_index('Datum', inplace=True)
   df = df.groupby(['Datum']).agg({col: 'sum' for col in df.columns})
+  df['LCPS IC Bedden COVID (toename)'] = (df['LCPS IC Bedden COVID'] - df['LCPS IC Bedden COVID'].shift(1)).fillna(0)
+  df['LCPS Kliniek Bedden COVID (toename)'] = (df['LCPS Kliniek Bedden COVID'] - df['LCPS Kliniek Bedden COVID'].shift(1)).fillna(0)
 
   global dagoverzicht
   dagoverzicht = dagoverzicht.merge(df, how='left', left_index=True, right_index=True)
