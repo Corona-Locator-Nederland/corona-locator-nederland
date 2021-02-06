@@ -70,6 +70,24 @@ def cell():
   dagoverzicht['Besmettelijk per 100.000'] = (dagoverzicht['Besmettelijk']  * bevolking['per 100k']).round(0)
   display(dagoverzicht)
 
+@run('LCPS')
+def cell():
+  df = LCPS.csv('covid-19').rename(columns={
+    'IC_Bedden_COVID': 'LCPS IC Bedden COVID',
+    'IC_Bedden_Non_COVID': 'LCPS IC Bedden Non COVID',
+    'Kliniek_Bedden': 'LCPS Kliniek Bedden COVID',
+    'IC_Nieuwe_Opnames_COVID': 'LCPS IC Nieuwe Opnames COVID',
+    'Kliniek_Nieuwe_Opnames_COVID': 'LCPS Kliniek Nieuwe Opnames COVID',
+  })
+  df['Datum'] = pd.to_datetime(df['Datum'])
+  df.set_index('Datum', inplace=True)
+  df = df.groupby(['Datum']).agg({col: 'sum' for col in df.columns})
+
+  global dagoverzicht
+  dagoverzicht = dagoverzicht.merge(df, how='left', left_index=True, right_index=True)
+  for col in df.columns:
+    dagoverzicht[col] = dagoverzicht[col].fillna(0).astype(int)
+
 # %%
 async def publish():
   global dagoverzicht
