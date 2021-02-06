@@ -89,15 +89,12 @@ def cell():
     dagoverzicht[col] = dagoverzicht[col].fillna(0).astype(int)
 
 # %%
-#@run('corrections')
-#def cell():
-  #df = GitHub.csv('mzelst/covid-19/contents/corrections/corrections_perday.csv').rename(columns={
-  #  'net.infection':
-  #  'net.hospitals':
-  #  'net.deaths': 'Overleden'
-  #})
-  #df['date'] = pd.to_datetime(df.date)
-  #df.set_index('date', inplace=True)
+@run('corrections')
+def cell():
+  df = GitHub.csv('mzelst/covid-19/contents/corrections/corrections_perday.csv')
+  df['date'] = pd.to_datetime(df.date)
+  df.set_index('date', inplace=True)
+  #df = df['']
 
 
 # %%

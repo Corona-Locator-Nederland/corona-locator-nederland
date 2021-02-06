@@ -19,6 +19,7 @@ import numpy as np
 import json
 import datetime
 import requests
+import re
 import json
 import math
 import os
@@ -162,6 +163,15 @@ def download_and_cache(url, n=0, headers={}, keep=None):
   for f in glob.glob(datafiles):
     if os.path.exists(f + '.gz'):
       os.remove(f)
+  dated = {}
+  # RIVM publiceert soms 2 keer per dag blijkbaar
+  for f in sorted(glob.glob(datafiles), reverse=True):
+    ts = re.search(r'-([0-9]{4}-[0-9]{2}-[0-9]{2})@[0-9]{2}-[0-9]{2}\.', f).group(1)
+    if ts not in dated:
+      dated[ts] = f
+    else:
+      os.remove(f)
+
   if keep is not None:
     for f in sorted(glob.glob(datafiles), reverse=True)[:-keep]:
       os.remove(f)
