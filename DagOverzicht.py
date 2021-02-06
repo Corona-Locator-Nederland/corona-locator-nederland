@@ -2,7 +2,14 @@
 from IPython import get_ipython
 from IPython.display import clear_output
 get_ipython().run_line_magic('run', 'setup')
-import itertools
+
+def addstats(df):
+  global dagoverzicht
+
+  dagoverzicht = dagoverzicht.merge(df, how='left', left_index=True, right_index=True)
+  for stat in df.columns:
+    dagoverzicht[stat] = dagoverzicht[stat].fillna(0).astype(int).cumsum()
+    dagoverzicht[f'{stat} (toename)'] = (dagoverzicht[stat] - dagoverzicht[stat].shift(1)).fillna(0).astype(int)
 
 # %%
 @run('set up base frame + overleden + positief getest')
@@ -22,15 +29,7 @@ def cell():
   dagoverzicht['Datum'] = dagoverzicht.index.strftime('%Y-%m-%d')
   dagoverzicht['LandCode'] = 'NL'
 
-  df = (df
-        .groupby(['Datum'])
-        .agg({'Positief getest': 'sum', 'Overleden': 'sum'})
-  )
-  df['Positief getest'] = df['Positief getest'].cumsum()
-  df['Positief getest (toename)'] = (df['Positief getest'] - df['Positief getest'].shift(1)).fillna(0).astype(int)
-  df['Overleden'] = df['Overleden'].cumsum()
-  df['Overleden (toename)'] = (df['Overleden'] - df['Overleden'].shift(1)).fillna(0).astype(int)
-  dagoverzicht = dagoverzicht.merge(df, how='left', left_index=True, right_index=True)
+  addstats(df.groupby(['Datum']).agg({'Positief getest': 'sum', 'Overleden': 'sum'}))
   display(dagoverzicht)
 
 # %%
@@ -41,16 +40,7 @@ def cell():
     'Date_of_statistics': 'Datum',
   })
   df['Datum'] = pd.to_datetime(df.Datum.str.replace(' .*', '', regex=True))
-  df = (df
-        .groupby(['Datum'])
-        .agg({'Ziekenhuisopnames': 'sum'})
-  )
-  display(df)
-  global dagoverzicht
-  dagoverzicht = dagoverzicht.merge(df, how='left', left_index=True, right_index=True)
-  dagoverzicht['Ziekenhuisopnames'] = dagoverzicht['Ziekenhuisopnames'].fillna(0).astype(int).cumsum()
-  dagoverzicht['Ziekenhuisopnames (toename)'] = (dagoverzicht['Ziekenhuisopnames'] - dagoverzicht['Ziekenhuisopnames'].shift(1)).fillna(0).astype(int)
-
+  addstats(df.groupby(['Datum']).agg({'Ziekenhuisopnames': 'sum'}))
   display(dagoverzicht)
 # %%
 @run('publish')
