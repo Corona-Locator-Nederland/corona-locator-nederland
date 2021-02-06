@@ -13,8 +13,8 @@ def addstats(df):
 
   dagoverzicht = dagoverzicht.merge(df, how='left', left_index=True, right_index=True)
   for stat in df.columns:
-    dagoverzicht[f'{stat} (niew)'] = dagoverzicht[stat].fillna(0).astype(int)
-    dagoverzicht[stat] = dagoverzicht[f'{stat} (niew)'].cumsum()
+    dagoverzicht[f'{stat} (nieuw)'] = dagoverzicht[stat].fillna(0).astype(int)
+    dagoverzicht[stat] = dagoverzicht[f'{stat} (nieuw)'].cumsum()
     dagoverzicht[f'{stat} per 100.000'] = dagoverzicht[stat] * bevolking['per 100k']
     dagoverzicht[f'{stat} 7d'] = (dagoverzicht[stat] - dagoverzicht[stat].shift(7)).fillna(0).astype(int)
     dagoverzicht[f'{stat} 7d per 100.000'] = dagoverzicht[f'{stat} 7d'] * bevolking['per 100k']
@@ -89,6 +89,18 @@ def cell():
     dagoverzicht[col] = dagoverzicht[col].fillna(0).astype(int)
 
 # %%
+#@run('corrections')
+#def cell():
+  #df = GitHub.csv('mzelst/covid-19/contents/corrections/corrections_perday.csv').rename(columns={
+  #  'net.infection':
+  #  'net.hospitals':
+  #  'net.deaths': 'Overleden'
+  #})
+  #df['date'] = pd.to_datetime(df.date)
+  #df.set_index('date', inplace=True)
+
+
+# %%
 async def publish():
   global dagoverzicht
 
@@ -104,4 +116,3 @@ async def publish():
     df = dagoverzicht.assign(Key=dagoverzicht.index.strftime('%Y-%m-%d'))
     await knack.update(objectName='Dagoverzicht', df=df)
 await publish()
-# %%

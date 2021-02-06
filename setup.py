@@ -1,6 +1,6 @@
-from IPython import get_ipython
-get_ipython().run_line_magic('load_ext', 'autoreload')
-get_ipython().run_line_magic('autoreload', '2')
+#from IPython import get_ipython
+#get_ipython().run_line_magic('load_ext', 'autoreload')
+#get_ipython().run_line_magic('autoreload', '2')
 
 from dotenv import load_dotenv, find_dotenv
 dot_env = find_dotenv()
@@ -132,18 +132,22 @@ class CBS:
 
     return bevolking
 
-def download_and_cache(url, n=0):
+def download_and_cache(url, n=0, headers={}, keep=None):
   domain = urlparse(url).netloc
   provider = domain.split('.')[-2]
   name, ext = os.path.splitext(os.path.basename(url))
 
   os.makedirs(provider, exist_ok = True)
   # without the user agent, LCPS won't answer HEAD requests
-  resource = requests.head(url, allow_redirects=True, headers={ 'User-Agent': 'curl/7.64.1'})
+  headers['User-Agent'] = 'curl/7.64.1'
+  resource = requests.head(url, allow_redirects=True, headers=headers)
   latest = os.path.join(provider, parsedate(resource.headers['last-modified']).strftime(f'{name}-%Y-%m-%d@%H-%M{ext}'))
   if not os.path.exists(latest) and not os.path.exists(latest + '.gz'):
     print('downloading', latest)
-    urlretrieve(url, latest)
+    with requests.get(url, headers=headers, stream=True) as r, open(latest, 'wb') as f:
+      r.raise_for_status()
+      for chunk in r.iter_content(chunk_size=8192):
+        f.write(chunk)
   elif n == 0:
     print(latest, 'exists')
 
@@ -157,6 +161,9 @@ def download_and_cache(url, n=0):
   # delete local duplicates
   for f in glob.glob(datafiles):
     if os.path.exists(f + '.gz'):
+      os.remove(f)
+  if keep is not None:
+    for f in sorted(glob.glob(datafiles), reverse=True)[:-keep]:
       os.remove(f)
   history = sorted(glob.glob(datafiles), reverse=True)
   return history[n]
@@ -179,3 +186,17 @@ class LCPS:
     data = download_and_cache(f'https://lcps.nu/wp-content/uploads/{naam}.csv', n)
     print('loading', data)
     return pd.read_csv(data, header=0)
+
+class GitHub:
+  @classmethod
+  def csv(cls, path):
+    headers = {
+      'Authorization': f'token {os.environ["GITHUB_TOKEN"]}',
+      'Accept': 'application/vnd.github.v3.raw',
+    }
+    url = 'https://api.github.com/repos'
+    if path[0] != '/':
+      url += '/'
+    url += path
+    print(url)
+    return pd.read_csv(download_and_cache(url, keep=1, headers=headers))
