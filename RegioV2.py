@@ -26,7 +26,7 @@ def cell():
   global leeftijdsgroepen
   leeftijdsgroepen = pd.read_csv('leeftijdsgroepen.csv')
   del leeftijdsgroepen['Type']
-  lgb = CBS.leeftijdsgroepen_bevolking().reset_index()
+  lgb = CBS.bevolking(leeftijdsgroepen=True).reset_index()
   lgb['Code'] = 'LE' + lgb['Range'].replace({'0-9': '00-09'}).replace('-', '', regex=True).astype(str)
   lgb = lgb.rename(columns={'BevolkingOpDeEersteVanDeMaand': 'Personen'})
   leeftijdsgroepen = leeftijdsgroepen.merge(lgb[['Code', 'Personen']], how='left', on='Code')

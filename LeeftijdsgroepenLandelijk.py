@@ -20,7 +20,7 @@ def cell():
 @run('leeftijdsgroepen: download demografische data van CBS')
 def cell():
   global bevolking
-  bevolking = CBS.leeftijdsgroepen_bevolking()
+  bevolking = CBS.bevolking(leeftijdsgroepen=True)
 
 # %% [markdown]
 # Bereken de stand van zaken van besmettingen / hospitalisaties / overlijden, per cohort in absolute aantallen en aantallen per 100k, met een kleur indicator voor de aantallen.

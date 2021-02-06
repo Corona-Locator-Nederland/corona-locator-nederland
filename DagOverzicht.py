@@ -3,6 +3,8 @@ from IPython import get_ipython
 from IPython.display import clear_output
 get_ipython().run_line_magic('run', 'setup')
 
+display(CBS.bevolking())
+
 def addstats(df):
   global dagoverzicht
 
