@@ -43,6 +43,12 @@ def on_backoff(details):
     self.calls.error(ex.status, ex.message)
     #print('looks like Knack croaked again:', {'status': ex.status, 'message': ex.message})
 
+def on_giveup(details):
+  ex_type, ex, ex_traceback = sys.exc_info()
+  task = details['args'][1]
+  print(task.action)
+  print(task.data)
+
 class Knack:
   class Calls:
     def __init__(self):
@@ -100,7 +106,7 @@ class Knack:
       return self.munch(found[0])
     raise ValueError(f'{path} yields {len(found)} results, expected 1')
 
-  @backoff.on_exception(backoff.expo, aiohttp.ClientError, max_time=60, on_backoff=on_backoff)
+  @backoff.on_exception(backoff.expo, aiohttp.ClientError, max_time=60, on_backoff=on_backoff, on_giveup=on_giveup)
   async def execute(self, task):
     self.calls.hit(task.action, task.id)
     async with self.limiter:

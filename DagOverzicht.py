@@ -1,5 +1,6 @@
 # %%
 from IPython import get_ipython
+from IPython.core.display import display
 from IPython.display import clear_output
 get_ipython().run_line_magic('run', 'setup')
 
@@ -49,11 +50,40 @@ def cell():
   df['Datum'] = pd.to_datetime(df.Datum.str.replace(' .*', '', regex=True))
   addstats(df.groupby(['Datum']).agg({'Ziekenhuisopnames': 'sum'}))
   display(dagoverzicht.head())
+
 # %%
-@run('publish')
+@run('reproductiegetal en besmettelijkheid')
 def cell():
   global dagoverzicht
 
+  datasets = [
+    ('COVID-19_reproductiegetal', 'Rt_avg', 'Reproductiegetal'),
+    ('COVID-19_prevalentie', 'prev_avg', 'Besmettelijk'),
+  ]
+  for dataset, source, target in datasets:
+    df = RIVM.json(dataset).rename(columns={source: target})
+    df['Date'] = pd.to_datetime(df['Date'])
+    df.set_index('Date', inplace=True)
+    df = df[[target]]
+    dagoverzicht = dagoverzicht.merge(df, how='left', left_index=True, right_index=True)
+    dagoverzicht[target] = dagoverzicht[target].fillna(0)
+  dagoverzicht['Besmettelijk per 100.000'] = (dagoverzicht['Besmettelijk']  * bevolking['per 100k']).round(0)
+  display(dagoverzicht)
+
+# %%
+async def publish():
+  global dagoverzicht
+
+  m = (dagoverzicht == np.inf)
+  df = dagoverzicht.loc[m.any(axis=1), m.any(axis=0)]
+  display(df.head())
+
   os.makedirs('artifacts', exist_ok = True)
   dagoverzicht.to_csv('artifacts/DagOverzicht.csv', index=True)
+
+  if knack:
+    print('updating knack')
+    df = dagoverzicht.assign(Key=dagoverzicht.index.strftime('%Y-%m-%d'))
+    await knack.update(objectName='Dagoverzicht', df=df)
+await publish()
 # %%
