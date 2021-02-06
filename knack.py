@@ -78,7 +78,7 @@ class Knack:
         if type(n) != int:
           n = len(n)
         calls.append(f'{k}: {n}')
-      calls = ', '.join(calls)
+      calls = ', '.join(calls) + "\n"
       if len(self.errors) > 0:
         calls += 'errors:\n'
         for msg, n in self.errors.items():

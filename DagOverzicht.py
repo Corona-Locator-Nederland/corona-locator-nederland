@@ -94,8 +94,17 @@ def cell():
   df = GitHub.csv('mzelst/covid-19/contents/corrections/corrections_perday.csv')
   df['date'] = pd.to_datetime(df.date)
   df.set_index('date', inplace=True)
-  #df = df['']
+  columns =  {
+    'net.infection': 'Positief getest (toename)',
+    'net.hospitals': 'Ziekenhuisopnames (toename)',
+    'net.deaths': 'Overleden (toename)'
+  }
+  df = df.rename(columns=columns)[list(columns.values())]
 
+  global dagoverzicht
+  dagoverzicht = dagoverzicht.merge(df, how='left', left_index=True, right_index=True)
+  for col in columns.values():
+    dagoverzicht[col] = dagoverzicht[col].fillna(0).astype(int)
 
 # %%
 async def publish():
