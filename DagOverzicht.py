@@ -15,6 +15,8 @@ def addstats(df):
     dagoverzicht[f'{stat} (niew)'] = dagoverzicht[stat].fillna(0).astype(int)
     dagoverzicht[stat] = dagoverzicht[f'{stat} (niew)'].cumsum()
     dagoverzicht[f'{stat} per 100.000'] = dagoverzicht[stat] * bevolking['per 100k']
+    dagoverzicht[f'{stat} 7d'] = (dagoverzicht[stat] - dagoverzicht[stat].shift(7)).fillna(0).astype(int)
+    dagoverzicht[f'{stat} 7d per 100.000'] = dagoverzicht[f'{stat} 7d'] * bevolking['per 100k']
 
 # %%
 @run('set up base frame + overleden + positief getest')
@@ -35,7 +37,7 @@ def cell():
   dagoverzicht['LandCode'] = 'NL'
 
   addstats(df.groupby(['Datum']).agg({'Positief getest': 'sum', 'Overleden': 'sum'}))
-  display(dagoverzicht)
+  display(dagoverzicht.head(10))
 
 # %%
 @run('ziekenhuisopnames')
@@ -46,7 +48,7 @@ def cell():
   })
   df['Datum'] = pd.to_datetime(df.Datum.str.replace(' .*', '', regex=True))
   addstats(df.groupby(['Datum']).agg({'Ziekenhuisopnames': 'sum'}))
-  display(dagoverzicht)
+  display(dagoverzicht.head())
 # %%
 @run('publish')
 def cell():
