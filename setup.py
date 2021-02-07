@@ -217,5 +217,5 @@ if __name__ == "__main__":
   RIVM.json('COVID-19_prevalentie')
   RIVM.json('COVID-19_reproductiegetal')
   RIVM.csv('COVID-19_uitgevoerde_testen')
-  RICM.csv('COVID-19_ziekenhuisopnames')
+  RIVM.csv('COVID-19_ziekenhuisopnames')
   LCPS.csv('covid-19')
