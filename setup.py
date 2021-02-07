@@ -1,6 +1,4 @@
-#from IPython import get_ipython
-#get_ipython().run_line_magic('load_ext', 'autoreload')
-#get_ipython().run_line_magic('autoreload', '2')
+#!/usr/bin/env python3
 
 from dotenv import load_dotenv, find_dotenv
 dot_env = find_dotenv()
@@ -210,3 +208,14 @@ class GitHub:
     url += path
     print(url)
     return pd.read_csv(download_and_cache(url, keep=1, headers=headers))
+
+if __name__ == "__main__":
+  # execute only if run as a script
+  # just grab latest -- run this as a separate job that's unlikely to fail so that we know for sure we grab the history we need.
+  RIVM.csv('COVID-19_aantallen_gemeente_per_dag')
+  RIVM.csv('COVID-19_casus_landelijk')
+  RIVM.json('COVID-19_prevalentie')
+  RIVM.json('COVID-19_reproductiegetal')
+  RIVM.csv('COVID-19_uitgevoerde_testen')
+  RICM.csv('COVID-19_ziekenhuisopnames')
+  LCPS.csv('covid-19')

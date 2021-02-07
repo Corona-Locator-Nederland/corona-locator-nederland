@@ -1,5 +1,8 @@
 # %%
 from IPython import get_ipython
+from IPython.core.display import display
+get_ipython().run_line_magic('load_ext', 'autoreload')
+get_ipython().run_line_magic('autoreload', '2')
 get_ipython().run_line_magic('run', 'setup')
 
 # %%
