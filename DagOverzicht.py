@@ -143,6 +143,18 @@ def cell():
     dagoverzicht[col] = dagoverzicht[col].fillna(0).astype(int)
 
 # %%
+@run('uitgevoerde testen')
+def cell():
+  df = RIVM.csv('COVID-19_uitgevoerde_testen').rename(columns={
+    'Date_of_statistics': 'Datum',
+    'Tested_with_result': 'Getest',
+    'Tested_positive': 'Positief',
+  })
+  df['Datum'] = pd.to_datetime(df.Datum)
+  df = df.groupby(['Datum']).agg({'Getest': 'sum', 'Positief': 'sum'})
+  display(df)
+
+# %%
 async def publish():
   global dagoverzicht
 
