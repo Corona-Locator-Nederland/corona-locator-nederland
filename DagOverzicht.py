@@ -148,18 +148,40 @@ def cell():
 def cell():
   df = RIVM.csv('COVID-19_uitgevoerde_testen').rename(columns={
     'Date_of_statistics': 'Datum',
-    'Tested_with_result': 'Getest',
-    'Tested_positive': 'Positief',
+    'Tested_with_result': 'GGD getest',
+    'Tested_positive': 'GGD getest positief',
   })
   df['Datum'] = pd.to_datetime(df.Datum)
-  df = df.groupby(['Datum']).agg({'Getest': 'sum', 'Positief': 'sum'})
+  df = df.groupby(['Datum']).agg({'GGD getest': 'sum', 'GGD getest positief': 'sum'})
   display(df)
+
+  global dagoverzicht
+  dagoverzicht = dagoverzicht.merge(df, how='left', left_index=True, right_index=True)
+  for col in df.columns:
+    dagoverzicht[col] = dagoverzicht[col].fillna(0)
+
+  dagoverzicht['GGD percentage positief'] = (dagoverzicht['GGD getest positief'] / dagoverzicht['GGD getest']).fillna(0)
+
+  dagoverzicht['GGD getest (7 daags)'] = dagoverzicht['GGD getest'].rolling(7).sum().fillna(0)
+  dagoverzicht['GGD getest positief (7 daags)'] = dagoverzicht['GGD getest positief'].rolling(7).sum().fillna(0)
+
+  dagoverzicht['GGD percentage positief (7 daags)'] = (dagoverzicht['GGD getest positief (7 daags)'] / dagoverzicht['GGD getest (7 daags)']).fillna(0)
+
+  dagoverzicht['GGD getest (cumulatief)'] = dagoverzicht['GGD getest'].cumsum()
+  dagoverzicht['GGD getest positief (cumulatief)'] = dagoverzicht['GGD getest positief'].cumsum()
+
+  dagoverzicht['GGD percentage positief (cumulatief)'] = (dagoverzicht['GGD getest positief (cumulatief)'] / dagoverzicht['GGD getest (cumulatief)']).fillna(0)
+
+  display(dagoverzicht.head())
 
 # %%
 async def publish():
   global dagoverzicht
 
   m = (dagoverzicht == np.inf)
+  df = dagoverzicht.loc[m.any(axis=1), m.any(axis=0)]
+  display(df.head())
+  m = (dagoverzicht == np.nan)
   df = dagoverzicht.loc[m.any(axis=1), m.any(axis=0)]
   display(df.head())
 
@@ -171,3 +193,5 @@ async def publish():
     df = dagoverzicht.assign(Key=dagoverzicht.index.strftime('%Y-%m-%d'))
     await knack.update(objectName='Dagoverzicht', df=df)
 await publish()
+
+# %%
