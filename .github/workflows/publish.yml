@@ -37,8 +37,6 @@ jobs:
       run: |
         python -m pip install --upgrade pip setuptools wheel
         pip3 install -r requirements.txt
-        ./util/pip-upgrade
-        pip3 install nbformat --upgrade
     - name: Run notebook
       run: |
         set -x

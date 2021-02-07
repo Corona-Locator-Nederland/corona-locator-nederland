@@ -1,11 +1,6 @@
-# To add a new cell, type '# %%'
-# To add a new markdown cell, type '# %% [markdown]'
 # %%
 from IPython import get_ipython
 get_ipython().run_line_magic('run', 'setup')
-
-# %% [markdown]
-# Download de RIVM data als die nieuwer is dan wat we al hebben (gecached want de download van RIVM is *zeer* traag)
 
 # %%
 #leeftijdsgroepen = SimpleNamespace()
@@ -22,10 +17,8 @@ def cell():
   global bevolking
   bevolking = CBS.bevolking(leeftijdsgroepen=True)
 
-# %% [markdown]
-# Bereken de stand van zaken van besmettingen / hospitalisaties / overlijden, per cohort in absolute aantallen en aantallen per 100k, met een kleur indicator voor de aantallen.
-
 # %%
+# Bereken de stand van zaken van besmettingen / hospitalisaties / overlijden, per cohort in absolute aantallen en aantallen per 100k, met een kleur indicator voor de aantallen.
 # vervang <50 en Unknown door Onbekend
 @run('leeftijdsgroepen: prepareer tabel')
 def cell():
