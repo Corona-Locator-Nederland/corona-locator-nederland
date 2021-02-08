@@ -39,9 +39,10 @@ jobs:
         pip3 install -r requirements.txt
         pip3 install nbformat --upgrade
         pip freeze
+    - name: Probe ESRI
+      run: curl -LO https://opendata.arcgis.com/datasets/c121a3cd3ca34e7b8050513307d41b93_0.csv
     - name: Run notebook
       run: |
-        curl -LO https://opendata.arcgis.com/datasets/c121a3cd3ca34e7b8050513307d41b93_0.csv
         set -x
         notebooks=(
         LeeftijdsgroepenLandelijk
