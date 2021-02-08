@@ -247,4 +247,3 @@ if get_ipython() is None:
   RIVM.csv('COVID-19_uitgevoerde_testen')
   RIVM.csv('COVID-19_ziekenhuisopnames')
   LCPS.csv('covid-19')
-  NICE.json('new-intake', jsonpath='$.[1]')
