@@ -207,6 +207,9 @@ class Knack:
         connections[field.name] = self.connection_field_map[field.relationship.object]
 
     data = self.munch(df.replace(connections).rename(columns=self.mapping).to_dict('records'))
+    unmapped = [col for col in data[0].keys() if not col.startswith('field_')]
+    assert len(unmapped) == 0, unmapped
+
     if 'Hash' in self.mapping:
       for rec in data:
         assert self.mapping.Hash not in rec
