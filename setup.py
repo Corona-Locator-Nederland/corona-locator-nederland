@@ -28,6 +28,8 @@ import functools
 import matplotlib.colors as colors
 import gzip
 import shutil
+from jsonpath import JSONPath
+
 #from types import SimpleNamespace
 
 if 'KNACK_APP_ID' in os.environ:
@@ -138,17 +140,19 @@ def download_and_cache(url, n=0, headers={}, keep=None, provider=None, name=None
   if name is None:
     name = os.path.basename(url)
   name, ext = os.path.splitext(name)
-  print(provider, name, ext)
+
+  datafiles = os.path.join(provider, f'{name}*{ext}*')
 
   os.makedirs(provider, exist_ok = True)
   # without the user agent, LCPS won't answer HEAD requests
   headers['User-Agent'] = 'curl/7.64.1'
   resource = requests.head(url, allow_redirects=True, headers=headers)
   if 'last-modified' in resource.headers:
-    lastmodified = parsedate(resource.headers['last-modified'])
+    latest = os.path.join(provider, parsedate(resource.headers['last-modified']).strftime(f'{name}-%Y-%m-%d@%H-%M{ext}'))
   else:
-    lastmodified = datetime.datetime.utcnow()
-  latest = os.path.join(provider, lastmodified.strftime(f'{name}-%Y-%m-%d@%H-%M{ext}'))
+    # without last-modified, only update once an hour
+    latest = os.path.join(provider, datetime.datetime.utcnow().strftime(f'{name}-%Y-%m-%d@%H-00{ext}'))
+
   if not os.path.exists(latest) and not os.path.exists(latest + '.gz'):
     print('downloading', latest)
     with requests.get(url, headers=headers, stream=True) as r, open(latest, 'wb') as f:
@@ -164,7 +168,6 @@ def download_and_cache(url, n=0, headers={}, keep=None, provider=None, name=None
         shutil.copyfileobj(f_in, f_out)
         os.remove(f)
 
-  datafiles = os.path.join(provider, f'{name}*{ext}*')
   # delete local duplicates
   for f in glob.glob(datafiles):
     if os.path.exists(f + '.gz'):
@@ -219,12 +222,22 @@ class GitHub:
 
 class NICE:
   @classmethod
-  def json(cls, name):
-    data = download_and_cache(f'https://www.stichting-nice.nl/covid-19/public/{name}/', keep=1, provider='nice', name=f'{name}.json')
-    print('loading', data)
-    return pd.read_json(data)
+  def json(cls, name, jsonpath=None):
+    cached = download_and_cache(f'https://www.stichting-nice.nl/covid-19/public/{name}/', keep=1, provider='nice', name=f'{name.replace("/", "-")}.json')
+    if jsonpath is None:
+      print('loading', cached)
+      return pd.read_json(cached)
+    else:
+      print('loading', jsonpath, 'from', cached)
+      with open(cached) as f:
+        data = JSONPath(jsonpath).parse(json.load(f))
+        assert type(data) == list, type(data)
+        assert all([type(row) == dict for row in data]), [type(row) for row in data if type(row) != dict]
+        return pd.DataFrame(data)
 
-if __name__ == "__main__":
+# if __name__ == "__main__": does not work, notebooks run in main
+from IPython import get_ipython
+if get_ipython() is None:
   # execute only if run as a script
   # just grab latest -- run this as a separate job that's unlikely to fail so that we know for sure we grab the history we need.
   RIVM.csv('COVID-19_aantallen_gemeente_per_dag')
@@ -234,4 +247,4 @@ if __name__ == "__main__":
   RIVM.csv('COVID-19_uitgevoerde_testen')
   RIVM.csv('COVID-19_ziekenhuisopnames')
   LCPS.csv('covid-19')
-  NICE.json('new-intake')
+  NICE.json('new-intake', jsonpath='$.[1]')

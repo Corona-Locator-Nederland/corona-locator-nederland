@@ -175,6 +175,65 @@ def cell():
   display(dagoverzicht.head())
 
 # %%
+@run('NICE')
+def cell():
+  def merge(df, fillna):
+    global dagoverzicht
+    dagoverzicht = dagoverzicht.merge(df, how='left', left_index=True, right_index=True)
+    for col in df.columns:
+      print(col)
+      if fillna == 0:
+        dagoverzicht[col] = dagoverzicht[col].fillna(fillna)
+      elif fillna == 'ffill':
+        dagoverzicht[col] = dagoverzicht[col].ffill().fillna(0)
+      else:
+        raise ValueError(fillna)
+
+  df = NICE.json('new-intake', '$[0].*').rename(columns={'value': 'NICE IC Bedden (intake)'})
+  df['date'] = pd.to_datetime(df.date)
+  df.set_index('date', inplace=True)
+  merge(df, fillna=0)
+
+  df = NICE.json('intake-count').rename(columns={'value': 'NICE IC Bedden'})
+  df['date'] = pd.to_datetime(df.date)
+  df.set_index('date', inplace=True)
+  merge(df, fillna=0)
+
+  df = NICE.json('intake-cumulative').rename(columns={'value': 'NICE IC Bedden (cumulatief)'})
+  df['date'] = pd.to_datetime(df.date)
+  df.set_index('date', inplace=True)
+  merge(df, fillna='ffill')
+
+  df = NICE.json('died-and-survivors-cumulative', '$[0].*').rename(columns={'value': 'NICE IC Overleden'})
+  df['date'] = pd.to_datetime(df.date)
+  df.set_index('date', inplace=True)
+  merge(df, fillna=0)
+
+  df = NICE.json('zkh/new-intake', '$[0].*').rename(columns={'value': 'NICE Ziekenhuis Bedden (intake)'})
+  df['date'] = pd.to_datetime(df.date)
+  df.set_index('date', inplace=True)
+  merge(df, fillna=0)
+
+  df = NICE.json('zkh/intake-count').rename(columns={'value': 'NICE Ziekenhuis Bedden'})
+  df['date'] = pd.to_datetime(df.date)
+  df.set_index('date', inplace=True)
+  merge(df, fillna=0)
+
+  df = NICE.json('zkh/intake-cumulative').rename(columns={'value': 'NICE Ziekenhuis Bedden (cumulatief)'})
+  df['date'] = pd.to_datetime(df.date)
+  df.set_index('date', inplace=True)
+  merge(df, fillna='ffill')
+
+  df = NICE.json('zkh/died-and-survivors-cumulative', '$[0].*').rename(columns={'value': 'NICE Ziekenhuis Overleden'})
+  df['date'] = pd.to_datetime(df.date)
+  df.set_index('date', inplace=True)
+  merge(df, fillna=0)
+
+# %%
+df = NICE.json('zkh/intake-cumulative')
+df
+
+# %%
 async def publish():
   global dagoverzicht
 
