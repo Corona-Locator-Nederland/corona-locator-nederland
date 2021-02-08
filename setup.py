@@ -235,6 +235,13 @@ class NICE:
         assert all([type(row) == dict for row in data]), [type(row) for row in data if type(row) != dict]
         return pd.DataFrame(data)
 
+class ArcGIS:
+  @classmethod
+  def csv(cls, naam, n=0):
+    data = download_and_cache(f'https://opendata.arcgis.com/datasets/{naam}_0.csv', n)
+    print('loading', data)
+    return pd.read_csv(data, header=0)
+
 # if __name__ == "__main__": does not work, notebooks run in main
 from IPython import get_ipython
 if get_ipython() is None:
@@ -247,3 +254,4 @@ if get_ipython() is None:
   RIVM.csv('COVID-19_uitgevoerde_testen')
   RIVM.csv('COVID-19_ziekenhuisopnames')
   LCPS.csv('covid-19')
+  ArcGIS.csv('f27f743476a142538e8054f7a7ce12e1')

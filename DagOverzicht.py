@@ -175,63 +175,26 @@ def cell():
   display(dagoverzicht.head())
 
 # %%
-@run('NICE')
+@run('ESRI -> NICE')
 def cell():
-  def merge(df, fillna):
-    global dagoverzicht
-    dagoverzicht = dagoverzicht.merge(df, how='left', left_index=True, right_index=True)
-    for col in df.columns:
-      print(col)
-      if fillna == 0:
-        dagoverzicht[col] = dagoverzicht[col].fillna(fillna)
-      elif fillna == 'ffill':
-        dagoverzicht[col] = dagoverzicht[col].ffill().fillna(0)
-      else:
-        raise ValueError(fillna)
+  global dagoverzicht
+  df = ArcGIS.csv('f27f743476a142538e8054f7a7ce12e1')
 
-  df = NICE.json('new-intake', '$[0].*').rename(columns={'value': 'NICE IC Bedden (intake)'})
-  df['date'] = pd.to_datetime(df.date)
+  for prefix, kind in [ ('ic', 'IC'), ('zkh', 'Ziekenhuis') ]:
+    df = df.rename(columns={
+      f'{prefix}NewIntake': f'NICE {kind} Bedden (intake)',
+      f'{prefix}IntakeCount': f'NICE {kind} Bedden',
+      f'{prefix}IntakeCumulative': f'NICE {kind} Bedden (cumulatief)',
+      f'{prefix}DiedCumulative': f'NICE {kind} Overleden',
+    })
+  df['date'] = pd.to_datetime(df.date.str.replace(' .*', '', regex=True))
   df.set_index('date', inplace=True)
-  merge(df, fillna=0)
-
-  df = NICE.json('intake-count').rename(columns={'value': 'NICE IC Bedden'})
-  df['date'] = pd.to_datetime(df.date)
-  df.set_index('date', inplace=True)
-  merge(df, fillna=0)
-
-  df = NICE.json('intake-cumulative').rename(columns={'value': 'NICE IC Bedden (cumulatief)'})
-  df['date'] = pd.to_datetime(df.date)
-  df.set_index('date', inplace=True)
-  merge(df, fillna='ffill')
-
-  df = NICE.json('died-and-survivors-cumulative', '$[0].*').rename(columns={'value': 'NICE IC Overleden'})
-  df['date'] = pd.to_datetime(df.date)
-  df.set_index('date', inplace=True)
-  merge(df, fillna=0)
-
-  df = NICE.json('zkh/new-intake', '$[0].*').rename(columns={'value': 'NICE Ziekenhuis Bedden (intake)'})
-  df['date'] = pd.to_datetime(df.date)
-  df.set_index('date', inplace=True)
-  merge(df, fillna=0)
-
-  df = NICE.json('zkh/intake-count').rename(columns={'value': 'NICE Ziekenhuis Bedden'})
-  df['date'] = pd.to_datetime(df.date)
-  df.set_index('date', inplace=True)
-  merge(df, fillna=0)
-
-  df = NICE.json('zkh/intake-cumulative').rename(columns={'value': 'NICE Ziekenhuis Bedden (cumulatief)'})
-  df['date'] = pd.to_datetime(df.date)
-  df.set_index('date', inplace=True)
-  merge(df, fillna='ffill')
-
-  df = NICE.json('zkh/died-and-survivors-cumulative', '$[0].*').rename(columns={'value': 'NICE Ziekenhuis Overleden'})
-  df['date'] = pd.to_datetime(df.date)
-  df.set_index('date', inplace=True)
-  merge(df, fillna=0)
-
-# %%
-df = NICE.json('zkh/intake-cumulative')
-df
+  df = df[[col for col in df.columns if 'NICE' in col]]
+  dagoverzicht = dagoverzicht.merge(df, how='left', left_index=True, right_index=True)
+  for col in df.columns:
+    if 'cumulatief' in col:
+      dagoverzicht[col] = dagoverzicht[col].ffill()
+    dagoverzicht[col] = dagoverzicht[col].fillna(0)
 
 # %%
 async def publish():
