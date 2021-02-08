@@ -131,16 +131,24 @@ class CBS:
 
     return bevolking
 
-def download_and_cache(url, n=0, headers={}, keep=None):
-  domain = urlparse(url).netloc
-  provider = domain.split('.')[-2]
-  name, ext = os.path.splitext(os.path.basename(url))
+def download_and_cache(url, n=0, headers={}, keep=None, provider=None, name=None):
+  if provider is None:
+    domain = urlparse(url).netloc
+    provider = domain.split('.')[-2]
+  if name is None:
+    name = os.path.basename(url)
+  name, ext = os.path.splitext(name)
+  print(provider, name, ext)
 
   os.makedirs(provider, exist_ok = True)
   # without the user agent, LCPS won't answer HEAD requests
   headers['User-Agent'] = 'curl/7.64.1'
   resource = requests.head(url, allow_redirects=True, headers=headers)
-  latest = os.path.join(provider, parsedate(resource.headers['last-modified']).strftime(f'{name}-%Y-%m-%d@%H-%M{ext}'))
+  if 'last-modified' in resource.headers:
+    lastmodified = parsedate(resource.headers['last-modified'])
+  else:
+    lastmodified = datetime.datetime.utcnow()
+  latest = os.path.join(provider, lastmodified.strftime(f'{name}-%Y-%m-%d@%H-%M{ext}'))
   if not os.path.exists(latest) and not os.path.exists(latest + '.gz'):
     print('downloading', latest)
     with requests.get(url, headers=headers, stream=True) as r, open(latest, 'wb') as f:
@@ -209,6 +217,13 @@ class GitHub:
     print(url)
     return pd.read_csv(download_and_cache(url, keep=1, headers=headers))
 
+class NICE:
+  @classmethod
+  def json(cls, name):
+    data = download_and_cache(f'https://www.stichting-nice.nl/covid-19/public/{name}/', keep=1, provider='nice', name=f'{name}.json')
+    print('loading', data)
+    return pd.read_json(data)
+
 if __name__ == "__main__":
   # execute only if run as a script
   # just grab latest -- run this as a separate job that's unlikely to fail so that we know for sure we grab the history we need.
@@ -219,3 +234,4 @@ if __name__ == "__main__":
   RIVM.csv('COVID-19_uitgevoerde_testen')
   RIVM.csv('COVID-19_ziekenhuisopnames')
   LCPS.csv('covid-19')
+  NICE.json('new-intake')
