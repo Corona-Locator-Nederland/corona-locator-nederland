@@ -38,11 +38,11 @@ def cell():
   })
   # sloop tijd van de datum en zet om in datetime object
   df['Datum'] = pd.to_datetime(df.Datum.str.replace(' .*', '', regex=True))
-  df['Today'] = pd.to_datetime(df.Today.str.replace(' .*', '', regex=True))
+  #df['Today'] = pd.to_datetime(df.Today.str.replace(' .*', '', regex=True))
 
   global dagoverzicht
-  # maak leeg dataframe met een rij voor elke dag van 2020-02-27 tm Date_of_report
-  dagoverzicht = pd.DataFrame(index=pd.date_range(start='2020-02-27', end=df.Today.max()))
+  # maak leeg dataframe met een rij voor elke dag van 2020-02-27 tm Date_of_publication
+  dagoverzicht = pd.DataFrame(index=pd.date_range(start='2020-02-27', end=df.Datum.max()))
   # noem de index Key
   dagoverzicht.index.name='Key'
   # vul de datum kolom
