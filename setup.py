@@ -238,7 +238,7 @@ class NICE:
 class ArcGIS:
   @classmethod
   def csv(cls, naam, n=0):
-    data = download_and_cache(f'https://opendata.arcgis.com/datasets/{naam}_0.csv', n)
+    data = download_and_cache(f'https://opendata.arcgis.com/datasets/{naam}_0.csv', n, keep=1)
     print('loading', data)
     return pd.read_csv(data, header=0)
 
