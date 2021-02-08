@@ -116,7 +116,7 @@ def cell():
       if when in df:
         df['Date'] = pd.to_datetime(df[when])
         # en direct maar weken terug, die hebben we vaker nodig
-        df['WekenTerug'] = ((df.Today - df.Date) / np.timedelta64(7, 'D')).astype(np.int)
+        df['WekenTerug'] = ((df.Today - df.Date) / np.timedelta64(7, 'D')).astype(int)
 
     return sortcolumns(df)
 
