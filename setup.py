@@ -55,12 +55,16 @@ class CLN:
       cls.active = 'default'
     if not hasattr(cls, 'updated'):
       cls.updated = {}
+    if not hasattr(cls, 'ignore'):
+      cls.ignore = False
     if not cls.ignore and cls.active not in cls.updated or timestamp > cls.updated[cls.active]:
       cls.updated[cls.active] = timestamp
 
   @classmethod
   def run(cls, *args, timestamp=None):
-    cls.ignore = timestamp == False
+    cls.ignore = (timestamp == False)
+    if timestamp == True:
+      timestamp = None
     if not cls.ignore and timestamp is not None:
       cls.active = timestamp
     if not hasattr(cls, 'updated'):
