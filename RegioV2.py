@@ -10,7 +10,7 @@ def sortcolumns(df):
   return df[sorted(df.columns)]
 
 # %%
-@run('regio: load regios en hun basisgegevens')
+@CLN.run('regio: load regios en hun basisgegevens', timestamp='Timestamp RegioV2 RIVM')
 def cell():
   global gemeenten
   # rename de kolommen naar "Naam" + "NaamCode" voor makkelijker uniforme data bewerking
@@ -332,7 +332,7 @@ def collect(regiotype):
   return df
 
 # %%
-@run('regio: load verschillende aggregatie niveaus')
+@CLN.run('regio: load verschillende aggregatie niveaus')
 def cell():
   global regios
   # verzamel de data voor de gegeven regiotypes en plak ze onder elkaar
@@ -372,6 +372,7 @@ async def publish(df):
   if knack:
     print('updating knack')
     await knack.update(objectName='RegioV2', df=df)
+    await knack.update(objectName='LaatsteUpdate', df=pd.DataFrame([{'Key': 1, **CLN.updated}])
 
 order = pd.read_csv('RegioV2.csv')
 await publish(regios[order.columns.values].fillna(0))

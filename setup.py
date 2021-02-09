@@ -48,12 +48,29 @@ if 'GSHEET' in os.environ:
     sh.values_clear("'Regios'!A1:ZZ10000")
     ws.update('A1', [df.columns.values.tolist()] + df.values.tolist())
 
-def run(*args):
-  if len(args) == 1 and callable(args[0]):
-    return args[0]()
-  else:
-    print(*args)
-    return lambda func: func()
+class CLN:
+  @classmethod
+  def register(cls, timestamp):
+    if not hasattr(cls, 'active'):
+      cls.active = 'default'
+    if not hasattr(cls, 'updated'):
+      cls.updated = {}
+    if not cls.ignore and cls.active not in cls.updated or timestamp > cls.updated[cls.active]:
+      cls.updated[cls.active] = timestamp
+
+  @classmethod
+  def run(cls, *args, timestamp=None):
+    cls.ignore = timestamp == False
+    if not cls.ignore and timestamp is not None:
+      cls.active = timestamp
+    if not hasattr(cls, 'updated'):
+      cls.updated = {}
+
+    if len(args) == 1 and callable(args[0]):
+      return args[0]()
+    else:
+      print(*args)
+      return lambda func: func()
 
 # https://www.cbs.nl/nl-nl/onze-diensten/open-data/open-data-v4/snelstartgids-odata-v4
 # which is a bit of a lie, since their odata implementation is broken in very imaginitive ways
@@ -148,10 +165,12 @@ def download_and_cache(url, n=0, headers={}, keep=None, provider=None, name=None
   headers['User-Agent'] = 'curl/7.64.1'
   resource = requests.head(url, allow_redirects=True, headers=headers)
   if 'last-modified' in resource.headers:
-    latest = os.path.join(provider, parsedate(resource.headers['last-modified']).strftime(f'{name}-%Y-%m-%d@%H-%M{ext}'))
+    lastmodified = parsedate(resource.headers['last-modified'])
   else:
     # without last-modified, only update once an hour
-    latest = os.path.join(provider, datetime.datetime.utcnow().strftime(f'{name}-%Y-%m-%d@%H-00{ext}'))
+    lastmodified = datetime.datetime.utcnow().replace(minute=0)
+  latest = os.path.join(provider, lastmodified.strftime(f'{name}-%Y-%m-%d@%H-%M{ext}'))
+  CLN.register((lastmodified + datetime.timedelta(hours=1)).strftime('%Y-%m-%d %H-%M'))
 
   if not os.path.exists(latest) and not os.path.exists(latest + '.gz'):
     print('downloading', latest)

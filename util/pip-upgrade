@@ -6,5 +6,7 @@ from subprocess import call
 #def call(cmd, shell=True):
 #  print(cmd)
 
-packages = [dist.project_name for dist in pkg_resources.working_set]
+#packages = [dist.project_name for dist in pkg_resources.working_set]
+with open('requirements.txt') as f:
+  packages = [pkg.split('=')[0].strip() for pkg in f.readlines() if pkg != '']
 call("pip3 install --upgrade " + ' '.join(packages), shell=True)
