@@ -27,7 +27,7 @@ def addstats(df):
     dagoverzicht[f'{stat} 7d per 100.000'] = dagoverzicht[f'{stat} 7d'] * bevolking['per 100k']
 
 # %%
-@CLN.run('set up base frame + overleden + positief getest', timestamp='Timestamp Dagoverzicht RIVM')
+@run('set up base frame + overleden + positief getest')
 def cell():
   # 2 vliegen in 1 klap -- aantallen pos + overleden, en laatste datum met data voor de datum range
   df = RIVM.csv('COVID-19_aantallen_gemeente_per_dag').rename(columns={
@@ -55,7 +55,7 @@ def cell():
   display(dagoverzicht.head(10))
 
 # %%
-@CLN.run('ziekenhuisopnames')
+@run('ziekenhuisopnames')
 def cell():
   df = RIVM.csv('COVID-19_ziekenhuisopnames').rename(columns={
     'Hospital_admission': 'Ziekenhuisopnames',
@@ -68,7 +68,7 @@ def cell():
   display(dagoverzicht.head())
 
 # %%
-@CLN.run('reproductiegetal en besmettelijkheid')
+@run('reproductiegetal en besmettelijkheid')
 def cell():
   global dagoverzicht
 
@@ -93,7 +93,7 @@ def cell():
   display(dagoverzicht)
 
 # %%
-@CLN.run('uitgevoerde testen')
+@run('uitgevoerde testen')
 def cell():
   df = RIVM.csv('COVID-19_uitgevoerde_testen').rename(columns={
     'Date_of_statistics': 'Datum',
@@ -123,7 +123,7 @@ def cell():
 
   display(dagoverzicht.head())
 
-@CLN.run('LCPS', timestamp='Timestamp Dagoverzicht LCPS')
+@run('LCPS')
 def cell():
   # laad dataset
   df = LCPS.csv('covid-19').rename(columns={
@@ -152,7 +152,7 @@ def cell():
     dagoverzicht[col] = dagoverzicht[col].fillna(0).astype(int)
 
 # %%
-@CLN.run('corrections', timestamp=False)
+@run('corrections')
 def cell():
   # laad corrections van mzelst
   df = GitHub.csv('mzelst/covid-19/contents/corrections/corrections_perday.csv')
@@ -175,7 +175,7 @@ def cell():
     dagoverzicht[col] = dagoverzicht[col].fillna(0).astype(int)
 
 # %%
-@CLN.run('ESRI -> NICE', timestamp='Timestamp Dagoverzicht NICE')
+@run('ESRI -> NICE')
 def cell():
   global dagoverzicht
   df = ArcGIS.csv('f27f743476a142538e8054f7a7ce12e1')
@@ -214,6 +214,6 @@ async def publish():
     print('updating knack')
     df = dagoverzicht.assign(Key=dagoverzicht.index.strftime('%Y-%m-%d'))
     await knack.update(objectName='Dagoverzicht', df=df)
-    await knack.update(objectName='LaatsteUpdate', df=pd.DataFrame([{'Key': 1, **CLN.updated}]))
+    await knack.update(objectName='LaatsteUpdate', df=pd.DataFrame([{'Key': 1, **{ f'Timestamp Dagoverzicht {provider.upper()}': ts for provider, ts in Cache.timestamps.items() }}]))
 await publish()
 # %%

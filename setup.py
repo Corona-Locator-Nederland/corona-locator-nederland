@@ -48,33 +48,75 @@ if 'GSHEET' in os.environ:
     sh.values_clear("'Regios'!A1:ZZ10000")
     ws.update('A1', [df.columns.values.tolist()] + df.values.tolist())
 
-class CLN:
+class Cache:
   @classmethod
-  def register(cls, timestamp):
-    if not hasattr(cls, 'active'):
-      cls.active = 'default'
-    if not hasattr(cls, 'updated'):
-      cls.updated = {}
-    if not hasattr(cls, 'ignore'):
-      cls.ignore = False
-    if not cls.ignore and cls.active not in cls.updated or timestamp > cls.updated[cls.active]:
-      cls.updated[cls.active] = timestamp
+  def fetch(cls, url, n=0, headers={}, keep=None, provider=None, name=None):
+    if provider is None:
+      domain = urlparse(url).netloc
+      provider = domain.split('.')[-2]
+    if name is None:
+      name = os.path.basename(url)
+    name, ext = os.path.splitext(name)
 
-  @classmethod
-  def run(cls, *args, timestamp=None):
-    cls.ignore = (timestamp == False)
-    if timestamp == True:
-      timestamp = None
-    if not cls.ignore and timestamp is not None:
-      cls.active = timestamp
-    if not hasattr(cls, 'updated'):
-      cls.updated = {}
+    datafiles = os.path.join(provider, f'{name}*{ext}*')
 
-    if len(args) == 1 and callable(args[0]):
-      return args[0]()
+    os.makedirs(provider, exist_ok = True)
+    # without the user agent, LCPS won't answer HEAD requests
+    headers['User-Agent'] = 'curl/7.64.1'
+    resource = requests.head(url, allow_redirects=True, headers=headers)
+    if 'last-modified' in resource.headers:
+      lastmodified = parsedate(resource.headers['last-modified'])
     else:
-      print(*args)
-      return lambda func: func()
+      # without last-modified, only update once an hour
+      lastmodified = datetime.datetime.utcnow().replace(minute=0)
+    latest = os.path.join(provider, lastmodified.strftime(f'{name}-%Y-%m-%d@%H-%M{ext}'))
+
+    if not hasattr(cls, 'timestamps'):
+      cls.timestamps = {}
+    ts = (lastmodified + datetime.timedelta(hours=1)).strftime('%Y-%m-%d %H-%M')
+    if provider not in cls.timestamps or ts > cls.timestamps[provider]:
+      cls.timestamps[provider] = ts
+
+    if not os.path.exists(latest) and not os.path.exists(latest + '.gz'):
+      print('downloading', latest)
+      with requests.get(url, headers=headers, stream=True) as r, open(latest, 'wb') as f:
+        r.raise_for_status()
+        for chunk in r.iter_content(chunk_size=8192):
+          f.write(chunk)
+    elif n == 0:
+      print(latest, 'exists')
+
+    if 'CI' in os.environ:
+      for f in glob.glob(os.path.join(provider, f'{name}*{ext}')):
+        with open(f, 'rb') as f_in, gzip.open(f + '.gz', 'wb') as f_out:
+          shutil.copyfileobj(f_in, f_out)
+          os.remove(f)
+
+    # delete local duplicates
+    for f in glob.glob(datafiles):
+      if os.path.exists(f + '.gz'):
+        os.remove(f)
+    dated = {}
+    # RIVM publiceert soms 2 keer per dag blijkbaar
+    for f in sorted(glob.glob(datafiles), reverse=True):
+      ts = re.search(r'-([0-9]{4}-[0-9]{2}-[0-9]{2})@[0-9]{2}-[0-9]{2}\.', f).group(1)
+      if ts not in dated:
+        dated[ts] = f
+      else:
+        os.remove(f)
+
+    if keep is not None:
+      for f in sorted(glob.glob(datafiles), reverse=True)[:-keep]:
+        os.remove(f)
+    history = sorted(glob.glob(datafiles), reverse=True)
+    return history[n]
+
+def run(*args, timestamp=None):
+  if len(args) == 1 and callable(args[0]):
+    return args[0]()
+  else:
+    print(*args)
+    return lambda func: func()
 
 # https://www.cbs.nl/nl-nl/onze-diensten/open-data/open-data-v4/snelstartgids-odata-v4
 # which is a bit of a lie, since their odata implementation is broken in very imaginitive ways
@@ -154,78 +196,22 @@ class CBS:
 
     return bevolking
 
-def download_and_cache(url, n=0, headers={}, keep=None, provider=None, name=None):
-  if provider is None:
-    domain = urlparse(url).netloc
-    provider = domain.split('.')[-2]
-  if name is None:
-    name = os.path.basename(url)
-  name, ext = os.path.splitext(name)
-
-  datafiles = os.path.join(provider, f'{name}*{ext}*')
-
-  os.makedirs(provider, exist_ok = True)
-  # without the user agent, LCPS won't answer HEAD requests
-  headers['User-Agent'] = 'curl/7.64.1'
-  resource = requests.head(url, allow_redirects=True, headers=headers)
-  if 'last-modified' in resource.headers:
-    lastmodified = parsedate(resource.headers['last-modified'])
-  else:
-    # without last-modified, only update once an hour
-    lastmodified = datetime.datetime.utcnow().replace(minute=0)
-  latest = os.path.join(provider, lastmodified.strftime(f'{name}-%Y-%m-%d@%H-%M{ext}'))
-  CLN.register((lastmodified + datetime.timedelta(hours=1)).strftime('%Y-%m-%d %H-%M'))
-
-  if not os.path.exists(latest) and not os.path.exists(latest + '.gz'):
-    print('downloading', latest)
-    with requests.get(url, headers=headers, stream=True) as r, open(latest, 'wb') as f:
-      r.raise_for_status()
-      for chunk in r.iter_content(chunk_size=8192):
-        f.write(chunk)
-  elif n == 0:
-    print(latest, 'exists')
-
-  if 'CI' in os.environ:
-    for f in glob.glob(os.path.join(provider, f'{name}*{ext}')):
-      with open(f, 'rb') as f_in, gzip.open(f + '.gz', 'wb') as f_out:
-        shutil.copyfileobj(f_in, f_out)
-        os.remove(f)
-
-  # delete local duplicates
-  for f in glob.glob(datafiles):
-    if os.path.exists(f + '.gz'):
-      os.remove(f)
-  dated = {}
-  # RIVM publiceert soms 2 keer per dag blijkbaar
-  for f in sorted(glob.glob(datafiles), reverse=True):
-    ts = re.search(r'-([0-9]{4}-[0-9]{2}-[0-9]{2})@[0-9]{2}-[0-9]{2}\.', f).group(1)
-    if ts not in dated:
-      dated[ts] = f
-    else:
-      os.remove(f)
-
-  if keep is not None:
-    for f in sorted(glob.glob(datafiles), reverse=True)[:-keep]:
-      os.remove(f)
-  history = sorted(glob.glob(datafiles), reverse=True)
-  return history[n]
-
 class RIVM:
   @classmethod
   def csv(cls, naam, n=0):
-    data = download_and_cache(f'https://data.rivm.nl/covid-19/{naam}.csv', n)
+    data = Cache.fetch(f'https://data.rivm.nl/covid-19/{naam}.csv', n)
     print('loading', data)
     return pd.read_csv(data, sep=';', header=0)
   @classmethod
   def json(cls, naam, n=0):
-    data = download_and_cache(f'https://data.rivm.nl/covid-19/{naam}.json', n)
+    data = Cache.fetch(f'https://data.rivm.nl/covid-19/{naam}.json', n)
     print('loading', data)
     return pd.read_json(data)
 
 class LCPS:
   @classmethod
   def csv(cls, naam, n=0):
-    data = download_and_cache(f'https://lcps.nu/wp-content/uploads/{naam}.csv', n)
+    data = Cache.fetch(f'https://lcps.nu/wp-content/uploads/{naam}.csv', n)
     print('loading', data)
     return pd.read_csv(data, header=0)
 
@@ -241,12 +227,12 @@ class GitHub:
       url += '/'
     url += path
     print(url)
-    return pd.read_csv(download_and_cache(url, keep=1, headers=headers))
+    return pd.read_csv(Cache.fetch(url, keep=1, headers=headers))
 
 class NICE:
   @classmethod
   def json(cls, name, jsonpath=None):
-    cached = download_and_cache(f'https://www.stichting-nice.nl/covid-19/public/{name}/', keep=1, provider='nice', name=f'{name.replace("/", "-")}.json')
+    cached = Cache.fetch(f'https://www.stichting-nice.nl/covid-19/public/{name}/', keep=1, provider='nice', name=f'{name.replace("/", "-")}.json')
     if jsonpath is None:
       print('loading', cached)
       return pd.read_json(cached)
@@ -261,7 +247,7 @@ class NICE:
 class ArcGIS:
   @classmethod
   def csv(cls, naam, n=0):
-    data = download_and_cache(f'https://opendata.arcgis.com/datasets/{naam}_0.csv', n, keep=1)
+    data = Cache.fetch(f'https://opendata.arcgis.com/datasets/{naam}_0.csv', n, keep=1)
     print('loading', data)
     return pd.read_csv(data, header=0)
 

@@ -7,7 +7,7 @@ get_ipython().run_line_magic('run', 'setup')
 
 # %%
 #leeftijdsgroepen = SimpleNamespace()
-@CLN.run('leeftijdsgroepen: download RIVM data', timestamp='Timestamp Leeftijdsgroepen RIVM')
+@run('leeftijdsgroepen: download RIVM data')
 def cell():
   global rivm
   rivm = RIVM.csv('COVID-19_casus_landelijk')
@@ -15,7 +15,7 @@ def cell():
 
 # %%
 # Download de bevolkings cijfers van CBS, uitgesplitst op de leeftijds categorien in de dataset van het RIVM
-@CLN.run('leeftijdsgroepen: download demografische data van CBS')
+@run('leeftijdsgroepen: download demografische data van CBS')
 def cell():
   global bevolking
   bevolking = CBS.bevolking(leeftijdsgroepen=True)
@@ -23,7 +23,7 @@ def cell():
 # %%
 # Bereken de stand van zaken van besmettingen / hospitalisaties / overlijden, per cohort in absolute aantallen en aantallen per 100k, met een kleur indicator voor de aantallen.
 # vervang <50 en Unknown door Onbekend
-@CLN.run('leeftijdsgroepen: prepareer tabel')
+@run('leeftijdsgroepen: prepareer tabel')
 def cell():
   rivm['Cohort'] = rivm['Agegroup'].replace({'<50': 'Onbekend', 'Unknown': 'Onbekend'})
   # aangenomen 'gemiddelde' leeftijd van een cohort: minimum waarde + 5
@@ -148,5 +148,5 @@ async def publish():
 
   if knack:
     await knack.update(objectName='Leeftijdsgroep', df=df)
-    await knack.update(objectName='LaatsteUpdate', df=pd.DataFrame([{'Key': 1, **CLN.updated}]))
+    await knack.update(objectName='LaatsteUpdate', df=pd.DataFrame([{'Key': 1, **{ f'Timestamp Leeftijdsgroepen {provider.upper()}': ts for provider, ts in Cache.timestamps.items() }}]))
 await publish()
