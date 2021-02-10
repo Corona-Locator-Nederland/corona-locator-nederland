@@ -178,7 +178,7 @@ def cell():
 @run('ESRI -> NICE')
 def cell():
   global dagoverzicht
-  df = ArcGIS.csv('f27f743476a142538e8054f7a7ce12e1')
+  df = ArcGIS.nice('f27f743476a142538e8054f7a7ce12e1')
 
   for prefix, kind in [ ('ic', 'IC'), ('zkh', 'Ziekenhuis') ]:
     df = df.rename(columns={

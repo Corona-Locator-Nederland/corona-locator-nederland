@@ -246,8 +246,8 @@ class NICE:
 
 class ArcGIS:
   @classmethod
-  def csv(cls, naam, n=0):
-    data = Cache.fetch(f'https://opendata.arcgis.com/datasets/{naam}_0.csv', n, keep=1)
+  def nice(cls, naam, n=0):
+    data = Cache.fetch(f'https://opendata.arcgis.com/datasets/{naam}_0.csv', n, provider='nice', keep=1)
     print('loading', data)
     return pd.read_csv(data, header=0)
 
@@ -263,4 +263,4 @@ if get_ipython() is None:
   RIVM.csv('COVID-19_uitgevoerde_testen')
   RIVM.csv('COVID-19_ziekenhuisopnames')
   LCPS.csv('covid-19')
-  ArcGIS.csv('f27f743476a142538e8054f7a7ce12e1')
+  ArcGIS.nice('f27f743476a142538e8054f7a7ce12e1')
