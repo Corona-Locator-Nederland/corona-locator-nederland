@@ -148,5 +148,5 @@ async def publish():
 
   if knack:
     await knack.update(objectName='Leeftijdsgroep', df=df)
-    await knack.update(objectName='LaatsteUpdate', df=pd.DataFrame([{'Key': 1, **{ f'Timestamp Leeftijdsgroepen {provider.upper()}': ts for provider, ts in Cache.timestamps.items() }}]))
+    await knack.update(objectName='LaatsteUpdate', df=pd.DataFrame([{'Key': 1, **{ f'Timestamp Leeftijdsgroepen {provider.upper()}': ts for provider, ts in Cache.timestamps.items() if provider != 'github' }}]))
 await publish()
