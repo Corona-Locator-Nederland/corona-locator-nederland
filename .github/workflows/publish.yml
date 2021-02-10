@@ -74,5 +74,5 @@ jobs:
       if: always()
       with:
         commit_message: Update converted notebooks, save RIVM history
-        file_pattern: rivm/*.gz lcps/*.gz *.ipynb github/*.gz arcgis/*.gz
+        file_pattern: rivm/*.gz lcps/*.gz *.ipynb github/*.gz nice/*.gz
         skip_dirty_check: false

@@ -73,7 +73,7 @@ class Cache:
 
     if not hasattr(cls, 'timestamps'):
       cls.timestamps = {}
-    ts = (lastmodified + datetime.timedelta(hours=1)).strftime('%Y-%m-%d %H-%M')
+    ts = (lastmodified + datetime.timedelta(hours=1)).strftime('%Y-%m-%d %H:%M')
     if provider not in cls.timestamps or ts > cls.timestamps[provider]:
       cls.timestamps[provider] = ts
 
