@@ -8,7 +8,7 @@ ipywidgets==7.6.3
 jsonpath-python==1.0.2
 jupyter==1.0.0
 jupyterlab==3.0.7
-git+https://github.com/mwouts/jupytext.git@jupytext_and_notebooks_in_version_4.5
+jupytext==1.10.1
 munch==2.5.0
 nbdime==2.1.0
 nbformat==5.1.2
