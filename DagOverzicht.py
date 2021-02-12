@@ -218,7 +218,9 @@ def cell():
 @run('Personen')
 def cell():
   global dagoverzicht
-  dagoverzicht.Personen = bevolking.BevolkingOpDeEersteVanDeMaand
+  dagoverzicht['Personen'] = bevolking.BevolkingOpDeEersteVanDeMaand
+  display(dagoverzicht)
+
 # %%
 async def publish():
   global dagoverzicht
