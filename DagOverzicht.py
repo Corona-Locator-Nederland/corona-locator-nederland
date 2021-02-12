@@ -136,8 +136,6 @@ def cell():
     'IC_Nieuwe_Opnames_COVID': 'LCPS IC Nieuwe Opnames COVID',
     'Kliniek_Nieuwe_Opnames_COVID': 'LCPS Kliniek Nieuwe Opnames COVID',
   })
-  print('lcps source')
-  display(df.head())
   # datum naar datetime index voor merge
   df['Datum'] = pd.to_datetime(df['Datum'])
   df.set_index('Datum', inplace=True)
