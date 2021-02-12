@@ -106,7 +106,7 @@ class Cache:
         os.remove(f)
 
     if keep is not None:
-      for f in sorted(glob.glob(datafiles), reverse=True)[:-keep]:
+      for f in sorted(glob.glob(datafiles), reverse=True)[keep:]:
         os.remove(f)
     history = sorted(glob.glob(datafiles), reverse=True)
     return history[n]
