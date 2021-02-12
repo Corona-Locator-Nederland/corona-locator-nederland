@@ -22,7 +22,7 @@ def addstats(df):
     # factor voor 100k
     dagoverzicht[f'{stat} per 100.000'] = dagoverzicht[stat] * bevolking['per 100k']
     # verschil met 7 dagen terug
-    dagoverzicht[f'{stat} 7d'] = (dagoverzicht[stat] - dagoverzicht[stat].shift(7)).fillna(0).astype(int)
+    dagoverzicht[f'{stat} 7d'] = (dagoverzicht[stat] - dagoverzicht[stat].shift(6)).fillna(0).astype(int)
     # en weer factor 100 k
     dagoverzicht[f'{stat} 7d per 100.000'] = dagoverzicht[f'{stat} 7d'] * bevolking['per 100k']
 
@@ -136,6 +136,8 @@ def cell():
     'IC_Nieuwe_Opnames_COVID': 'LCPS IC Nieuwe Opnames COVID',
     'Kliniek_Nieuwe_Opnames_COVID': 'LCPS Kliniek Nieuwe Opnames COVID',
   })
+  print('lcps source')
+  display(df.head())
   # datum naar datetime index voor merge
   df['Datum'] = pd.to_datetime(df['Datum'])
   df.set_index('Datum', inplace=True)
@@ -153,6 +155,7 @@ def cell():
   for col in df.columns:
     # vervang lege waarden door 0
     dagoverzicht[col] = dagoverzicht[col].fillna(0).astype(int)
+  display(dagoverzicht.head())
 
 # %%
 @run('corrections')
@@ -215,6 +218,7 @@ def cell():
 
   dagoverzicht['NICE IC Bedden (intake) week-1'] = dagoverzicht['NICE IC Bedden (intake) 7d'].shift(7).fillna(0)
 
+# %%
 @run('Personen')
 def cell():
   global dagoverzicht
