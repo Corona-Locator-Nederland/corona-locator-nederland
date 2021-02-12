@@ -1,9 +1,12 @@
 name: Execute notebook
 
 on:
-  push: null
   schedule:
-  - cron: '0 */8 * * *'
+  - cron: '0 9,11 * * *'
+  - cron: '5 13,15-19,21 * * *'
+  - cron: '16,20 14 * * *'
+  - cron: '35 14-16 * * *'
+
 
 jobs:
   run:
