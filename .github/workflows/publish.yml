@@ -77,6 +77,7 @@ jobs:
       run: ./setup.py
     - uses: stefanzweifel/git-auto-commit-action@v4
       if: always()
+      continue-on-error: true
       with:
         commit_message: Update converted notebooks, save RIVM history
         file_pattern: rivm/*.gz lcps/*.gz *.ipynb github/*.gz nice/*.gz
