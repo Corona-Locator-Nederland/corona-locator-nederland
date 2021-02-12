@@ -196,6 +196,10 @@ def cell():
       dagoverzicht[col] = dagoverzicht[col].ffill()
     dagoverzicht[col] = dagoverzicht[col].fillna(0)
 
+@run('Personen')
+def cell():
+  global dagoverzicht
+  dagoverzicht.Personen = bevolking.BevolkingOpDeEersteVanDeMaand
 # %%
 async def publish():
   global dagoverzicht
