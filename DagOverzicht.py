@@ -52,6 +52,8 @@ def cell():
 
   # sommeer pos en overl op datum en voeg toe aan dagoverzicht
   addstats(df.groupby(['Datum']).agg({'Positief getest': 'sum', 'Overleden': 'sum'}))
+  for col in ['Overleden', 'Positief getest']:
+    dagoverzicht[f'{col} week-1'] = dagoverzicht[f'{col} 7d'].shift(7).fillna(0)
   display(dagoverzicht.head(10))
 
 # %%
@@ -65,6 +67,7 @@ def cell():
   df['Datum'] = pd.to_datetime(df.Datum.str.replace(' .*', '', regex=True))
   # sommeer op datum en voeg toe aan dagoverzicht
   addstats(df.groupby(['Datum']).agg({'Ziekenhuisopnames': 'sum'}))
+  dagoverzicht['Ziekenhuisopnames week-1'] = dagoverzicht['Ziekenhuisopnames 7d'].shift(7).fillna(0)
   display(dagoverzicht.head())
 
 # %%
@@ -180,6 +183,10 @@ def cell():
   global dagoverzicht
   df = ArcGIS.nice('f27f743476a142538e8054f7a7ce12e1')
 
+  df['date'] = pd.to_datetime(df.date.str.replace(' .*', '', regex=True))
+  df.set_index('date', inplace=True)
+
+  # the NICE data as prepared by ESRI can just be used as-is, so just rename the columns
   for prefix, kind in [ ('ic', 'IC'), ('zkh', 'Ziekenhuis') ]:
     df = df.rename(columns={
       f'{prefix}NewIntake': f'NICE {kind} Bedden (intake)',
@@ -187,14 +194,26 @@ def cell():
       f'{prefix}IntakeCumulative': f'NICE {kind} Bedden (cumulatief)',
       f'{prefix}DiedCumulative': f'NICE {kind} Overleden',
     })
-  df['date'] = pd.to_datetime(df.date.str.replace(' .*', '', regex=True))
-  df.set_index('date', inplace=True)
+
+  # remove the columns we don't use
   df = df[[col for col in df.columns if 'NICE' in col]]
   dagoverzicht = dagoverzicht.merge(df, how='left', left_index=True, right_index=True)
+
+  # after the merge, dates missing in the ESRI/NICE set will be `nan`, so fill these
   for col in df.columns:
+    # for cumulatief columns, fill-forward from last known value
     if 'cumulatief' in col:
       dagoverzicht[col] = dagoverzicht[col].ffill()
+    # for non-cumulative and whatever remains in cumulative after fill forward (which will be leading nan's), fill with 0
     dagoverzicht[col] = dagoverzicht[col].fillna(0)
+
+  for kind in [ 'IC', 'Ziekenhuis' ]:
+    dagoverzicht[f'NICE {kind} Bedden (toename)'] = (dagoverzicht[f'NICE {kind} Bedden'] - dagoverzicht[f'NICE {kind} Bedden'].shift(1)).fillna(0)
+
+  for window, shift, past in [(3, 1, 'afgelopen '), (7, 0, '')]:
+    dagoverzicht[f'NICE IC Bedden (intake) {past}{window}d'] = dagoverzicht['NICE IC Bedden (intake)'].shift(shift).rolling(window).sum().fillna(0)
+
+  dagoverzicht['NICE IC Bedden (intake) week-1'] = dagoverzicht['NICE IC Bedden (intake) 7d'].shift(7).fillna(0)
 
 @run('Personen')
 def cell():
