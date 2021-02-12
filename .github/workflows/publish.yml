@@ -13,6 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      KNACK_API_KEY: ${{ secrets.KNACK_API_KEY }}
+      KNACK_APP_ID: ${{ secrets.KNACK_APP_ID }}
     steps:
     - name: Cancel other runs
       uses: styfle/cancel-workflow-action@0.6.0
