@@ -44,7 +44,7 @@ jobs:
         pip3 install -r requirements.txt
         pip3 install nbformat --upgrade
         pip freeze
-    - name: Run notebook
+    - name: Run notebooks
       run: |
         set -x
         notebooks=(
