@@ -126,6 +126,7 @@ def cell():
 
   display(dagoverzicht.head())
 
+# %%
 @run('LCPS')
 def cell():
   # laad dataset
@@ -137,7 +138,7 @@ def cell():
     'Kliniek_Nieuwe_Opnames_COVID': 'LCPS Kliniek Nieuwe Opnames COVID',
   })
   # datum naar datetime index voor merge
-  df['Datum'] = pd.to_datetime(df['Datum'])
+  df['Datum'] = pd.to_datetime(df['Datum'], format='%d-%m-%Y')
   df.set_index('Datum', inplace=True)
 
   # sommeer op datum
@@ -153,7 +154,6 @@ def cell():
   for col in df.columns:
     # vervang lege waarden door 0
     dagoverzicht[col] = dagoverzicht[col].fillna(0).astype(int)
-  display(dagoverzicht.head())
 
 # %%
 @run('corrections')

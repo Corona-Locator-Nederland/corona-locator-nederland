@@ -111,7 +111,15 @@ class Cache:
     history = sorted(glob.glob(datafiles), reverse=True)
     return history[n]
 
-def run(*args, timestamp=None):
+def ignore(*args):
+  if len(args) == 1 and callable(args[0]):
+    print('SKIPPING')
+    return args[0]
+  else:
+    print(*(['SKIPPING:'] + list(args)))
+    return lambda func: func
+
+def run(*args):
   if len(args) == 1 and callable(args[0]):
     return args[0]()
   else:
