@@ -22,7 +22,7 @@ def addstats(df):
     # factor voor 100k
     dagoverzicht[f'{stat} per 100.000'] = dagoverzicht[stat] * bevolking['per 100k']
     # verschil met 7 dagen terug
-    dagoverzicht[f'{stat} 7d'] = (dagoverzicht[stat] - dagoverzicht[stat].shift(7)).fillna(0).astype(int)
+    dagoverzicht[f'{stat} 7d'] = dagoverzicht[f'{stat} (nieuw)'].rolling(7).sum().fillna(0)
     # en weer factor 100 k
     dagoverzicht[f'{stat} 7d per 100.000'] = dagoverzicht[f'{stat} 7d'] * bevolking['per 100k']
 
