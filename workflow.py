@@ -10,7 +10,7 @@ with open('.github/workflows/publish.yml') as f:
   steps = action['jobs']['run']['steps']
   script = [step['run'] for step in steps if step.get('name') == 'Run notebooks'][0]
 
-  script = "export CI=true\n" + script
+  script = "set -x\nexport CI=true\ngit pull --rebase\n" + script
   #print(script)
 
   checkin = [step['with']['file_pattern'] for step in steps if step.get('uses') == 'stefanzweifel/git-auto-commit-action@v4'][0]
