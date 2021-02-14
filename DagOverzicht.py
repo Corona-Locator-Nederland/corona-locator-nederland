@@ -27,9 +27,56 @@ def addstats(df):
     dagoverzicht[f'{stat} 7d per 100.000'] = dagoverzicht[f'{stat} 7d'] * bevolking['per 100k']
 
 # %%
-@run('set up base frame + overleden + positief getest')
+@run('set up base frame from ESRI -> NICE')
 def cell():
-  # 2 vliegen in 1 klap -- aantallen pos + overleden, en laatste datum met data voor de datum range
+  df = ArcGIS.nice('f27f743476a142538e8054f7a7ce12e1')
+
+  df['date'] = pd.to_datetime(df.date.str.replace(' .*', '', regex=True))
+  df.set_index('date', inplace=True)
+
+  # base date range uit NICE
+  global dagoverzicht
+  # maak leeg dataframe met een rij voor elke dag van 2020-02-27 tm Date_of_publication
+  dagoverzicht = pd.DataFrame(index=pd.date_range(start='2020-02-27', end=df.date.max()))
+  # noem de index Key
+  dagoverzicht.index.name='Key'
+  # vul de datum kolom
+  dagoverzicht['Datum'] = dagoverzicht.index.strftime('%Y-%m-%d')
+  # vaste waarde voor LandCode
+  dagoverzicht['LandCode'] = 'NL'
+
+  # the NICE data as prepared by ESRI can just be used as-is, so just rename the columns
+  for prefix, kind in [ ('ic', 'IC'), ('zkh', 'Ziekenhuis') ]:
+    df = df.rename(columns={
+      f'{prefix}NewIntake': f'NICE {kind} Bedden (intake)',
+      f'{prefix}IntakeCount': f'NICE {kind} Bedden',
+      f'{prefix}IntakeCumulative': f'NICE {kind} Bedden (cumulatief)',
+      f'{prefix}DiedCumulative': f'NICE {kind} Overleden',
+    })
+
+  # remove the columns we don't use
+  df = df[[col for col in df.columns if 'NICE' in col]]
+  dagoverzicht = dagoverzicht.merge(df, how='left', left_index=True, right_index=True)
+
+  # after the merge, dates missing in the ESRI/NICE set will be `nan`, so fill these
+  for col in df.columns:
+    # for cumulatief columns, fill-forward from last known value
+    if 'cumulatief' in col:
+      dagoverzicht[col] = dagoverzicht[col].ffill()
+    # for non-cumulative and whatever remains in cumulative after fill forward (which will be leading nan's), fill with 0
+    dagoverzicht[col] = dagoverzicht[col].fillna(0)
+
+  for kind in [ 'IC', 'Ziekenhuis' ]:
+    dagoverzicht[f'NICE {kind} Bedden (toename)'] = (dagoverzicht[f'NICE {kind} Bedden'] - dagoverzicht[f'NICE {kind} Bedden'].shift(1)).fillna(0)
+
+  for window, shift, past in [(3, 1, 'afgelopen '), (7, 0, '')]:
+    dagoverzicht[f'NICE IC Bedden (intake) {past}{window}d'] = dagoverzicht['NICE IC Bedden (intake)'].shift(shift).rolling(window).sum().fillna(0)
+
+  dagoverzicht['NICE IC Bedden (intake) week-1'] = dagoverzicht['NICE IC Bedden (intake) 7d'].shift(7).fillna(0)
+
+# %%
+@run('overleden + positief getest')
+def cell():
   df = RIVM.csv('COVID-19_aantallen_gemeente_per_dag').rename(columns={
     'Total_reported': 'Positief getest',
     'Deceased': 'Overleden',
@@ -38,22 +85,12 @@ def cell():
   })
   # sloop tijd van de datum en zet om in datetime object
   df['Datum'] = pd.to_datetime(df.Datum.str.replace(' .*', '', regex=True))
-  #df['Today'] = pd.to_datetime(df.Today.str.replace(' .*', '', regex=True))
-
-  global dagoverzicht
-  # maak leeg dataframe met een rij voor elke dag van 2020-02-27 tm Date_of_publication
-  dagoverzicht = pd.DataFrame(index=pd.date_range(start='2020-02-27', end=df.Datum.max()))
-  # noem de index Key
-  dagoverzicht.index.name='Key'
-  # vul de datum kolom
-  dagoverzicht['Datum'] = dagoverzicht.index.strftime('%Y-%m-%d')
-  # vaste waarde voor LandCode
-  dagoverzicht['LandCode'] = 'NL'
 
   # sommeer pos en overl op datum en voeg toe aan dagoverzicht
   addstats(df.groupby(['Datum']).agg({'Positief getest': 'sum', 'Overleden': 'sum'}))
   for col in ['Overleden', 'Positief getest']:
     dagoverzicht[f'{col} week-1'] = dagoverzicht[f'{col} 7d'].shift(7).fillna(0)
+  global dagoverzicht
   display(dagoverzicht.head(10))
 
 # %%
@@ -183,44 +220,6 @@ def cell():
   for col in columns.values():
     # set lege waarden op 0
     dagoverzicht[col] = dagoverzicht[col].fillna(0).astype(int)
-
-# %%
-@run('ESRI -> NICE')
-def cell():
-  global dagoverzicht
-  df = ArcGIS.nice('f27f743476a142538e8054f7a7ce12e1')
-
-  df['date'] = pd.to_datetime(df.date.str.replace(' .*', '', regex=True))
-  df.set_index('date', inplace=True)
-
-  # the NICE data as prepared by ESRI can just be used as-is, so just rename the columns
-  for prefix, kind in [ ('ic', 'IC'), ('zkh', 'Ziekenhuis') ]:
-    df = df.rename(columns={
-      f'{prefix}NewIntake': f'NICE {kind} Bedden (intake)',
-      f'{prefix}IntakeCount': f'NICE {kind} Bedden',
-      f'{prefix}IntakeCumulative': f'NICE {kind} Bedden (cumulatief)',
-      f'{prefix}DiedCumulative': f'NICE {kind} Overleden',
-    })
-
-  # remove the columns we don't use
-  df = df[[col for col in df.columns if 'NICE' in col]]
-  dagoverzicht = dagoverzicht.merge(df, how='left', left_index=True, right_index=True)
-
-  # after the merge, dates missing in the ESRI/NICE set will be `nan`, so fill these
-  for col in df.columns:
-    # for cumulatief columns, fill-forward from last known value
-    if 'cumulatief' in col:
-      dagoverzicht[col] = dagoverzicht[col].ffill()
-    # for non-cumulative and whatever remains in cumulative after fill forward (which will be leading nan's), fill with 0
-    dagoverzicht[col] = dagoverzicht[col].fillna(0)
-
-  for kind in [ 'IC', 'Ziekenhuis' ]:
-    dagoverzicht[f'NICE {kind} Bedden (toename)'] = (dagoverzicht[f'NICE {kind} Bedden'] - dagoverzicht[f'NICE {kind} Bedden'].shift(1)).fillna(0)
-
-  for window, shift, past in [(3, 1, 'afgelopen '), (7, 0, '')]:
-    dagoverzicht[f'NICE IC Bedden (intake) {past}{window}d'] = dagoverzicht['NICE IC Bedden (intake)'].shift(shift).rolling(window).sum().fillna(0)
-
-  dagoverzicht['NICE IC Bedden (intake) week-1'] = dagoverzicht['NICE IC Bedden (intake) 7d'].shift(7).fillna(0)
 
 # %%
 @run('Personen')
