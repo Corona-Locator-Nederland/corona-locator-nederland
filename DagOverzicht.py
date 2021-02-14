@@ -88,9 +88,9 @@ def cell():
 
   # sommeer pos en overl op datum en voeg toe aan dagoverzicht
   addstats(df.groupby(['Datum']).agg({'Positief getest': 'sum', 'Overleden': 'sum'}))
+  global dagoverzicht
   for col in ['Overleden', 'Positief getest']:
     dagoverzicht[f'{col} week-1'] = dagoverzicht[f'{col} 7d'].shift(7).fillna(0)
-  global dagoverzicht
   display(dagoverzicht.head(10))
 
 # %%
