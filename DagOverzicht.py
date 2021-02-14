@@ -108,9 +108,9 @@ def cell():
   display(df)
 
   global dagoverzicht
+  columns = dagoverzicht.columns
+
   dagoverzicht = dagoverzicht.merge(df, how='left', left_index=True, right_index=True)
-  for col in df.columns:
-    dagoverzicht[col] = dagoverzicht[col].fillna(0)
 
   dagoverzicht['GGD percentage positief'] = (dagoverzicht['GGD getest positief'] / dagoverzicht['GGD getest']).fillna(0)
 
@@ -124,7 +124,13 @@ def cell():
 
   dagoverzicht['GGD percentage positief (cumulatief)'] = (dagoverzicht['GGD getest positief (cumulatief)'] / dagoverzicht['GGD getest (cumulatief)']).fillna(0)
 
-  display(dagoverzicht.head())
+  # fill 0 *after* the calculations above to prevent summing 'GGD getest (7 daags) from the starting date of the 'GGD getest' series
+  for col in dagoverzicht.columns:
+    # only zero out new columns
+    if col in columns: continue
+    dagoverzicht[col] = dagoverzicht[col].fillna(0)
+
+  display(dagoverzicht.head(10))
 
 # %%
 @run('LCPS')
