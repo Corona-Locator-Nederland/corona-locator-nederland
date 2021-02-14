@@ -73,9 +73,14 @@ class Cache:
 
     if not hasattr(cls, 'timestamps'):
       cls.timestamps = {}
+    if provider == 'github':
+      path = [p for p in urlparse(url).path.split('/') if p != '']
+      tsid = f'GitHub {path[1].lower()}'
+    else:
+      tsid = provider.upper()
     ts = (lastmodified + datetime.timedelta(hours=1)).strftime('%Y-%m-%d %H:%M')
-    if provider not in cls.timestamps or ts > cls.timestamps[provider]:
-      cls.timestamps[provider] = ts
+    if tsid not in cls.timestamps or ts > cls.timestamps[tsid]:
+      cls.timestamps[tsid] = ts
 
     if not os.path.exists(latest) and not os.path.exists(latest + '.gz'):
       print('downloading', latest)

@@ -9,6 +9,7 @@ from json import JSONDecodeError
 import hashlib
 import logging
 import sys, os
+import pandas as pd
 
 import asyncio
 import aiohttp
@@ -249,3 +250,6 @@ class Knack:
         responses = [await req for req in tqdm.tqdm(asyncio.as_completed(tasks), total=len(tasks))]
       print('\nrate limit:', rate_limit, '\nAPI calls:', self.calls)
     return len(tasks)
+
+  async def timestamps(self, notebook, timestamps):
+    await self.update(objectName='LaatsteUpdate', df=pd.DataFrame([{'Key': 1, **{ f'Timestamp {notebook} {provider}': ts for provider, ts in timestamps.items() }}]))

@@ -247,6 +247,6 @@ async def publish():
     print('updating knack')
     df = dagoverzicht.assign(Key=dagoverzicht.index.strftime('%Y-%m-%d'))
     await knack.update(objectName='Dagoverzicht', df=df)
-    await knack.update(objectName='LaatsteUpdate', df=pd.DataFrame([{'Key': 1, **{ f'Timestamp Dagoverzicht {provider.upper()}': ts for provider, ts in Cache.timestamps.items() if provider != 'github' }}]))
+    await knack.timestamps('Dagoverzicht', Cache.timestamps)
 await publish()
 # %%

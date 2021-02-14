@@ -372,7 +372,7 @@ async def publish(df):
   if knack:
     print('updating knack')
     await knack.update(objectName='RegioV2', df=df)
-    await knack.update(objectName='LaatsteUpdate', df=pd.DataFrame([{'Key': 1, **{ f'Timestamp RegioV2 {provider.upper()}': ts for provider, ts in Cache.timestamps.items() if provider != 'github' }}]))
+    await knack.timestamps('RegioV2', Cache.timestamps)
 
 order = pd.read_csv('RegioV2.csv')
 await publish(regios[order.columns.values].fillna(0))
