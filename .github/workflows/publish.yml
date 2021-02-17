@@ -47,6 +47,7 @@ jobs:
     - name: Run notebooks
       run: |
         set -x
+        date
         notebooks=(
         LeeftijdsgroepenLandelijk
         RegioV2
