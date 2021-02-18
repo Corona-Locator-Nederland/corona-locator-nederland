@@ -9,17 +9,66 @@ on:
   workflow_dispatch: null
 
 jobs:
-  run:
+  gather:
     runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+    - uses: actions/checkout@v2
+      if: github.event_name == 'push'
+    - uses: actions/checkout@v2
+      with:
+        ref: ${{ github.head_ref }}
+      if: github.event_name != 'push'
+    - name: Set up Python
+      uses: actions/setup-python@v1
+      with:
+        python-version: "3.9"
+    - name: Cache python dependencies and data downloads
+      id: cache
+      uses: actions/cache@v2
+      env:
+        cache-name: v1
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-build-${{ env.cache-name }}
+    - name: Install python requirements
+      run: |
+        python3 -m pip install --upgrade pip setuptools wheel
+        pip3 install -r requirements.txt
+        pip3 install nbformat --upgrade
+        pip freeze
+    - name: grab data files
+      if: always()
+      run: |
+        # grab updated data files
+        ./setup.py
+
+        # remove obsolete conversions
+        for nb in *.ipynb; do
+          if [ ! -f "${nb%.ipynb}.py" ]; then
+            rm $nb
+          fi
+        done
+    - uses: stefanzweifel/git-auto-commit-action@v4
+      if: always()
+      continue-on-error: true
+      with:
+        commit_message: save data history
+        file_pattern: rivm/*.gz lcps/*.gz *.ipynb github/*.gz nice/*.gz
+        skip_dirty_check: false
+
+  publish:
+    needs: gather
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        notebook: [ LeeftijdsgroepenLandelijk, RegioV2, DagOverzicht ]
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       KNACK_API_KEY: ${{ secrets.KNACK_API_KEY }}
       KNACK_APP_ID: ${{ secrets.KNACK_APP_ID }}
     steps:
-    - name: Cancel other runs
-      uses: styfle/cancel-workflow-action@0.6.0
-      with:
-        access_token: ${{ secrets.GITHUB_TOKEN }}
     - uses: actions/checkout@v2
       if: github.event_name == 'push'
     - uses: actions/checkout@v2
@@ -46,26 +95,10 @@ jobs:
         pip freeze
     - name: Run notebooks
       run: |
-        set -x
         date
-        notebooks=(
-        LeeftijdsgroepenLandelijk
-        RegioV2
-        DagOverzicht
-        )
+        echo Running ${{ matrix.notebook }}
         python3 -m ipykernel install --name python3 --user
-        for nb in ${notebooks[@]}; do
-          #jupytext $nb.py --to ipynb --set-kernel - --output $nb.ipynb
-          #papermill --log-output $nb.ipynb /tmp/output.ipynb
-          jupytext $nb.py --to ipynb --set-kernel - --output - | papermill --log-output - $nb.ipynb
-        done
-
-        # remove obsolete conversions
-        for nb in *.ipynb; do
-          if [ ! -f "${nb%.ipynb}.py" ]; then
-            rm $nb
-          fi
-        done
+        jupytext ${{ matrix.notebook }}.py --to ipynb --set-kernel - --output - | papermill --log-output - ${{ matrix.notebook }}.ipynb
       env:
         PYTHONUNBUFFERED: true
     - name: store build artifacts
@@ -73,13 +106,10 @@ jobs:
       with:
         path: artifacts
 
-    - name: grab data files
-      if: always()
-      run: ./setup.py
     - uses: stefanzweifel/git-auto-commit-action@v4
       if: always()
       continue-on-error: true
       with:
         commit_message: Update converted notebooks, save RIVM history
-        file_pattern: rivm/*.gz lcps/*.gz *.ipynb github/*.gz nice/*.gz
+        file_pattern: '*.ipynb'
         skip_dirty_check: false
