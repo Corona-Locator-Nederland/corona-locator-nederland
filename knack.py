@@ -16,7 +16,7 @@ import aiohttp
 import backoff
 from slack_webhook import Slack
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 
 def in_notebook():
   from IPython import get_ipython
@@ -173,7 +173,7 @@ class Knack:
       m[k] = v
     return m
 
-  async def update(self, sceneName=None, viewName=None, objectName=None, df=None, force=False, slack=False, rate_limit=7):
+  async def update(self, sceneName=None, viewName=None, objectName=None, df=None, force=False, timestamps=None, rate_limit=7):
     self.calls = self.Calls()
     assert df is not None, 'df parameter is required'
 
@@ -253,9 +253,8 @@ class Knack:
         responses = [await req for req in tqdm.tqdm(asyncio.as_completed(tasks), total=len(tasks))]
       print('\nrate limit:', rate_limit, '\nAPI calls:', self.calls)
 
-      print('slack:', slack, 'webhook:', 'SLACK_WEBHOOK' in os.environ)
-      if slack and 'SLACK_WEBHOOK' in os.environ:
-        msg = (datetime.now() + datetime.timedelta(hours=1)).strftime(f'%Y-%m-%d %H:%M ')
+      if timestamps and 'SLACK_WEBHOOK' in os.environ:
+        msg = (datetime.now() + timedelta(hours=1)).strftime(f'%Y-%m-%d %H:%M ')
         if nb := os.environ.get('NOTEBOOK'):
           msg += nb + ' '
         if 'GITHUB_RUN_ID' in os.environ:
@@ -273,6 +272,8 @@ class Knack:
           msg += 'nothing to do'
         else:
           msg += f'API calls: {self.calls}'
+        for provider, ts in timestamps.items():
+          msg += f"\n{provider}: {ts}"
         print('slack:', msg)
         Slack(url=os.environ['SLACK_WEBHOOK']).post(text=msg)
 

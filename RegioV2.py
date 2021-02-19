@@ -371,7 +371,7 @@ async def publish(df):
 
   if knack:
     print('updating knack')
-    await knack.update(objectName='RegioV2', df=df, slack=True)
+    await knack.update(objectName='RegioV2', df=df, timestamps=Cache.timestamps)
     await knack.timestamps('RegioV2', Cache.timestamps)
 
 order = pd.read_csv('RegioV2.csv')
