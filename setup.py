@@ -92,15 +92,19 @@ class Cache:
       print(latest, 'exists')
 
     if 'CI' in os.environ:
-      for f in glob.glob(os.path.join(provider, f'{name}*{ext}')):
-        with open(f, 'rb') as f_in, gzip.open(f + '.gz', 'wb') as f_out:
-          shutil.copyfileobj(f_in, f_out)
-          os.remove(f)
+      for f in glob.glob(datafiles):
+        if not f.endswith('.gz'):
+          print(provider, name, 'zipping', f)
+          with open(f, 'rb') as f_in, gzip.open(f + '.gz', 'wb') as f_out:
+            shutil.copyfileobj(f_in, f_out)
+            os.remove(f)
 
     # delete local duplicates
     for f in glob.glob(datafiles):
       if os.path.exists(f + '.gz'):
+        print(provider, name, 'removing unzipped', f)
         os.remove(f)
+
     dated = {}
     # RIVM publiceert soms 2 keer per dag blijkbaar
     for f in sorted(glob.glob(datafiles), reverse=True):
@@ -108,12 +112,15 @@ class Cache:
       if ts not in dated:
         dated[ts] = f
       else:
+        print(provider, name, 'removing obsolete', f)
         os.remove(f)
 
-    #if keep is not None:
-    #  for f in sorted(glob.glob(datafiles), reverse=True)[keep:]:
-    #    os.remove(f)
     history = sorted(glob.glob(datafiles), reverse=True)
+    if keep is not None:
+      print(len(history), provider, name, 'files, pruning', max(len(history) - keep, 0), 'keeping', min(keep, len(history)))
+      for f in history[keep:]:
+        os.remove(f)
+
     return history[n]
 
 def ignore(*args):
