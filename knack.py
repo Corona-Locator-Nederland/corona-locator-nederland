@@ -173,7 +173,7 @@ class Knack:
       m[k] = v
     return m
 
-  async def update(self, sceneName=None, viewName=None, objectName=None, df=None, force=False, timestamps=None, rate_limit=7):
+  async def update(self, sceneName=None, viewName=None, objectName=None, df=None, force=False, rate_limit=7):
     self.calls = self.Calls()
     assert df is not None, 'df parameter is required'
 
@@ -253,31 +253,30 @@ class Knack:
         responses = [await req for req in tqdm.tqdm(asyncio.as_completed(tasks), total=len(tasks))]
       print('\nrate limit:', rate_limit, '\nAPI calls:', self.calls)
 
-      if timestamps and 'SLACK_WEBHOOK' in os.environ:
-        msg = (datetime.now() + timedelta(hours=1)).strftime(f'%Y-%m-%d %H:%M ')
-        if nb := os.environ.get('NOTEBOOK'):
-          msg += f'*{nb}* '
-        if 'GITHUB_RUN_ID' in os.environ:
-          msg += '<'
-          msg += os.environ['GITHUB_SERVER_URL'] + '/' + os.environ['GITHUB_REPOSITORY'] + '/actions/runs/' + os.environ['GITHUB_RUN_ID']
-          msg += '|'
-          msg += 'GitHub action'
-          msg += '> '
-
-        msg = msg.strip()
-        if msg != '':
-          msg += ': '
-
-        if len(tasks) == 0:
-          msg += 'nothing to do'
-        else:
-          msg += f'API calls: {self.calls}'
-        for provider, ts in timestamps.items():
-          msg += f"\n• *{provider}*: {ts}"
-        print('slack:', msg)
-        Slack(url=os.environ['SLACK_WEBHOOK']).post(text=msg)
-
+    self.slack('nothing to do' if len(tasks) == 0 else f'API calls: {self.calls}')
     return len(tasks)
 
   async def timestamps(self, notebook, timestamps):
+    msg = '*update timestamps*'
+    for provider, ts in timestamps.items():
+      msg += f"\n• *{provider}*: {ts}"
+    self.slack(msg)
     await self.update(objectName='LaatsteUpdate', df=pd.DataFrame([{'Key': 1, **{ f'Timestamp {notebook} {provider}': ts for provider, ts in timestamps.items() }}]))
+
+  def slack(msg):
+    if 'SLACK_WEBHOOK' not in os.environ: return
+
+    prefix = (datetime.now() + timedelta(hours=1)).strftime(f'%Y-%m-%d %H:%M ')
+    if nb := os.environ.get('NOTEBOOK'):
+      prefix += f'*{nb}* '
+    if 'GITHUB_RUN_ID' in os.environ:
+      prefix += '<'
+      prefix += os.environ['GITHUB_SERVER_URL'] + '/' + os.environ['GITHUB_REPOSITORY'] + '/actions/runs/' + os.environ['GITHUB_RUN_ID']
+      prefix += '|'
+      prefix += 'GitHub action'
+      prefix += '> '
+
+    prefix = prefix.strip()
+    if prefix != '':
+      prefix += ': '
+    Slack(url=os.environ['SLACK_WEBHOOK']).post(text=prefix + msg)
