@@ -140,12 +140,8 @@ def ignore(*args):
     print(*(['SKIPPING:'] + list(args)))
     return lambda func: func
 
-def run(*args):
-  if len(args) == 1 and callable(args[0]):
-    return args[0]()
-  else:
-    print(*args)
-    return lambda func: func()
+def run(cell):
+  cell()
 
 # https://www.cbs.nl/nl-nl/onze-diensten/open-data/open-data-v4/snelstartgids-odata-v4
 # which is a bit of a lie, since their odata implementation is broken in very imaginitive ways

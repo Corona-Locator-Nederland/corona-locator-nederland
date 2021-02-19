@@ -5,25 +5,24 @@ get_ipython().run_line_magic('load_ext', 'autoreload')
 get_ipython().run_line_magic('autoreload', '2')
 get_ipython().run_line_magic('run', 'setup')
 
-# %%
+# %% leeftijdsgroepen: download RIVM data
 #leeftijdsgroepen = SimpleNamespace()
-@run('leeftijdsgroepen: download RIVM data')
+@run
 def cell():
   global rivm
   rivm = RIVM.csv('COVID-19_casus_landelijk')
   display(rivm.head())
 
-# %%
-# Download de bevolkings cijfers van CBS, uitgesplitst op de leeftijds categorien in de dataset van het RIVM
-@run('leeftijdsgroepen: download demografische data van CBS')
+# %% Download de bevolkings cijfers van CBS, uitgesplitst op de leeftijds categorien in de dataset van het RIVM
+@run
 def cell():
   global bevolking
   bevolking = CBS.bevolking(leeftijdsgroepen=True)
 
-# %%
+# %% leeftijdsgroepen: prepareer tabel
 # Bereken de stand van zaken van besmettingen / hospitalisaties / overlijden, per cohort in absolute aantallen en aantallen per 100k, met een kleur indicator voor de aantallen.
 # vervang <50 en Unknown door Onbekend
-@run('leeftijdsgroepen: prepareer tabel')
+@run
 def cell():
   rivm['Cohort'] = rivm['Agegroup'].replace({'<50': 'Onbekend', 'Unknown': 'Onbekend'})
   # aangenomen 'gemiddelde' leeftijd van een cohort: minimum waarde + 5

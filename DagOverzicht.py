@@ -1,4 +1,4 @@
-# %%
+# %% setup
 from IPython import get_ipython
 from IPython.core.display import display
 get_ipython().run_line_magic('load_ext', 'autoreload')
@@ -26,8 +26,8 @@ def addstats(df):
     # en weer factor 100 k
     dagoverzicht[f'{stat} 7d per 100.000'] = dagoverzicht[f'{stat} 7d'] * bevolking['per 100k']
 
-# %%
-@run('set up base frame from ESRI -> NICE')
+# %% set up base frame from ESRI -> NICE
+@run
 def cell():
   df = ArcGIS.nice('f27f743476a142538e8054f7a7ce12e1')
 
@@ -74,8 +74,8 @@ def cell():
 
   dagoverzicht['NICE IC Bedden (intake) week-1'] = dagoverzicht['NICE IC Bedden (intake) 7d'].shift(7).fillna(0)
 
-# %%
-@run('overleden + positief getest')
+# %% overleden + positief getest
+@run
 def cell():
   df = RIVM.csv('COVID-19_aantallen_gemeente_per_dag').rename(columns={
     'Total_reported': 'Positief getest',
@@ -93,8 +93,8 @@ def cell():
     dagoverzicht[f'{col} week-1'] = dagoverzicht[f'{col} 7d'].shift(7).fillna(0)
   display(dagoverzicht.head(10))
 
-# %%
-@run('ziekenhuisopnames')
+# %% ziekenhuisopnames
+@run
 def cell():
   df = RIVM.csv('COVID-19_ziekenhuisopnames').rename(columns={
     'Hospital_admission': 'Ziekenhuisopnames',
@@ -107,8 +107,8 @@ def cell():
   dagoverzicht['Ziekenhuisopnames week-1'] = dagoverzicht['Ziekenhuisopnames 7d'].shift(7).fillna(0)
   display(dagoverzicht.head())
 
-# %%
-@run('reproductiegetal en besmettelijkheid')
+# %% reproductiegetal en besmettelijkheid
+@run
 def cell():
   global dagoverzicht
 
@@ -132,8 +132,8 @@ def cell():
   dagoverzicht['Besmettelijk per 100.000'] = (dagoverzicht['Besmettelijk']  * bevolking['per 100k']).round(0)
   display(dagoverzicht)
 
-# %%
-@run('uitgevoerde testen')
+# %% uitgevoerde testen
+@run
 def cell():
   df = RIVM.csv('COVID-19_uitgevoerde_testen').rename(columns={
     'Date_of_statistics': 'Datum',
@@ -169,8 +169,8 @@ def cell():
 
   display(dagoverzicht.head(10))
 
-# %%
-@run('LCPS')
+# %% LCPS
+@run
 def cell():
   # laad dataset
   df = LCPS.csv('covid-19').rename(columns={
@@ -198,8 +198,8 @@ def cell():
     # vervang lege waarden door 0
     dagoverzicht[col] = dagoverzicht[col].fillna(0).astype(int)
 
-# %%
-@run('corrections')
+# %% corrections
+@run
 def cell():
   # laad corrections van mzelst
   df = GitHub.csv('mzelst/covid-19/contents/corrections/corrections_perday.csv')
@@ -221,8 +221,8 @@ def cell():
     # set lege waarden op 0
     dagoverzicht[col] = dagoverzicht[col].fillna(0).astype(int)
 
-# %%
-@run('Personen')
+# %% Personen
+@run
 def cell():
   global dagoverzicht
   dagoverzicht['Personen'] = bevolking.BevolkingOpDeEersteVanDeMaand

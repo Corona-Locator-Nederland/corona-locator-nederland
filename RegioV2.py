@@ -9,8 +9,8 @@ get_ipython().run_line_magic('run', 'setup')
 def sortcolumns(df):
   return df[sorted(df.columns)]
 
-# %%
-@run('regio: load regios en hun basisgegevens')
+# %% regio: load regios en hun basisgegevens
+@run
 def cell():
   global gemeenten
   # rename de kolommen naar "Naam" + "NaamCode" voor makkelijker uniforme data bewerking
@@ -331,8 +331,8 @@ def collect(regiotype):
 
   return df
 
-# %%
-@run('regio: load verschillende aggregatie niveaus')
+# %% regio: load verschillende aggregatie niveaus
+@run
 def cell():
   global regios
   # verzamel de data voor de gegeven regiotypes en plak ze onder elkaar
