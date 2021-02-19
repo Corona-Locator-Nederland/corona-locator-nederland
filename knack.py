@@ -173,7 +173,7 @@ class Knack:
       m[k] = v
     return m
 
-  async def update(self, sceneName=None, viewName=None, objectName=None, df=None, force=False, rate_limit=7):
+  async def update(self, sceneName=None, viewName=None, objectName=None, df=None, force=False, rate_limit=7, slack=Munch(msg='',emoji=None)):
     self.calls = self.Calls()
     assert df is not None, 'df parameter is required'
 
@@ -246,23 +246,30 @@ class Knack:
       ]
       for i, task in enumerate(tasks):
         task.id = i + 1 # skip 0 to avoid confusion between -0 and 0 in the call tracking
+
       tasks = [asyncio.create_task(self.execute(task)) for task in tasks]
       if len(tasks) == 0:
         print('nothing to do')
-        self.slack('nothing to do', emoji=':sleeping:')
+        self.slack(slack.msg + 'nothing to do', emoji=':sleeping:')
       else:
         responses = [await req for req in tqdm.tqdm(asyncio.as_completed(tasks), total=len(tasks))]
-        self.slack(f'API calls: {self.calls}', emoji=(':white_check_mark:' if hashing else ':game_die:'))
+        if hashing:
+          slack.emoji = slack.emoji or ':white_check_mark:'
+        else:
+          slack.emoji = (slack.emoji or '') + ':game_die:'
+        self.slack(slack.msg + f'API calls: {self.calls}', emoji=slack.emoji)
       print('\nrate limit:', rate_limit, '\nAPI calls:', self.calls)
-
     return len(tasks)
 
   async def timestamps(self, notebook, timestamps):
-    msg = '*update timestamps*'
+    msg = '*update timestamps*\n'
     for provider, ts in timestamps.items():
-      msg += f"\n• *{provider}*: {ts}"
-    self.slack(msg, emoji=':clock1:')
-    await self.update(objectName='LaatsteUpdate', df=pd.DataFrame([{'Key': 1, **{ f'Timestamp {notebook} {provider}': ts for provider, ts in timestamps.items() }}]))
+      msg += f"• *{provider}*: {ts}\n"
+    await self.update(
+      objectName='LaatsteUpdate',
+      df=pd.DataFrame([{'Key': 1, **{ f'Timestamp {notebook} {provider}': ts for provider, ts in timestamps.items() }}]),
+      slack=Munch(msg=msg, emoji=':clock1:')
+    )
 
   def slack(self, msg, emoji=''):
     if 'SLACK_WEBHOOK' not in os.environ: return
