@@ -273,7 +273,7 @@ class Knack:
         else:
           msg += f'API calls: {self.calls}'
         for provider, ts in timestamps.items():
-          msg += f"\n• {provider}: {ts}"
+          msg += f"\n• *{provider}*: {ts}"
         print('slack:', msg)
         Slack(url=os.environ['SLACK_WEBHOOK']).post(text=msg)
 
