@@ -249,11 +249,12 @@ class Knack:
       tasks = [asyncio.create_task(self.execute(task)) for task in tasks]
       if len(tasks) == 0:
         print('nothing to do')
+        self.slack('nothing to do', emoji=':sleeping:')
       else:
         responses = [await req for req in tqdm.tqdm(asyncio.as_completed(tasks), total=len(tasks))]
+        self.slack(f'API calls: {self.calls}', emoji=(':updatedone:' if hashing else ':d20:'))
       print('\nrate limit:', rate_limit, '\nAPI calls:', self.calls)
 
-    self.slack('nothing to do' if len(tasks) == 0 else f'API calls: {self.calls}')
     return len(tasks)
 
   async def timestamps(self, notebook, timestamps):
@@ -263,10 +264,10 @@ class Knack:
     self.slack(msg)
     await self.update(objectName='LaatsteUpdate', df=pd.DataFrame([{'Key': 1, **{ f'Timestamp {notebook} {provider}': ts for provider, ts in timestamps.items() }}]))
 
-  def slack(self, msg):
+  def slack(self, msg, emoji=''):
     if 'SLACK_WEBHOOK' not in os.environ: return
 
-    prefix = (datetime.now() + timedelta(hours=1)).strftime(f'%Y-%m-%d %H:%M ')
+    prefix = emoji + ' '
     if nb := os.environ.get('NOTEBOOK'):
       prefix += f'*{nb}* '
     if 'GITHUB_RUN_ID' in os.environ:
@@ -275,8 +276,7 @@ class Knack:
       prefix += '|'
       prefix += 'GitHub action ' + os.environ['GITHUB_RUN_NUMBER']
       prefix += '> '
+    prefix += (datetime.now() + timedelta(hours=1)).strftime(f'%Y-%m-%d %H:%M ')
 
-    prefix = prefix.strip()
-    if prefix != '':
-      prefix += ': '
+    prefix = prefix.strip() + '\n'
     Slack(url=os.environ['SLACK_WEBHOOK']).post(text=prefix + msg)
