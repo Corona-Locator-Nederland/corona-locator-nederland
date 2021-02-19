@@ -253,6 +253,7 @@ class Knack:
         responses = [await req for req in tqdm.tqdm(asyncio.as_completed(tasks), total=len(tasks))]
       print('\nrate limit:', rate_limit, '\nAPI calls:', self.calls)
 
+      print('slack:', slack, 'webhook:', 'SLACK_WEBHOOK' in os.environ)
       if slack and 'SLACK_WEBHOOK' in os.environ:
         msg = (datetime.now() + datetime.timedelta(hours=1)).strftime(f'%Y-%m-%d %H:%M ')
         if nb := os.environ.get('NOTEBOOK'):
@@ -272,6 +273,7 @@ class Knack:
           msg += 'nothing to do'
         else:
           msg += f'API calls: {self.calls}'
+        print('slack:', msg)
         Slack(url=os.environ['SLACK_WEBHOOK']).post(text=msg)
 
     return len(tasks)
