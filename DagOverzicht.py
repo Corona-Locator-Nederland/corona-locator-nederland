@@ -245,7 +245,7 @@ async def publish():
   if knack:
     print('updating knack')
     df = dagoverzicht.assign(Key=dagoverzicht.index.strftime('%Y-%m-%d'))
-    await knack.update(objectName='Dagoverzicht', df=df)
+    await knack.update(objectName='Dagoverzicht', df=df, slack=Munch(msg='\n'.join(Cache.actions), emoji=None))
     await knack.timestamps('Dagoverzicht', Cache.timestamps)
 await publish()
 # %%

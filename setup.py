@@ -50,6 +50,11 @@ if 'GSHEET' in os.environ:
 
 class Cache:
   @classmethod
+  def say(cls, msg):
+    print(msg)
+    cls.actions.append(msg)
+
+  @classmethod
   def fetch(cls, url, n=0, headers={}, keep=None, provider=None, name=None):
     if provider is None:
       domain = urlparse(url).netloc
@@ -71,6 +76,8 @@ class Cache:
       lastmodified = datetime.datetime.utcnow().replace(minute=0)
     latest = os.path.join(provider, lastmodified.strftime(f'{name}-%Y-%m-%d@%H-%M{ext}'))
 
+    if not hasattr(cls, 'actions'):
+      cls.actions = []
     if not hasattr(cls, 'timestamps'):
       cls.timestamps = {}
     if provider == 'github':
@@ -83,7 +90,7 @@ class Cache:
       cls.timestamps[tsid] = ts
 
     if not os.path.exists(latest) and not os.path.exists(latest + '.gz'):
-      print('downloading', latest)
+      cls.say(f'downloading {latest}')
       with requests.get(url, headers=headers, stream=True) as r, open(latest, 'wb') as f:
         r.raise_for_status()
         for chunk in r.iter_content(chunk_size=8192):
@@ -112,14 +119,15 @@ class Cache:
       if ts not in dated:
         dated[ts] = f
       else:
-        print(provider, name, 'removing obsolete', f)
+        cls.say(f'removing obsolete {f}')
         os.remove(f)
 
     history = sorted(glob.glob(datafiles), reverse=True)
     if keep is not None:
-      print(len(history), provider, name, 'files, pruning', max(len(history) - keep, 0), 'keeping', min(keep, len(history)))
+      cls.say(f'{len(history)} {provider} {name} files, pruning {max(len(history) - keep, 0)}, keeping {min(keep, len(history))}')
       for f in history[keep:]:
         os.remove(f)
+        cls.say(f'removed {f}')
 
     return history[n]
 
