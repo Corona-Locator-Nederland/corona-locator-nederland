@@ -273,7 +273,7 @@ class Knack:
       prefix += '<'
       prefix += os.environ['GITHUB_SERVER_URL'] + '/' + os.environ['GITHUB_REPOSITORY'] + '/actions/runs/' + os.environ['GITHUB_RUN_ID']
       prefix += '|'
-      prefix += 'GitHub action'
+      prefix += 'GitHub action ' + os.environ['GITHUB_RUN_NUMBER']
       prefix += '> '
 
     prefix = prefix.strip()
