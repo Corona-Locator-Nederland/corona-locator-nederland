@@ -69,6 +69,7 @@ jobs:
       KNACK_API_KEY: ${{ secrets.KNACK_API_KEY }}
       KNACK_APP_ID: ${{ secrets.KNACK_APP_ID }}
       NOTEBOOK: ${{ matrix.notebook }}
+      SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
     steps:
     - uses: actions/checkout@v2
       if: github.event_name == 'push'
@@ -94,7 +95,7 @@ jobs:
         pip3 install -r requirements.txt
         pip3 install nbformat --upgrade
         pip freeze
-    - name: Run notebooks
+    - name: Run ${{ matrix.notebook }}
       run: |
         date
         echo Running ${{ matrix.notebook }}
