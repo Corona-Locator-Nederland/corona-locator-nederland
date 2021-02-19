@@ -248,6 +248,8 @@ class Knack:
         task.id = i + 1 # skip 0 to avoid confusion between -0 and 0 in the call tracking
 
       tasks = [asyncio.create_task(self.execute(task)) for task in tasks]
+      if slack.msg.strip() != '':
+        slack.msg = slack.msg.strip() + '\n'
       if len(tasks) == 0:
         print('nothing to do')
         self.slack(slack.msg + 'nothing to do', emoji=':sleeping:')
@@ -262,7 +264,6 @@ class Knack:
     return len(tasks)
 
   async def timestamps(self, notebook, timestamps):
-    msg = '*update timestamps*\n'
     for provider, ts in timestamps.items():
       msg += f"• *{provider}*: {ts}\n"
     await self.update(
