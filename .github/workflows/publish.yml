@@ -15,7 +15,6 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       KNACK_API_KEY: ${{ secrets.KNACK_API_KEY }}
       KNACK_APP_ID: ${{ secrets.KNACK_APP_ID }}
-      NOTEBOOK: ${{ matrix.notebook }}
       SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
     steps:
     - uses: actions/checkout@v2
