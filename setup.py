@@ -29,6 +29,7 @@ import matplotlib.colors as colors
 import gzip
 import shutil
 from jsonpath import JSONPath
+from munch import Munch
 
 #from types import SimpleNamespace
 
