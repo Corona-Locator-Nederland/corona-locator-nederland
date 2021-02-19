@@ -263,7 +263,7 @@ class Knack:
     self.slack(msg)
     await self.update(objectName='LaatsteUpdate', df=pd.DataFrame([{'Key': 1, **{ f'Timestamp {notebook} {provider}': ts for provider, ts in timestamps.items() }}]))
 
-  def slack(msg):
+  def slack(self, msg):
     if 'SLACK_WEBHOOK' not in os.environ: return
 
     prefix = (datetime.now() + timedelta(hours=1)).strftime(f'%Y-%m-%d %H:%M ')
