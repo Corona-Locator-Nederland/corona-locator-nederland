@@ -261,8 +261,8 @@ class Knack:
     msg = '*update timestamps*'
     for provider, ts in timestamps.items():
       msg += f"\n• *{provider}*: {ts}"
-    await self.update(objectName='LaatsteUpdate', df=pd.DataFrame([{'Key': 1, **{ f'Timestamp {notebook} {provider}': ts for provider, ts in timestamps.items() }}]))
     self.slack(msg, emoji=':clock1:')
+    await self.update(objectName='LaatsteUpdate', df=pd.DataFrame([{'Key': 1, **{ f'Timestamp {notebook} {provider}': ts for provider, ts in timestamps.items() }}]))
 
   def slack(self, msg, emoji=''):
     if 'SLACK_WEBHOOK' not in os.environ: return
