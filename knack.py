@@ -256,7 +256,7 @@ class Knack:
       if timestamps and 'SLACK_WEBHOOK' in os.environ:
         msg = (datetime.now() + timedelta(hours=1)).strftime(f'%Y-%m-%d %H:%M ')
         if nb := os.environ.get('NOTEBOOK'):
-          msg += nb + ' '
+          msg += f'*{nb}* '
         if 'GITHUB_RUN_ID' in os.environ:
           msg += '<'
           msg += os.environ['GITHUB_SERVER_URL'] + '/' + os.environ['GITHUB_REPOSITORY'] + '/actions/runs/' + os.environ['GITHUB_RUN_ID']
@@ -273,7 +273,7 @@ class Knack:
         else:
           msg += f'API calls: {self.calls}'
         for provider, ts in timestamps.items():
-          msg += f"\n{provider}: {ts}"
+          msg += f"\n• {provider}: {ts}"
         print('slack:', msg)
         Slack(url=os.environ['SLACK_WEBHOOK']).post(text=msg)
 
