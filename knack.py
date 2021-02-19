@@ -267,15 +267,20 @@ class Knack:
   def slack(self, msg, emoji=''):
     if 'SLACK_WEBHOOK' not in os.environ: return
 
-    prefix = emoji + ' '
-    if nb := os.environ.get('NOTEBOOK'):
-      prefix += f'*{nb}* '
+    prefix = ''
+
     if 'GITHUB_RUN_ID' in os.environ:
       prefix += '<'
       prefix += os.environ['GITHUB_SERVER_URL'] + '/' + os.environ['GITHUB_REPOSITORY'] + '/actions/runs/' + os.environ['GITHUB_RUN_ID']
       prefix += '|'
-      prefix += 'GitHub action ' + os.environ['GITHUB_RUN_NUMBER']
+      prefix += os.environ['GITHUB_RUN_NUMBER']
       prefix += '> '
+
+    if nb := os.environ.get('NOTEBOOK'):
+      prefix += f'*{nb}* '
+
+    prefix += emoji + ' '
+
     prefix += (datetime.now() + timedelta(hours=1)).strftime(f'%Y-%m-%d %H:%M ')
 
     prefix = prefix.strip() + '\n'
