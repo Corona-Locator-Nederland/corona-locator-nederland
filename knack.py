@@ -264,6 +264,7 @@ class Knack:
     return len(tasks)
 
   async def timestamps(self, notebook, timestamps):
+    msg = ''
     for provider, ts in timestamps.items():
       msg += f"• *{provider}*: {ts}\n"
     await self.update(
