@@ -71,7 +71,7 @@ jobs:
         # remove obsolete conversions
         for nb in *.ipynb; do
           if [ ! -f "${nb%.ipynb}.py" ]; then
-            rm $nb
+            git rm $nb
           fi
         done
     - uses: stefanzweifel/git-auto-commit-action@v4
@@ -79,5 +79,5 @@ jobs:
       continue-on-error: true
       with:
         commit_message: save data history
-        file_pattern: rivm/*.gz lcps/*.gz *.ipynb github/*.gz nice/*.gz
+        file_pattern: rivm lcps *.ipynb github nice
         skip_dirty_check: false
