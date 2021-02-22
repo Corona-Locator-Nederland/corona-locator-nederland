@@ -51,6 +51,11 @@ if 'GSHEET' in os.environ:
 
 class Cache:
   @classmethod
+  def reset(cls):
+    cls.actions = []
+    cls.timestamps = {}
+
+  @classmethod
   def say(cls, msg):
     print(msg)
     cls.actions.append(msg)
