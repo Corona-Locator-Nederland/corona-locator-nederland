@@ -489,7 +489,15 @@ def cell():
   regioposten.rename(columns={'GGDregio': 'GGD regio'}, inplace=True)
   display(regioposten)
 # %%
-await publish(regioposten, 'Regioposten')
-
+import time
+async def retryforknackbreakage():
+  for attempt in range(1, 20):
+    try:
+      await publish(regioposten, 'Regioposten')
+      return
+    except:
+      print('knack is broken. again. sleeping', attempt * 10, 'seconds')
+      time.sleep(attempt * 10)
+await retryforknackbreakage()
 
 # %%
