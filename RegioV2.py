@@ -1,6 +1,8 @@
-# %%
+# %% setup
 from IPython import get_ipython
 from IPython.core.display import display
+from typing_extensions import runtime
+import numpy as np
 get_ipython().run_line_magic('load_ext', 'autoreload')
 get_ipython().run_line_magic('autoreload', '2')
 get_ipython().run_line_magic('run', 'setup')
@@ -8,6 +10,51 @@ get_ipython().run_line_magic('run', 'setup')
 # sorteert de kolommen alfabetisch, is makkelijker visueel te debuggen.
 def sortcolumns(df):
   return df[sorted(df.columns)]
+
+# prepareer een RIVM dataset
+def prepare(dataset, day):
+  df = RIVM.csv(dataset, day)
+  # hernoem kolommen voor makkelijker uniforme data bewerking
+  for old, new in [('Municipality_code', 'GemeenteCode'), ('Security_region_code', 'VeiligheidsregioCode'), ('Security_region_name', 'Veiligheidsregio')]:
+    if old in df:
+      df[new] = df[old]
+  if 'GemeenteCode' in df:
+    df['GemeenteCode'] = df['GemeenteCode'].fillna('GM0000')
+
+  if 'Agegroup' in df:
+    df['LeeftijdCode'] = 'LE' + df['Agegroup'].replace({'0-9': '00-09', '<50': '00-00', 'Unknown': '00-00', 'Onbekend': '00-00'}).replace('-', '', regex=True).astype(str)
+    df['Total_reported'] = 1 # impliciet in casus-landelijk
+    df = df.replace({'Hospital_admission': {'Yes': 1, 'No': 0, 'Unknown': 0}, 'Deceased': {'Yes': 1, 'No': 0, 'Unknown': 0}})
+
+  # voeg regiocodes to aan elke regel in de dataset
+  if 'GemeenteCode' in df:
+    for regiotype in ['GGDregio', 'Provincie', 'Landsdeel', 'Schoolregio']:
+      df = df.merge(gemeenten[['GemeenteCode', f'{regiotype}Code']].drop_duplicates(), on='GemeenteCode')
+
+  # als er geen gemeentecode is, maar misschien wel een VR code, vervang die door VR00
+  if 'GemeenteCode' in df and 'VeiligheidsregioCode' in df:
+    df.loc[df.GemeenteCode == 'GM0000', 'VeiligheidsregioCode'] = 'VR00'
+    df.loc[df.GemeenteCode == 'GM0000', 'Veiligheidsregio'] = ''
+
+  df['LandCode'] = 'NL'
+  df['Land'] = 'Nederland'
+
+  # knip de tijd van de datum af, en stop hem in 'Today' (referentiepunt metingen)
+  if 'Date_of_report' in df:
+    df['Datum'] = df.Date_of_report.str.replace(' .*', '', regex=True)
+  elif 'Date_file' in df:
+    df['Datum'] = df.Date_file.str.replace(' .*', '', regex=True)
+  df['Today'] = pd.to_datetime(df.Datum)
+
+  # zet 'Date' naar de bij de betreffende dataset horende meetdatum-kolom
+  for when in ['Date_statistics', 'Date_of_statistics', 'Date_of_publication']:
+    if when in df:
+      df['Date'] = pd.to_datetime(df[when])
+      # en direct maar weken terug, die hebben we vaker nodig
+      df['WekenTerug'] = ((df.Today - df.Date) / np.timedelta64(7, 'D')).astype(int)
+
+  return sortcolumns(df).sort_values(by=['Date'])
+
 
 # %% regio: load regios en hun basisgegevens
 @run
@@ -75,50 +122,6 @@ def cell():
   gemeenten.loc[gemeenten.Personen == 0, 'Personen'] = gemeenten.BevolkingAanHetBeginVanDePeriode
   del gemeenten['BevolkingAanHetBeginVanDePeriode']
   gemeenten = sortcolumns(gemeenten)
-
-  # prepareer een RIVM dataset
-  def prepare(dataset, day):
-    df = RIVM.csv(dataset, day)
-    # hernoem kolommen voor makkelijker uniforme data bewerking
-    for old, new in [('Municipality_code', 'GemeenteCode'), ('Security_region_code', 'VeiligheidsregioCode'), ('Security_region_name', 'Veiligheidsregio')]:
-      if old in df:
-        df[new] = df[old]
-    if 'GemeenteCode' in df:
-      df['GemeenteCode'] = df['GemeenteCode'].fillna('GM0000')
-
-    if 'Agegroup' in df:
-      df['LeeftijdCode'] = 'LE' + df['Agegroup'].replace({'0-9': '00-09', '<50': '00-00', 'Unknown': '00-00', 'Onbekend': '00-00'}).replace('-', '', regex=True).astype(str)
-      df['Total_reported'] = 1 # impliciet in casus-landelijk
-      df = df.replace({'Hospital_admission': {'Yes': 1, 'No': 0, 'Unknown': 0}, 'Deceased': {'Yes': 1, 'No': 0, 'Unknown': 0}})
-
-    # voeg regiocodes to aan elke regel in de dataset
-    if 'GemeenteCode' in df:
-      for regiotype in ['GGDregio', 'Provincie', 'Landsdeel', 'Schoolregio']:
-        df = df.merge(gemeenten[['GemeenteCode', f'{regiotype}Code']].drop_duplicates(), on='GemeenteCode')
-
-    # als er geen gemeentecode is, maar misschien wel een VR code, vervang die door VR00
-    if 'GemeenteCode' in df and 'VeiligheidsregioCode' in df:
-      df.loc[df.GemeenteCode == 'GM0000', 'VeiligheidsregioCode'] = 'VR00'
-      df.loc[df.GemeenteCode == 'GM0000', 'Veiligheidsregio'] = ''
-
-    df['LandCode'] = 'NL'
-    df['Land'] = 'Nederland'
-  
-    # knip de tijd van de datum af, en stop hem in 'Today' (referentiepunt metingen)
-    if 'Date_of_report' in df:
-      df['Datum'] = df.Date_of_report.str.replace(' .*', '', regex=True)
-    elif 'Date_file' in df:
-      df['Datum'] = df.Date_file.str.replace(' .*', '', regex=True)
-    df['Today'] = pd.to_datetime(df.Datum)
-  
-    # zet 'Date' naar de bij de betreffende dataset horende meetdatum-kolom
-    for when in ['Date_statistics', 'Date_of_statistics', 'Date_of_publication']:
-      if when in df:
-        df['Date'] = pd.to_datetime(df[when])
-        # en direct maar weken terug, die hebben we vaker nodig
-        df['WekenTerug'] = ((df.Today - df.Date) / np.timedelta64(7, 'D')).astype(int)
-
-    return sortcolumns(df)
 
   global aantallen, ziekenhuisopnames, ziekenhuisopnames_1, casus_landelijk, casus_landelijk_1
   aantallen = prepare('COVID-19_aantallen_gemeente_per_dag', 0)
@@ -358,21 +361,121 @@ def cell():
     'GGDregio': 'GGD regio'
   })
 
-# %%
-# load de gewenste kolom volgorde uit een file en publiceer
-async def publish(df):
+# %% load de gewenste kolom volgorde uit een file en publiceer
+async def publish(df, objectName):
   df2 = df.set_index('Code')
   m = (df2 == np.inf)
   df2 = df2.loc[m.any(axis=1), m.any(axis=0)]
   display(df2.head())
 
   os.makedirs('artifacts', exist_ok = True)
-  df.to_csv('artifacts/RegioV2.csv', index=True)
+  df.to_csv(f'artifacts/{objectName}.csv', index=True)
 
   if knack:
     print('updating knack')
-    await knack.update(objectName='RegioV2', df=df, slack=Munch(msg='\n'.join(Cache.actions), emoji=None))
-    await knack.timestamps('RegioV2', Cache.timestamps)
+    await knack.update(objectName=objectName, df=df, slack=Munch(msg='\n'.join(Cache.actions), emoji=None))
+    await knack.timestamps(objectName, Cache.timestamps)
 
-order = pd.read_csv('RegioV2.csv')
-await publish(regios[order.columns.values].fillna(0))
+await publish(regios[order.columns.values].fillna(0), 'RegioV2')
+
+# %% Regioposten
+Cache.reset()
+
+@run
+def cell():
+  import sys
+  global aantallen, ziekenhuisopnames
+  aantallen['Week'] = aantallen['Date'].dt.strftime('%Y-%U')
+  ziekenhuisopnames['Week'] = ziekenhuisopnames['Date'].dt.strftime('%Y-%U')
+
+  weken = list(pd.date_range(
+    start=min(aantallen.Date.min(), ziekenhuisopnames.Date.min()),
+    end=max(aantallen.Date.max(), ziekenhuisopnames.Date.max())
+  ).strftime('%Y-%U').unique())
+
+  regiotypes = [ 'GGDregio', 'Gemeente', 'Land', 'Landsdeel', 'Provincie', 'Schoolregio', 'Veiligheidsregio' ]
+  for regiotype in regiotypes:
+    assert regiotype + 'Code' in aantallen, (regiotype, aantallen.columns)
+    assert regiotype + 'Code' in ziekenhuisopnames, (regiotype, ziekenhuisopnames.columns)
+
+  rp = []
+  for regiotype in [ 'GGDregio', 'Gemeente', 'Land', 'Landsdeel', 'Provincie', 'Schoolregio', 'Veiligheidsregio' ]:
+    print(regiotype)
+    sys.stdout.flush()
+    code = regiotype + 'Code'
+
+    ag = sortcolumns(
+      aantallen[['Week', code, 'Date', 'Total_reported', 'Deceased']]
+      .assign(Hospital_admission=np.nan)
+    )
+    zo = sortcolumns(
+      ziekenhuisopnames[['Week', code, 'Date', 'Hospital_admission']]
+      .assign(Total_reported=np.nan, Deceased=np.nan)
+    )
+    df = (pd.concat([ag, zo], axis=0)
+      .sort_values(by=['Date'])
+      .groupby(['Week', code])
+      .agg({
+        'Date': [ 'max', 'nunique' ],
+        'Total_reported': [ 'sum', 'last' ],
+        'Deceased': [ 'sum', 'last' ],
+        'Hospital_admission': [ 'sum', 'last' ],
+      })
+      .reset_index()
+    )
+    df.columns = [' '.join(col).strip() for col in df.columns.values]
+    df.rename(columns={
+      code: 'Code',
+      'Date max': 'Datum',
+      'Date nunique': 'Dagen',
+      'Total_reported sum': 'Positief getest week',
+      'Total_reported last': 'Positief getest laatste dag',
+      'Deceased sum': 'Overleden week',
+      'Deceased last': 'Overleden laatste dag',
+      'Hospital_admission sum': 'Ziekenhuisopname week',
+      'Hospital_admission last': 'Ziekenhuisopname laatste dag',
+    }, inplace=True)
+
+    regio = groupregio(regiotype)
+    regio = regio[[col for col in regio.columns if col == 'Code' or 'Code' not in col and 'km2' not in col]]
+    df = df.merge(regio, how='left', on='Code')
+    for col, coltype in zip(regio.columns, regio.dtypes):
+      if col == 'Personen':
+        df[col] = df[col].fillna(0).astype(int)
+      elif col == 'Type':
+        df[col] = df[col].fillna(regiotype)
+      elif coltype == np.float64:
+        df[col] = df[col].fillna(0)
+      elif coltype == object:
+        df[col] = df[col].fillna('')
+      else:
+        raise KeyError(col)
+    df['Land'] = 'NL'
+
+    base = [
+      (code, week)
+      for code in list(df.Code.unique())
+      for week in weken
+    ]
+    base = pd.DataFrame({
+        'Week': [week for code, week in base],
+        'Code': [code for code, week in base],
+      },
+      index=['-'.join(codeweek) for codeweek in base]
+    )
+
+    df['Key'] = df['Code'] + '-' + df['Week']
+    df.set_index('Key', inplace=True)
+    df.drop(columns=['Code', 'Week'], inplace=True)
+
+    df = base.join(df)
+
+    for col in ['Positief getest', 'Overleden', 'Ziekenhuisopname']:
+      # vul missende waarden met 0 vanaf de eerstgevonden waarde zodat cumsum goed werkt
+      df[f'{col} week'] = df[f'{col} week'].mask(df[f'{col} week'].ffill().isnull(), 0)
+      df[f'{col} cumulatief'] = df[f'{col} week'].cumsum()
+      df[f'{col} week -1'] = df[f'{col} cumulatief'].shift(1)
+
+    rp.append(df)
+  rp = pd.concat(rp, axis=0)
+  display(rp)
