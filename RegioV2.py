@@ -55,6 +55,19 @@ def prepare(dataset, day=0):
 
   return sortcolumns(df).sort_values(by=['Date'])
 
+async def publish(df, objectName):
+  #df2 = df.set_index('Code')
+  m = (df == np.inf)
+  df2 = df.loc[m.any(axis=1), m.any(axis=0)]
+  display(df2.head())
+
+  os.makedirs('artifacts', exist_ok = True)
+  df.to_csv(f'artifacts/{objectName}.csv', index=True)
+
+  if knack:
+    print('updating knack')
+    await knack.update(objectName=objectName, df=df, slack=Munch(msg='\n'.join(Cache.actions), emoji=None))
+    await knack.timestamps(objectName, Cache.timestamps)
 
 # %% regio: load regios en hun basisgegevens
 @run
@@ -362,19 +375,6 @@ def cell():
   })
 
 # %% load de gewenste kolom volgorde uit een file en publiceer
-async def publish(df, objectName):
-  df2 = df.set_index('Code')
-  m = (df2 == np.inf)
-  df2 = df2.loc[m.any(axis=1), m.any(axis=0)]
-  display(df2.head())
-
-  os.makedirs('artifacts', exist_ok = True)
-  df.to_csv(f'artifacts/{objectName}.csv', index=True)
-
-  if knack:
-    print('updating knack')
-    await knack.update(objectName=objectName, df=df, slack=Munch(msg='\n'.join(Cache.actions), emoji=None))
-    await knack.timestamps(objectName, Cache.timestamps)
 order = pd.read_csv('RegioV2.csv')
 await publish(regios[order.columns.values].fillna(0), 'RegioV2')
 
@@ -454,7 +454,7 @@ def cell():
         df[col] = df[col].fillna('')
       else:
         raise KeyError(col)
-    df['Land'] = 'NL'
+    df['Landcode'] = 'NL'
 
     base = [
       (code, week)
@@ -477,12 +477,19 @@ def cell():
     for col in ['Positief getest', 'Overleden', 'Ziekenhuisopname']:
       # vul missende waarden met 0 vanaf de eerstgevonden waarde zodat cumsum goed werkt
       df[f'{col} week'] = df[f'{col} week'].mask(df[f'{col} week'].ffill().isnull(), 0)
-      df[f'{col} cumulatief'] = df[f'{col} week'].cumsum()
-      df[f'{col} week -1'] = df[f'{col} cumulatief'].shift(1)
+      df[f'{col} cumulatief'] = df[f'{col} week'].cumsum().fillna(0)
+      df[f'{col} week -1'] = df[f'{col} cumulatief'].shift(1).fillna(0)
+      df[f'{col} week'] = df[f'{col} week'].fillna(0)
 
-    regioposten.append(df)
+    df.index.rename('Key', inplace=True)
+    df = df[[col for col in df.columns if col != 'Land']]
+    regioposten.append(df.reset_index())
   regioposten = pd.concat(regioposten, axis=0)
+  regioposten['Datum'] = regioposten['Datum'].dt.strftime('%Y-%m-d %H:%M')
+  regioposten.rename(columns={'GGDregio': 'GGD regio'}, inplace=True)
   display(regioposten)
 # %%
-#await publish('regioposten', 'Regioposten')
+await publish(regioposten, 'Regioposten')
 
+
+# %%
