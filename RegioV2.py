@@ -399,7 +399,7 @@ def cell():
     assert regiotype + 'Code' in ziekenhuisopnames, (regiotype, ziekenhuisopnames.columns)
 
   rp = []
-  for regiotype in [ 'GGDregio', 'Gemeente', 'Land', 'Landsdeel', 'Provincie', 'Schoolregio', 'Veiligheidsregio' ]:
+  for regiotype in regiotypes:
     print(regiotype)
     sys.stdout.flush()
     code = regiotype + 'Code'
