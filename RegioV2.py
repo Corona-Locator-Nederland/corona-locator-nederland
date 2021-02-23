@@ -12,7 +12,7 @@ def sortcolumns(df):
   return df[sorted(df.columns)]
 
 # prepareer een RIVM dataset
-def prepare(dataset, day):
+def prepare(dataset, day=0):
   df = RIVM.csv(dataset, day)
   # hernoem kolommen voor makkelijker uniforme data bewerking
   for old, new in [('Municipality_code', 'GemeenteCode'), ('Security_region_code', 'VeiligheidsregioCode'), ('Security_region_name', 'Veiligheidsregio')]:
@@ -375,12 +375,14 @@ async def publish(df, objectName):
     print('updating knack')
     await knack.update(objectName=objectName, df=df, slack=Munch(msg='\n'.join(Cache.actions), emoji=None))
     await knack.timestamps(objectName, Cache.timestamps)
-
+order = pd.read_csv('RegioV2.csv')
 await publish(regios[order.columns.values].fillna(0), 'RegioV2')
 
 # %% Regioposten
+# just so the timestamps update OK
 Cache.reset()
-
+aantallen = prepare('COVID-19_aantallen_gemeente_per_dag')
+ziekenhuisopnames = prepare('COVID-19_ziekenhuisopnames')
 @run
 def cell():
   import sys
@@ -392,13 +394,15 @@ def cell():
     start=min(aantallen.Date.min(), ziekenhuisopnames.Date.min()),
     end=max(aantallen.Date.max(), ziekenhuisopnames.Date.max())
   ).strftime('%Y-%U').unique())
+  print(len(weken), 'weken')
 
   regiotypes = [ 'GGDregio', 'Gemeente', 'Land', 'Landsdeel', 'Provincie', 'Schoolregio', 'Veiligheidsregio' ]
   for regiotype in regiotypes:
     assert regiotype + 'Code' in aantallen, (regiotype, aantallen.columns)
     assert regiotype + 'Code' in ziekenhuisopnames, (regiotype, ziekenhuisopnames.columns)
 
-  rp = []
+  global regioposten
+  regioposten = []
   for regiotype in regiotypes:
     print(regiotype)
     sys.stdout.flush()
@@ -476,6 +480,9 @@ def cell():
       df[f'{col} cumulatief'] = df[f'{col} week'].cumsum()
       df[f'{col} week -1'] = df[f'{col} cumulatief'].shift(1)
 
-    rp.append(df)
-  rp = pd.concat(rp, axis=0)
-  display(rp)
+    regioposten.append(df)
+  regioposten = pd.concat(regioposten, axis=0)
+  display(regioposten)
+# %%
+#await publish('regioposten', 'Regioposten')
+
