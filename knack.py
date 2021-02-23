@@ -173,7 +173,7 @@ class Knack:
       m[k] = v
     return m
 
-  async def update(self, sceneName=None, viewName=None, objectName=None, df=None, force=False, rate_limit=7, slack=Munch(msg='',emoji=None)):
+  async def update(self, sceneName=None, viewName=None, objectName=None, df=None, force=False, rate_limit=4, slack=Munch(msg='',emoji=None)):
     self.calls = self.Calls()
     assert df is not None, 'df parameter is required'
 
