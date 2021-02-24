@@ -66,8 +66,8 @@ async def publish(df, objectName):
 
   if knack:
     print('updating knack')
-    await knack.update(objectName=objectName, df=df, slack=Munch(msg='\n'.join(Cache.actions), emoji=None))
-    await knack.timestamps(objectName, Cache.timestamps)
+    if await knack.update(objectName=objectName, df=df, slack=Munch(msg='\n'.join(Cache.actions), emoji=None)) != False:
+      await knack.timestamps(objectName, Cache.timestamps)
 
 # %% regio: load regios en hun basisgegevens
 @run
@@ -485,8 +485,8 @@ def cell():
     df = df[[col for col in df.columns if col != 'Land']]
     regioposten.append(df.reset_index())
   regioposten = pd.concat(regioposten, axis=0)
-  regioposten['Datum'] = regioposten['Datum'].dt.strftime('%Y-%m-d %H:%M')
+  regioposten['Datum'] = regioposten['Datum'].dt.strftime('%Y-%m-%d')
   regioposten.rename(columns={'GGDregio': 'GGD regio'}, inplace=True)
-  display(regioposten)
+  display(regioposten[['Code', 'Naam', 'Datum']])
 # %%
 await publish(regioposten, 'Regioposten')
