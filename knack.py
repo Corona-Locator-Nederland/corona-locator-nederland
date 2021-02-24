@@ -222,14 +222,6 @@ class Knack:
         assert self.mapping.Hash not in rec
         rec[self.mapping.Hash] = hashlib.sha256(json.dumps(rec, sort_keys=True).encode('utf-8')).hexdigest()
 
-    print(len(data), 'records', len(data) > 1000)
-    if len(data) > 1000: # Knack can't deal with even miniscule amounts of data
-      os.makedirs('artifacts', exist_ok = True)
-      artifact = os.path.join('artifacts', f'bulk-{obj.name}.csv')
-      print('Not uploading', len(data), 'records because knack is pathetic. Please upload', artifact)
-      pd.DataFrame([{**rec, 'Hash': hsh[self.mapping.Hash]} for rec, hsh in zip(df.to_dict('records'), data)]).to_csv(artifact, index=False)
-      return False
-
     create = self.safe_dict([ (rec[key.field], rec) for rec in data ])
     update = []
     delete = []
@@ -240,6 +232,15 @@ class Knack:
         del create[soll[key.field]]
       else:
         delete.append(ist.id)
+
+    tasks = len(create) + len(update) + len(delete)
+    print(tasks, 'knack actions ahead')
+    if tasks > 2000: # Knack can't deal with even miniscule amounts of data
+      os.makedirs('artifacts', exist_ok = True)
+      artifact = os.path.join('artifacts', f'bulk-{obj.name}.csv')
+      print('Not executing', tasks, 'record actions because knack is pathetic. Please upload', artifact)
+      pd.DataFrame([{**rec, 'Hash': hsh[self.mapping.Hash]} for rec, hsh in zip(df.to_dict('records'), data)]).to_csv(artifact, index=False)
+      return False
 
     # because the shoddy Knack platform cannot get to more than 2-3 calls per second without parallellism, but if you *do* use parallellism
     # to any significant extent you get immediate backoff errors. And lots of 'em
