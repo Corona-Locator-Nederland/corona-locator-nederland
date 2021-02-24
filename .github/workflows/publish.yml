@@ -53,7 +53,7 @@ jobs:
         for nb in ${notebooks[@]}; do
           echo ======================= $nb ============================
           export NOTEBOOK=$nb
-          # jupytext $nb.py --to ipynb --set-kernel - --output - | papermill --log-output - $nb.ipynb
+          jupytext $nb.py --to ipynb --set-kernel - --output - | papermill --log-output - $nb.ipynb
         done
       env:
         PYTHONUNBUFFERED: true
