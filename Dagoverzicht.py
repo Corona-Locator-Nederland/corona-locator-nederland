@@ -226,7 +226,7 @@ def cell():
 def cell():
   global dagoverzicht
   dagoverzicht['Personen'] = bevolking.BevolkingOpDeEersteVanDeMaand
-  dagoverzicht['Key'] = dagoverzicht.index.strftime('%Y-%m-%d'))
+  dagoverzicht['Key'] = dagoverzicht.index.strftime('%Y-%m-%d')
   display(dagoverzicht)
 
 # %%

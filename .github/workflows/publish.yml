@@ -10,6 +10,13 @@ on:
 
 jobs:
   publish:
+    strategy:
+      max-parallel: 1
+      matrix:
+        notebook:
+        - LeeftijdsgroepenLandelijk
+        - Regio
+        - Dagoverzicht
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -41,22 +48,14 @@ jobs:
         pip3 install -r requirements.txt
         pip3 install nbformat --upgrade
         pip freeze
-    - name: Run notebooks
+    - name: Run ${{ matrix.notebook }}
       run: |
         date
         python3 -m ipykernel install --name python3 --user
-        notebooks=(
-        LeeftijdsgroepenLandelijk
-        Regio
-        DagOverzicht
-        )
-        for nb in ${notebooks[@]}; do
-          echo ======================= $nb ============================
-          export NOTEBOOK=$nb
-          jupytext $nb.py --to ipynb --set-kernel - --output - | papermill --log-output - $nb.ipynb
-        done
+        jupytext ${{ matrix.notebook }}.py --to ipynb --set-kernel - --output - | papermill --log-output - ${{ matrix.notebook }}.ipynb
       env:
         PYTHONUNBUFFERED: true
+        NOTEBOOK: ${{ matrix.notebook }}
     - name: store build artifacts
       uses: actions/upload-artifact@v2
       with:
