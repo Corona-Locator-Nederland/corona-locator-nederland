@@ -146,6 +146,6 @@ async def publish():
   df.to_csv('artifacts/LeeftijdsgroepenLandelijk.csv', index=False)
 
   if knack:
-    await knack.update(objectName='Leeftijdsgroep', df=df, slack=Munch(msg='\n'.join(Cache.actions), emoji=None))
-    await knack.timestamps('Leeftijdsgroepen', Cache.timestamps)
+    if await knack.update(objectName='Leeftijdsgroep', df=df, slack=Munch(msg='\n'.join(Cache.actions), emoji=None)) != False:
+      await knack.timestamps('Leeftijdsgroepen', Cache.timestamps)
 await publish()
