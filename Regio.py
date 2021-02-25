@@ -375,6 +375,7 @@ def cell():
   })
 
 # %% load de gewenste kolom volgorde uit een file en publiceer
+regios = regios[[col for col in regios.columns if col != 'Land']]
 await publish(regios.fillna(0), 'RegioV2')
 
 # %% Regioposten
