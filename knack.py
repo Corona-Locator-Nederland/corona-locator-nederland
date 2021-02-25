@@ -174,21 +174,14 @@ class Knack:
       m[k] = v
     return m
 
-  async def update(self, sceneName=None, viewName=None, objectName=None, df=None, force=False, rate_limit=4, slack=Munch(msg='',emoji=None)):
+  async def update(self, objectName, df, force=False, rate_limit=7, slack=Munch(msg='',emoji=None)):
     self.calls = self.Calls()
     assert df is not None, 'df parameter is required'
 
-    assert (sceneName is not None and viewName is not None) != (objectName is not None), 'Specify either viewName and sceneName, or objectName'
-
-    if objectName:
-      obj = self.find(f'$.application.objects[?(@.name=={json.dumps(objectName)})]')
-      os.makedirs('metadata', exist_ok = True)
-      with open(os.path.join('metadata', objectName + '.json'), 'w') as f:
-        json.dump(obj, f, indent='  ')
-    else:
-      view = self.find(f'$.application.scenes[?(@.name=={json.dumps(sceneName)})].views[?(@.name=={json.dumps(viewName)})]')
-      source = view.source.object
-      obj = self.find(f'$.application.objects[?(@.key=="{source}")]')
+    obj = self.find(f'$.application.objects[?(@.name=={json.dumps(objectName)})]')
+    os.makedirs('metadata', exist_ok = True)
+    with open(os.path.join('metadata', objectName + '.json'), 'w') as f:
+      json.dump(obj, f, indent='  ')
 
     self.mapping = self.safe_dict([ (field.name, field.key) for field in obj.fields ])
     key = [field.name for field in obj.fields if field.get('unique')]
@@ -238,8 +231,8 @@ class Knack:
     if tasks > 2000: # Knack can't deal with even miniscule amounts of data
       os.makedirs('artifacts', exist_ok = True)
       artifact = os.path.join('artifacts', f'bulk-{obj.name}.csv')
-      print('Not executing', tasks, 'record actions because knack is pathetic. Please upload', artifact)
-      self.slack(slack.msg + f"Not executing {tasks} record actions because knack can only deal with piddly amounts of data. Please upload {artifact} to {obj.name}", emoji=':no_entry:')
+      print('Not executing', tasks, obj.name, 'actions because knack is pathetic. Please upload', artifact)
+      self.slack(slack.msg + f"Not executing {tasks} {obj.name} actions because knack can only deal with piddly amounts of data. Please upload {artifact} to {obj.name}", emoji=':no_entry:')
       if hashing:
         pd.DataFrame([{**rec, 'Hash': hsh[self.mapping.Hash]} for rec, hsh in zip(df.to_dict('records'), data)]).to_csv(artifact, index=False)
       else:
@@ -265,26 +258,26 @@ class Knack:
       if slack.msg.strip() != '':
         slack.msg = slack.msg.strip() + '\n'
       if len(tasks) == 0:
-        print('nothing to do')
-        self.slack(slack.msg + 'nothing to do', emoji=':sleeping:')
+        print(f'nothing to do for {obj.name}')
+        self.slack(slack.msg + f'nothing to do for {obj.name}', emoji=':sleeping:')
       else:
         responses = [await req for req in tqdm.tqdm(asyncio.as_completed(tasks), total=len(tasks))]
         if hashing:
           slack.emoji = slack.emoji or ':white_check_mark:'
         else:
           slack.emoji = (slack.emoji or '') + ':game_die:'
-        self.slack(slack.msg + f'API calls: {self.calls}', emoji=slack.emoji)
-      print('\nrate limit:', rate_limit, '\nAPI calls:', self.calls)
+        self.slack(slack.msg + f'{obj.name} API calls: {self.calls}', emoji=slack.emoji)
+      print('\nrate limit:', rate_limit, f'\n{obj.name} API calls:', self.calls)
     return len(tasks)
 
-  async def timestamps(self, notebook, timestamps):
-    print([{'Key': 1, **{ f'Timestamp {notebook} {provider}': ts for provider, ts in timestamps.items() }}])
+  async def timestamps(self, objectName, timestamps):
+    print([{'Key': 1, **{ f'Timestamp {objectName} {provider}': ts for provider, ts in timestamps.items() }}])
     msg = ''
     for provider, ts in timestamps.items():
       msg += f"• *{provider}*: {ts}\n"
     await self.update(
       objectName='LaatsteUpdate',
-      df=pd.DataFrame([{'Key': 1, **{ f'Timestamp {notebook} {provider}': ts for provider, ts in timestamps.items() }}]),
+      df=pd.DataFrame([{'Key': 1, **{ f'Timestamp {objectName} {provider}': ts for provider, ts in timestamps.items() }}]),
       slack=Munch(msg=msg, emoji=':clock1:')
     )
 
