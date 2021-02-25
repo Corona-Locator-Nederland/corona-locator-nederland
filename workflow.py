@@ -7,7 +7,7 @@ import sys
 
 with open('.github/workflows/publish.yml') as f:
   action = yaml.load(f)
-  steps = action['jobs']['run']['steps']
+  steps = action['jobs']['publish']['steps']
   script = [step['run'] for step in steps if step.get('name') == 'Run notebooks'][0]
 
   script = "set -x\nexport CI=true\ngit pull --rebase\n" + script
