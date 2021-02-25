@@ -129,7 +129,7 @@ class Cache:
         os.remove(f)
 
     history = sorted(glob.glob(datafiles), reverse=True)
-    if keep is not None:
+    if keep is not None and max(len(history) - keep, 0) > 0:
       cls.say(f'{len(history)} {provider} {name} files, pruning {max(len(history) - keep, 0)}, keeping {min(keep, len(history))}')
       for f in history[keep:]:
         os.remove(f)
