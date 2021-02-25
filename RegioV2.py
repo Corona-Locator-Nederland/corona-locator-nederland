@@ -387,13 +387,13 @@ ziekenhuisopnames = prepare('COVID-19_ziekenhuisopnames')
 def cell():
   import sys
   global aantallen, ziekenhuisopnames
-  aantallen['Week'] = aantallen['Date'].dt.strftime('%Y-%U')
-  ziekenhuisopnames['Week'] = ziekenhuisopnames['Date'].dt.strftime('%Y-%U')
+  aantallen['Week'] = aantallen['Date'].dt.strftime('%Y-%V')
+  ziekenhuisopnames['Week'] = ziekenhuisopnames['Date'].dt.strftime('%Y-%V')
 
   weken = list(pd.date_range(
     start=min(aantallen.Date.min(), ziekenhuisopnames.Date.min()),
     end=max(aantallen.Date.max(), ziekenhuisopnames.Date.max())
-  ).strftime('%Y-%U').unique())
+  ).strftime('%Y-%V').unique())
   print(len(weken), 'weken')
 
   regiotypes = [ 'GGDregio', 'Gemeente', 'Land', 'Landsdeel', 'Provincie', 'Schoolregio', 'Veiligheidsregio' ]
