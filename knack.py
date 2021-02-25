@@ -262,11 +262,7 @@ class Knack:
         self.slack(slack.msg + f'nothing to do for {obj.name}', obj.name, emoji=':sleeping:')
       else:
         responses = [await req for req in tqdm.tqdm(asyncio.as_completed(tasks), total=len(tasks))]
-        if hashing:
-          slack.emoji = slack.emoji or ':white_check_mark:'
-        else:
-          slack.emoji = (slack.emoji or '') + ':game_die:'
-        self.slack(slack.msg + f'{obj.name} API calls: {self.calls}', obj.name, emoji=slack.emoji)
+        self.slack(slack.msg + f'{obj.name} API calls: {self.calls}', obj.name, emoji=slack.emoji or ':white_check_mark:')
       print('\nrate limit:', rate_limit, f'\n{obj.name} API calls:', self.calls)
     return len(tasks)
 
