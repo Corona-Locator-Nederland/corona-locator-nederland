@@ -11,7 +11,7 @@ on:
 jobs:
   publish:
     strategy:
-      max-parallel: 1
+      max-parallel: 1 # because knack is dense and we would clash with their 10/sec update limit
       matrix:
         notebook:
         - LeeftijdsgroepenLandelijk
@@ -49,12 +49,13 @@ jobs:
         pip3 install nbformat --upgrade
         pip freeze
     - name: Run ${{ matrix.notebook }}
+      id: notebook
       run: |
         date
         python3 -m ipykernel install --name python3 --user
         jupytext ${{ matrix.notebook }}.py --to ipynb --set-kernel - --output - | papermill --log-output - ${{ matrix.notebook }}.ipynb
       env:
-        PYTHONUNBUFFERED: true
+        PYTHONUNBUFFERED: 'true'
         NOTEBOOK: ${{ matrix.notebook }}
     - name: store build artifacts
       uses: actions/upload-artifact@v2
