@@ -47,7 +47,7 @@ jobs:
         python3 -m ipykernel install --name python3 --user
         notebooks=(
         LeeftijdsgroepenLandelijk
-        RegioV2
+        Regio
         DagOverzicht
         )
         for nb in ${notebooks[@]}; do

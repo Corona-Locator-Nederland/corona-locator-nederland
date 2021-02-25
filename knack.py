@@ -232,7 +232,7 @@ class Knack:
       os.makedirs('artifacts', exist_ok = True)
       artifact = os.path.join('artifacts', f'bulk-{obj.name}.csv')
       print('Not executing', tasks, obj.name, 'actions because knack is pathetic. Please upload', artifact)
-      self.slack(slack.msg + f"Not executing {tasks} {obj.name} actions because knack can only deal with piddly amounts of data. Please upload {artifact} to {obj.name}", emoji=':no_entry:')
+      self.slack(slack.msg + f"Not executing {tasks} {obj.name} actions because knack can only deal with piddly amounts of data. Please upload {artifact} to {obj.name}", obj.name, emoji=':no_entry:')
       if hashing:
         pd.DataFrame([{**rec, 'Hash': hsh[self.mapping.Hash]} for rec, hsh in zip(df.to_dict('records'), data)]).to_csv(artifact, index=False)
       else:
@@ -259,14 +259,14 @@ class Knack:
         slack.msg = slack.msg.strip() + '\n'
       if len(tasks) == 0:
         print(f'nothing to do for {obj.name}')
-        self.slack(slack.msg + f'nothing to do for {obj.name}', emoji=':sleeping:')
+        self.slack(slack.msg + f'nothing to do for {obj.name}', obj.name, emoji=':sleeping:')
       else:
         responses = [await req for req in tqdm.tqdm(asyncio.as_completed(tasks), total=len(tasks))]
         if hashing:
           slack.emoji = slack.emoji or ':white_check_mark:'
         else:
           slack.emoji = (slack.emoji or '') + ':game_die:'
-        self.slack(slack.msg + f'{obj.name} API calls: {self.calls}', emoji=slack.emoji)
+        self.slack(slack.msg + f'{obj.name} API calls: {self.calls}', obj.name, emoji=slack.emoji)
       print('\nrate limit:', rate_limit, f'\n{obj.name} API calls:', self.calls)
     return len(tasks)
 
@@ -281,7 +281,7 @@ class Knack:
       slack=Munch(msg=msg, emoji=':clock1:')
     )
 
-  def slack(self, msg, emoji=''):
+  def slack(self, msg, objectName, emoji=''):
     if 'SLACK_WEBHOOK' not in os.environ: return
 
     prefix = ''
@@ -294,7 +294,9 @@ class Knack:
       prefix += '> '
 
     if nb := os.environ.get('NOTEBOOK'):
-      prefix += f'*{nb}* '
+      prefix += f'*{nb}.{objectName}* '
+    else:
+      prefix += f'*{objectName}* '
 
     prefix += emoji + ' '
 
