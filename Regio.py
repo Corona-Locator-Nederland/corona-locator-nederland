@@ -55,20 +55,6 @@ def prepare(dataset, day=0):
 
   return sortcolumns(df).sort_values(by=['Date'])
 
-async def publish(df, objectName):
-  #df2 = df.set_index('Code')
-  m = (df == np.inf)
-  df2 = df.loc[m.any(axis=1), m.any(axis=0)]
-  display(df2.head())
-
-  os.makedirs('artifacts', exist_ok = True)
-  df.to_csv(f'artifacts/{objectName}.csv', index=True)
-
-  if knack:
-    print('updating knack')
-    if await knack.update(objectName=objectName, df=df, slack=Munch(msg='\n'.join(Cache.actions), emoji=None)) != False:
-      await knack.timestamps(objectName, Cache.timestamps)
-
 # %% regio: load regios en hun basisgegevens
 @run
 def cell():
@@ -376,7 +362,8 @@ def cell():
 
 # %% load de gewenste kolom volgorde uit een file en publiceer
 regios = regios[[col for col in regios.columns if col != 'Land']]
-await publish(regios.fillna(0), 'RegioV2')
+if knack:
+  await knack.publish(regios.fillna(0), 'RegioV2', Cache)
 
 # %% Regioposten
 # just so the timestamps update OK
@@ -489,4 +476,5 @@ def cell():
   regioposten.rename(columns={'GGDregio': 'GGD regio'}, inplace=True)
   display(regioposten[['Code', 'Naam', 'Datum']])
 # %%
-await publish(regioposten, 'Regioposten')
+if knack:
+  await knack.publish(regioposten, 'Regioposten', Cache)

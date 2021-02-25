@@ -18,6 +18,7 @@ from slack_webhook import Slack
 import os
 from datetime import datetime, timedelta
 import pandas as pd
+import numpy as np
 
 def in_notebook():
   from IPython import get_ipython
@@ -301,3 +302,20 @@ class Knack:
 
     prefix = prefix.strip() + '\n'
     Slack(url=os.environ['SLACK_WEBHOOK']).post(text=prefix + msg)
+
+  async def publish(self, df, objectName, downloads):
+    print('infinities:')
+    m = (df == np.inf)
+    inf = df.loc[m.any(axis=1), m.any(axis=0)]
+    print(inf.head())
+    print('nan:')
+    m = (df == np.nan)
+    nan = df.loc[m.any(axis=1), m.any(axis=0)]
+    print(nan.head())
+
+    os.makedirs('artifacts', exist_ok = True)
+    df.to_csv(f'artifacts/{objectName}.csv', index=True)
+
+    print('updating knack')
+    if await self.update(objectName=objectName, df=df, slack=Munch(msg='\n'.join(downloads.actions), emoji=None)) != False:
+      await self.timestamps(objectName, downloads.timestamps)

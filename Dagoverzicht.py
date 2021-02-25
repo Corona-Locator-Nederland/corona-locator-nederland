@@ -229,23 +229,5 @@ def cell():
   display(dagoverzicht)
 
 # %%
-async def publish():
-  global dagoverzicht
-
-  m = (dagoverzicht == np.inf)
-  df = dagoverzicht.loc[m.any(axis=1), m.any(axis=0)]
-  display(df.head())
-  m = (dagoverzicht == np.nan)
-  df = dagoverzicht.loc[m.any(axis=1), m.any(axis=0)]
-  display(df.head())
-
-  os.makedirs('artifacts', exist_ok = True)
-  dagoverzicht.to_csv('artifacts/DagOverzicht.csv', index=True)
-
-  if knack:
-    print('updating knack')
-    df = dagoverzicht.assign(Key=dagoverzicht.index.strftime('%Y-%m-%d'))
-    if await knack.update(objectName='Dagoverzicht', df=df, slack=Munch(msg='\n'.join(Cache.actions), emoji=None)) != False:
-      await knack.timestamps('Dagoverzicht', Cache.timestamps)
-await publish()
-# %%
+if knack:
+  knack.publish(dagoverzicht, 'Dagoverzicht', Cache)

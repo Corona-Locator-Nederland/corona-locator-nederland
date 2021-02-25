@@ -134,18 +134,6 @@ def cell():
     .style.background_gradient(cmap=cm, axis=1, subset=cohorten)
   )
 
-# %% [markdown]
-# Publiceer de berekende statistieken indien we op github draaien
-#
-# %%
-# publish
-async def publish():
-  df=tabel.fillna(0).assign(Datum=tabel.Datum.dt.strftime('%Y-%m-%d'))
-
-  os.makedirs('artifacts', exist_ok = True)
-  df.to_csv('artifacts/LeeftijdsgroepenLandelijk.csv', index=False)
-
-  if knack:
-    if await knack.update(objectName='Leeftijdsgroep', df=df, slack=Munch(msg='\n'.join(Cache.actions), emoji=None)) != False:
-      await knack.timestamps('Leeftijdsgroepen', Cache.timestamps)
-await publish()
+# %% publish
+if knack:
+  await knack.publish(tabel.fillna(0).assign(Datum=tabel.Datum.dt.strftime('%Y-%m-%d')), 'Leeftijdsgroep', Cache)
