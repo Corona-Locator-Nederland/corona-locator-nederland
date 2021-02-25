@@ -221,11 +221,12 @@ def cell():
     # set lege waarden op 0
     dagoverzicht[col] = dagoverzicht[col].fillna(0).astype(int)
 
-# %% Personen
+# %% Personen en Key
 @run
 def cell():
   global dagoverzicht
   dagoverzicht['Personen'] = bevolking.BevolkingOpDeEersteVanDeMaand
+  dagoverzicht['Key'] = dagoverzicht.index.strftime('%Y-%m-%d'))
   display(dagoverzicht)
 
 # %%
