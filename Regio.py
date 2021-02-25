@@ -375,8 +375,7 @@ def cell():
   })
 
 # %% load de gewenste kolom volgorde uit een file en publiceer
-order = pd.read_csv('RegioV2.csv')
-await publish(regios[order.columns.values].fillna(0), 'RegioV2')
+await publish(regios.fillna(0), 'RegioV2')
 
 # %% Regioposten
 # just so the timestamps update OK
