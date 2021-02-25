@@ -239,7 +239,11 @@ class Knack:
       os.makedirs('artifacts', exist_ok = True)
       artifact = os.path.join('artifacts', f'bulk-{obj.name}.csv')
       print('Not executing', tasks, 'record actions because knack is pathetic. Please upload', artifact)
-      pd.DataFrame([{**rec, 'Hash': hsh[self.mapping.Hash]} for rec, hsh in zip(df.to_dict('records'), data)]).to_csv(artifact, index=False)
+      self.slack(slack.msg + f"Not executing {tasks} record actions because knack can only deal with piddly amounts of data. Please upload {artifact} to {obj.name}", emoji=':no_entry:')
+      if hashing:
+        pd.DataFrame([{**rec, 'Hash': hsh[self.mapping.Hash]} for rec, hsh in zip(df.to_dict('records'), data)]).to_csv(artifact, index=False)
+      else:
+        df.to_csv(artifact, index=False)
       return False
 
     # because the shoddy Knack platform cannot get to more than 2-3 calls per second without parallellism, but if you *do* use parallellism
