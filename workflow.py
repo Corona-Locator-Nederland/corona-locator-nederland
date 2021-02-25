@@ -13,11 +13,7 @@ with open('.github/workflows/publish.yml') as f:
   script = "set -x\nexport CI=true\ngit pull --rebase\n" + script
   #print(script)
 
-  checkin = [step['with']['file_pattern'] for step in steps if step.get('uses') == 'stefanzweifel/git-auto-commit-action@v4'][0]
-  script += f"\ngit add -u\ngit add {checkin}\n"
+  #checkin = [step['with']['file_pattern'] for step in steps if step.get('uses') == 'stefanzweifel/git-auto-commit-action@v4'][0]
+  #script += f"\ngit add -u\ngit add {checkin}\n"
 
   print(script)
-
-  #result = run(script, shell=True, capture_output=True, text=True)
-  #print(result.stdout)
-  #print(result.stderr)
