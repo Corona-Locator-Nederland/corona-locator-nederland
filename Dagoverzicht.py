@@ -230,4 +230,4 @@ def cell():
 
 # %%
 if knack:
-  knack.publish(dagoverzicht, 'Dagoverzicht', Cache)
+  await knack.publish(dagoverzicht, 'Dagoverzicht', Cache)
