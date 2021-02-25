@@ -6,10 +6,11 @@ from requests import HTTPError
 import time
 import requests
 from json import JSONDecodeError
-import hashlib
 import logging
 import sys, os
 import pandas as pd
+import base64
+import zlib
 
 import asyncio
 import aiohttp
@@ -61,6 +62,11 @@ class Knack:
       self.actions = Munch.fromDict({k: {} for k in ['create', 'read', 'update', 'delete']})
       self.actions.backoff = 0
       self.errors = {}
+
+    def hash(self, record):
+      return base64.b64encode(zlib.compress(json.dumps(record, sort_keys=True).encode('utf-8'))).decode('utf-8')
+    def unhash(record):
+      return json.loads(zlib.decompress(base64.b64decode(record)))
 
     # if we got a backoff, the actual CUD action that triggered it didn't go through
     def backoff(self):
@@ -210,11 +216,14 @@ class Knack:
     assert len(unmapped) == 0, unmapped
 
     hashing = 'Hash' in self.mapping
+    largest = 0
     force = not hashing
     if hashing:
       for rec in data:
         assert self.mapping.Hash not in rec
+        largest = max(largest, self.hash(rec))
         rec[self.mapping.Hash] = hashlib.sha256(json.dumps(rec, sort_keys=True).encode('utf-8')).hexdigest()
+    print('largest hash:', largest)
 
     create = self.safe_dict([ (rec[key.field], rec) for rec in data ])
     update = []
