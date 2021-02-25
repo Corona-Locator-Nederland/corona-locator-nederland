@@ -293,7 +293,8 @@ class Knack:
       prefix += os.environ['GITHUB_RUN_NUMBER']
       prefix += '> '
 
-    if nb := os.environ.get('NOTEBOOK') and nb != objectName:
+    nb = os.environ.get('NOTEBOOK')
+    if nb and nb != objectName:
       prefix += f'*{nb}.{objectName}* '
     else:
       prefix += f'*{objectName}* '
