@@ -361,9 +361,8 @@ def cell():
   })
 
 # %% load de gewenste kolom volgorde uit een file en publiceer
-regios = regios[[col for col in regios.columns if col != 'Land']]
 if knack:
-  await knack.publish(regios.fillna(0), 'RegioV2', Cache)
+  await knack.publish(regios[[col for col in regios.columns if col != 'Land']].fillna(0), 'RegioV2', Cache)
 
 # %% Regioposten
 @run
@@ -378,10 +377,11 @@ def cell():
   ziekenhuisopnames['Week'] = ziekenhuisopnames['Date'].dt.strftime('%Y-%V')
 
   regiotypes = [ 'GGDregio', 'Gemeente', 'Land', 'Landsdeel', 'Provincie', 'Schoolregio', 'Veiligheidsregio' ]
+  regiocodecols = [f'{regiotype}Code' for regiotype in regiotypes]
   datafields = [ 'Date', 'Week', 'Hospital_admission', 'Total_reported', 'Deceased']
   rivm = pd.concat([
-    aantallen[regiotypes + datafields],
-    ziekenhuisopnames[regiotypes + datafields],
+    aantallen[regiocodecols + datafields],
+    ziekenhuisopnames[regiocodecols + datafields],
   ], axis=0)
 
   weken = list(pd.date_range(
