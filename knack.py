@@ -11,6 +11,7 @@ import sys, os
 import pandas as pd
 import base64
 import zlib
+import hashlib
 
 import asyncio
 import aiohttp
@@ -63,11 +64,6 @@ class Knack:
       self.actions.backoff = 0
       self.errors = {}
 
-    def hash(self, record):
-      return base64.b64encode(zlib.compress(json.dumps(record, sort_keys=True).encode('utf-8'))).decode('utf-8')
-    def unhash(record):
-      return json.loads(zlib.decompress(base64.b64decode(record)))
-
     # if we got a backoff, the actual CUD action that triggered it didn't go through
     def backoff(self):
       self.actions.backoff += 1
@@ -111,6 +107,12 @@ class Knack:
       os.makedirs('metadata', exist_ok = True)
       with open('metadata/metadata.json', 'w') as f:
         json.dump(self.metadata, f, indent='  ')
+
+  def hash(self, record):
+    #rec[self.mapping.Hash] = hashlib.sha256(json.dumps(rec, sort_keys=True).encode('utf-8')).hexdigest()
+    return base64.b64encode(zlib.compress(json.dumps(record, sort_keys=True).encode('utf-8'), 9)).decode('utf-8')
+  def unhash(self, record):
+    return json.loads(zlib.decompress(base64.b64decode(record)))
 
   def find(self, path):
     found = JSONPath(path).parse(self.metadata)
@@ -216,14 +218,11 @@ class Knack:
     assert len(unmapped) == 0, unmapped
 
     hashing = 'Hash' in self.mapping
-    largest = 0
     force = not hashing
     if hashing:
       for rec in data:
         assert self.mapping.Hash not in rec
-        largest = max(largest, self.hash(rec))
-        rec[self.mapping.Hash] = hashlib.sha256(json.dumps(rec, sort_keys=True).encode('utf-8')).hexdigest()
-    print('largest hash:', largest)
+        rec[self.mapping.Hash] = self.hash(rec)
 
     create = self.safe_dict([ (rec[key.field], rec) for rec in data ])
     update = []
