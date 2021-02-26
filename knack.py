@@ -266,8 +266,8 @@ class Knack:
     if tasks > 2000: # Knack can't deal with even miniscule amounts of data
       os.makedirs('artifacts', exist_ok = True)
       artifact = os.path.join('artifacts', f'bulk-{obj.name}.csv')
-      print('Not executing', tasks, obj.name, 'actions because knack is pathetic. Please upload', artifact)
-      self.slack(slack.msg + f"Not executing {tasks} {obj.name} actions because knack can only deal with piddly amounts of data. Please upload {artifact} to {obj.name}", obj.name, emoji=':no_entry:')
+      print('Not executing', tasks, obj.name, 'to spare API quota. Please upload', artifact)
+      self.slack(slack.msg + f"Not executing {tasks} {obj.name} actions to spare API quota. Please upload {artifact} to {obj.name}", obj.name, emoji=':no_entry:')
       if hashing:
         pd.DataFrame([{**rec, 'Hash': hsh[mapping.Hash]} for rec, hsh in zip(df.to_dict('records'), data)]).to_csv(artifact, index=False)
         pd.DataFrame([{**rec, 'Hash': hsh[mapping.Hash]} for rec, hsh in zip(df.to_dict('records'), data)]).to_json(artifact.replace('.csv', '.json'))

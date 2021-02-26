@@ -366,27 +366,29 @@ if knack:
   await knack.publish(regios.fillna(0), 'RegioV2', Cache)
 
 # %% Regioposten
-# just so the timestamps update OK
-Cache.reset()
-aantallen = prepare('COVID-19_aantallen_gemeente_per_dag')
-ziekenhuisopnames = prepare('COVID-19_ziekenhuisopnames')
 @run
 def cell():
+  # just so the timestamps update OK
+  Cache.reset()
+
   import sys
-  global aantallen, ziekenhuisopnames
+  aantallen = prepare('COVID-19_aantallen_gemeente_per_dag').assign(Hospital_admission=np.nan)
   aantallen['Week'] = aantallen['Date'].dt.strftime('%Y-%V')
+  ziekenhuisopnames = prepare('COVID-19_ziekenhuisopnames').assign(Total_reported=np.nan, Deceased=np.nan)
   ziekenhuisopnames['Week'] = ziekenhuisopnames['Date'].dt.strftime('%Y-%V')
+
+  regiotypes = [ 'GGDregio', 'Gemeente', 'Land', 'Landsdeel', 'Provincie', 'Schoolregio', 'Veiligheidsregio' ]
+  datafields = [ 'Date', 'Week', 'Hospital_admission', 'Total_reported', 'Deceased']
+  rivm = pd.concat([
+    aantallen[regiotypes + datafields],
+    ziekenhuisopnames[regiotypes + datafields],
+  ], axis=0)
 
   weken = list(pd.date_range(
     start=min(aantallen.Date.min(), ziekenhuisopnames.Date.min()),
     end=max(aantallen.Date.max(), ziekenhuisopnames.Date.max())
   ).strftime('%Y-%V').unique())
   print(len(weken), 'weken')
-
-  regiotypes = [ 'GGDregio', 'Gemeente', 'Land', 'Landsdeel', 'Provincie', 'Schoolregio', 'Veiligheidsregio' ]
-  for regiotype in regiotypes:
-    assert regiotype + 'Code' in aantallen, (regiotype, aantallen.columns)
-    assert regiotype + 'Code' in ziekenhuisopnames, (regiotype, ziekenhuisopnames.columns)
 
   global regioposten
   regioposten = []
@@ -395,17 +397,9 @@ def cell():
     sys.stdout.flush()
     code = regiotype + 'Code'
 
-    ag = sortcolumns(
-      aantallen[['Week', code, 'Date', 'Total_reported', 'Deceased']]
-      .assign(Hospital_admission=np.nan)
-    )
-    zo = sortcolumns(
-      ziekenhuisopnames[['Week', code, 'Date', 'Hospital_admission']]
-      .assign(Total_reported=np.nan, Deceased=np.nan)
-    )
-    df = (pd.concat([ag, zo], axis=0)
-      .sort_values(by=['Date'])
-      .groupby(['Week', code])
+    df = (rivm
+      .sort_values(by=[code, 'Date'])
+      .groupby([code, 'Week'])
       .agg({
         'Date': [ 'max', 'nunique' ],
         'Total_reported': [ 'sum', 'last' ],
@@ -476,5 +470,5 @@ def cell():
   regioposten.rename(columns={'GGDregio': 'GGD regio'}, inplace=True)
   display(regioposten[['Code', 'Naam', 'Datum']])
 # %%
-#if knack:
-#  await knack.publish(regioposten, 'Regioposten', Cache)
+if knack:
+  await knack.publish(regioposten, 'Regioposten', Cache)
