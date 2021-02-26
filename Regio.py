@@ -476,5 +476,5 @@ def cell():
   regioposten.rename(columns={'GGDregio': 'GGD regio'}, inplace=True)
   display(regioposten[['Code', 'Naam', 'Datum']])
 # %%
-if knack:
-  await knack.publish(regioposten, 'Regioposten', Cache)
+#if knack:
+#  await knack.publish(regioposten, 'Regioposten', Cache)

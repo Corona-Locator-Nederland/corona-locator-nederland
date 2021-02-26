@@ -173,11 +173,13 @@ class Knack:
     obj, mapping = self.object_spec(object_key)
     if hashcol := mapping.get('Hash'):
       try:
-        restored = self.munch([{**self.unhash(record[hashcol]), 'id': record['id'], hashcol: record[hashcol]} for record in records])
+        records = [{**self.unhash(record[hashcol]), 'id': record['id'], hashcol: record[hashcol]} for record in records]
         print('restored', obj.name, 'from hash')
-        return restored
       except (binascii.Error, zlib.error):
         print('failed to restore', obj.name, 'from hash')
+    os.makedirs('metadata', exist_ok = True)
+    with open(os.path.join('metadata', 'data-' + obj.name + '.json'), 'w') as f:
+      json.dump(records, f, indent='  ')
     return self.munch(records)
 
   def munch(self, records):
@@ -199,7 +201,13 @@ class Knack:
   def object_spec(self, object_name):
     paths = [f'$.application.objects[?(@.{field}=={json.dumps(object_name)})]' for field in ['name', 'key']]
     obj = self.find(paths)
-    return (obj, self.safe_dict([ (field.name, field.key) for field in obj.fields ]))
+    mapping = self.safe_dict([ (field.name, field.key) for field in obj.fields ])
+
+    os.makedirs('metadata', exist_ok = True)
+    with open(os.path.join('metadata', object_name + '-mapping.json'), 'w') as f:
+      json.dump(mapping, f, indent='  ')
+
+    return (obj, mapping)
 
   async def update(self, object_name, df, force=False, rate_limit=7, slack=Munch(msg='',emoji=None)):
     self.calls = self.Calls()
@@ -262,6 +270,7 @@ class Knack:
       self.slack(slack.msg + f"Not executing {tasks} {obj.name} actions because knack can only deal with piddly amounts of data. Please upload {artifact} to {obj.name}", obj.name, emoji=':no_entry:')
       if hashing:
         pd.DataFrame([{**rec, 'Hash': hsh[mapping.Hash]} for rec, hsh in zip(df.to_dict('records'), data)]).to_csv(artifact, index=False)
+        pd.DataFrame([{**rec, 'Hash': hsh[mapping.Hash]} for rec, hsh in zip(df.to_dict('records'), data)]).to_json(artifact.replace('.csv', '.json'))
       else:
         df.to_csv(artifact, index=False)
       return False
