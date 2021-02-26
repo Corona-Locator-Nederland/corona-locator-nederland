@@ -21,6 +21,7 @@ import os
 from datetime import datetime, timedelta
 import pandas as pd
 import numpy as np
+import binascii
 
 def in_notebook():
   from IPython import get_ipython
@@ -114,8 +115,12 @@ class Knack:
   def unhash(self, record):
     return json.loads(zlib.decompress(base64.b64decode(record)))
 
-  def find(self, path):
-    found = JSONPath(path).parse(self.metadata)
+  def find(self, paths):
+    found = []
+    if type(paths) != list:
+      paths = [ paths ]
+    for path in paths:
+      found = found + JSONPath(path).parse(self.metadata)
     if len(found) == 1:
       return self.munch(found[0])
     raise ValueError(f'{path} yields {len(found)} results, expected 1')
@@ -165,6 +170,14 @@ class Knack:
 
         self.calls.error(res.status_code, msg)
 
+    obj, mapping = self.object_spec(object_key)
+    if hashcol := mapping.get('Hash'):
+      try:
+        restored = self.munch([{**self.unhash(record[hashcol]), 'id': record['id'], hashcol: record[hashcol]} for record in records])
+        print('restored', obj.name, 'from hash')
+        return restored
+      except (binascii.Error, zlib.error):
+        print('failed to restore', obj.name, 'from hash')
     return self.munch(records)
 
   def munch(self, records):
@@ -183,24 +196,29 @@ class Knack:
       m[k] = v
     return m
 
-  async def update(self, objectName, df, force=False, rate_limit=7, slack=Munch(msg='',emoji=None)):
+  def object_spec(self, object_name):
+    paths = [f'$.application.objects[?(@.{field}=={json.dumps(object_name)})]' for field in ['name', 'key']]
+    obj = self.find(paths)
+    return (obj, self.safe_dict([ (field.name, field.key) for field in obj.fields ]))
+
+  async def update(self, object_name, df, force=False, rate_limit=7, slack=Munch(msg='',emoji=None)):
     self.calls = self.Calls()
     assert df is not None, 'df parameter is required'
 
-    obj = self.find(f'$.application.objects[?(@.name=={json.dumps(objectName)})]')
+    obj, mapping = self.object_spec(object_name)
+
     os.makedirs('metadata', exist_ok = True)
-    with open(os.path.join('metadata', objectName + '.json'), 'w') as f:
+    with open(os.path.join('metadata', object_name + '.json'), 'w') as f:
       json.dump(obj, f, indent='  ')
 
-    self.mapping = self.safe_dict([ (field.name, field.key) for field in obj.fields ])
     key = [field.name for field in obj.fields if field.get('unique')]
     assert len(key) == 1
 
     key = Munch(name=key[0])
-    key.field = self.mapping[key.name]
+    key.field = mapping[key.name]
 
     assert key.name in df, f'{json.dumps(key.name)} not present in {str(df.columns)}'
-    assert df.rename(columns=self.mapping).loc[:, key.field].is_unique, f'{json.dumps(key.name)}/{json.dumps(key.field)} is not unique in the dataset'
+    assert df.rename(columns=mapping).loc[:, key.field].is_unique, f'{json.dumps(key.name)}/{json.dumps(key.field)} is not unique in the dataset'
 
     connections = {}
     for field in obj.fields:
@@ -213,23 +231,23 @@ class Knack:
           self.connection_field_map[field.relationship.object] = { d.get(domain + '_raw', d[domain]): d['id'] for d in self.getall(field.relationship.object) }
         connections[field.name] = self.connection_field_map[field.relationship.object]
 
-    data = self.munch(df.replace(connections).rename(columns=self.mapping).to_dict('records'))
+    data = self.munch(df.replace(connections).rename(columns=mapping).to_dict('records'))
     unmapped = [col for col in data[0].keys() if not col.startswith('field_')]
     assert len(unmapped) == 0, unmapped
 
-    hashing = 'Hash' in self.mapping
+    hashing = 'Hash' in mapping
     force = not hashing
     if hashing:
       for rec in data:
-        assert self.mapping.Hash not in rec
-        rec[self.mapping.Hash] = self.hash(rec)
+        assert mapping.Hash not in rec
+        rec[mapping.Hash] = self.hash(rec)
 
     create = self.safe_dict([ (rec[key.field], rec) for rec in data ])
     update = []
     delete = []
     for ist in self.getall(obj.key):
       if soll:= create.get(ist[key.field]):
-        if force or ist[self.mapping.Hash] != soll[self.mapping.Hash]:
+        if force or ist[mapping.Hash] != soll[mapping.Hash]:
           update.append((ist.id, soll))
         del create[soll[key.field]]
       else:
@@ -243,7 +261,7 @@ class Knack:
       print('Not executing', tasks, obj.name, 'actions because knack is pathetic. Please upload', artifact)
       self.slack(slack.msg + f"Not executing {tasks} {obj.name} actions because knack can only deal with piddly amounts of data. Please upload {artifact} to {obj.name}", obj.name, emoji=':no_entry:')
       if hashing:
-        pd.DataFrame([{**rec, 'Hash': hsh[self.mapping.Hash]} for rec, hsh in zip(df.to_dict('records'), data)]).to_csv(artifact, index=False)
+        pd.DataFrame([{**rec, 'Hash': hsh[mapping.Hash]} for rec, hsh in zip(df.to_dict('records'), data)]).to_csv(artifact, index=False)
       else:
         df.to_csv(artifact, index=False)
       return False
@@ -275,18 +293,18 @@ class Knack:
       print('\nrate limit:', rate_limit, f'\n{obj.name} API calls:', self.calls)
     return len(tasks)
 
-  async def timestamps(self, objectName, timestamps):
-    print([{'Key': 1, **{ f'Timestamp {objectName} {provider}': ts for provider, ts in timestamps.items() }}])
+  async def timestamps(self, object_name, timestamps):
+    print([{'Key': 1, **{ f'Timestamp {object_name} {provider}': ts for provider, ts in timestamps.items() }}])
     msg = ''
     for provider, ts in timestamps.items():
       msg += f"• *{provider}*: {ts}\n"
     await self.update(
-      objectName='LaatsteUpdate',
-      df=pd.DataFrame([{'Key': 1, **{ f'Timestamp {objectName} {provider}': ts for provider, ts in timestamps.items() }}]),
+      object_name='LaatsteUpdate',
+      df=pd.DataFrame([{'Key': 1, **{ f'Timestamp {object_name} {provider}': ts for provider, ts in timestamps.items() }}]),
       slack=Munch(msg=msg, emoji=':clock1:')
     )
 
-  def slack(self, msg, objectName, emoji=''):
+  def slack(self, msg, object_name, emoji=''):
     if 'SLACK_WEBHOOK' not in os.environ: return
 
     prefix = ''
@@ -299,10 +317,10 @@ class Knack:
       prefix += '> '
 
     nb = os.environ.get('NOTEBOOK')
-    if nb and nb != objectName:
-      prefix += f'*{nb}.{objectName}* '
+    if nb and nb != object_name:
+      prefix += f'*{nb}.{object_name}* '
     else:
-      prefix += f'*{objectName}* '
+      prefix += f'*{object_name}* '
 
     prefix += emoji + ' '
 
@@ -311,7 +329,7 @@ class Knack:
     prefix = prefix.strip() + '\n'
     Slack(url=os.environ['SLACK_WEBHOOK']).post(text=prefix + msg)
 
-  async def publish(self, df, objectName, downloads):
+  async def publish(self, df, object_name, downloads):
     print('infinities:')
     m = (df == np.inf)
     inf = df.loc[m.any(axis=1), m.any(axis=0)]
@@ -322,8 +340,8 @@ class Knack:
     print(nan.head())
 
     os.makedirs('artifacts', exist_ok = True)
-    df.to_csv(f'artifacts/{objectName}.csv', index=True)
+    df.to_csv(f'artifacts/{object_name}.csv', index=True)
 
     print('updating knack')
-    if await self.update(objectName=objectName, df=df, slack=Munch(msg='\n'.join(downloads.actions), emoji=None)) != False:
-      await self.timestamps(objectName, downloads.timestamps)
+    if await self.update(object_name=object_name, df=df, slack=Munch(msg='\n'.join(downloads.actions), emoji=None)) != False:
+      await self.timestamps(object_name, downloads.timestamps)
