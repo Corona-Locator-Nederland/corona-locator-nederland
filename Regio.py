@@ -398,6 +398,13 @@ def cell():
     code = regiotype + 'Code'
 
     df = (rivm
+      .groupby([code, 'Week', 'Date'])
+      .agg({
+        'Total_reported': 'sum',
+        'Deceased': 'sum',
+        'Hospital_admission': 'sum',
+      })
+      .reset_index()
       .sort_values(by=[code, 'Date'])
       .groupby([code, 'Week'])
       .agg({
