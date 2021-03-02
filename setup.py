@@ -137,16 +137,11 @@ class Cache:
 
     return history[n]
 
-def ignore(*args):
-  if len(args) == 1 and callable(args[0]):
-    print('SKIPPING')
-    return args[0]
-  else:
-    print(*(['SKIPPING:'] + list(args)))
-    return lambda func: func
-
+def ignore(cell):
+  return cell
 def run(cell):
   cell()
+  return cell
 
 # https://www.cbs.nl/nl-nl/onze-diensten/open-data/open-data-v4/snelstartgids-odata-v4
 # which is a bit of a lie, since their odata implementation is broken in very imaginitive ways
