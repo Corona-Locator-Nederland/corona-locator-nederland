@@ -13,11 +13,13 @@ def sortcolumns(df):
 
 # prepareer een RIVM dataset
 def prepare(dataset, day=0):
-  df = RIVM.csv(dataset, day)
   # hernoem kolommen voor makkelijker uniforme data bewerking
-  for old, new in [('Municipality_code', 'GemeenteCode'), ('Security_region_code', 'VeiligheidsregioCode'), ('Security_region_name', 'Veiligheidsregio')]:
-    if old in df:
-      df[new] = df[old]
+  df = RIVM.csv(dataset, day).rename(columns={
+    'Municipality_code': 'GemeenteCode',
+    'Municipality_name': 'Gemeente',
+    'Security_region_code': 'VeiligheidsregioCode',
+    'Security_region_name': 'Veiligheidsregio',
+  })
   if 'GemeenteCode' in df:
     df['GemeenteCode'] = df['GemeenteCode'].fillna('GM0000')
 
@@ -464,9 +466,9 @@ def cell():
 
     for col in ['Positief getest', 'Overleden', 'Ziekenhuisopname']:
       # vul missende waarden met 0 vanaf de eerstgevonden waarde zodat cumsum goed werkt
-      df[f'{col} week'] = df[f'{col} week'].mask(df[f'{col} week'].ffill().isnull(), 0)
-      df[f'{col} cumulatief'] = df[f'{col} week'].cumsum().fillna(0)
-      df[f'{col} week -1'] = df[f'{col} cumulatief'].shift(1).fillna(0)
+      #df[f'{col} week'] = df[f'{col} week'].mask(df[f'{col} week'].ffill().isnull(), 0)
+      #df[f'{col} cumulatief'] = df[f'{col} week'].cumsum().fillna(0)
+      #df[f'{col} week -1'] = df[f'{col} cumulatief'].shift(1).fillna(0)
       df[f'{col} week'] = df[f'{col} week'].fillna(0)
 
     df.index.rename('Key', inplace=True)
@@ -479,3 +481,50 @@ def cell():
 # %%
 if knack:
   await knack.publish(regioposten, 'Regioposten', Cache)
+#from sqlalchemy import create_engine
+#engine = create_engine('sqlite:////Users/emile/CLN.sqlite', echo=True)
+#sqlite_connection = engine.connect()
+#regioposten.rename(columns = {col: col.replace(' ', '_').replace('-', '') for col in regioposten.columns}).to_sql('Regioposten', sqlite_connection, if_exists='fail')
+
+# %%
+@ignore
+def cell():
+  def diff(naam):
+    def make(dag):
+      df = RIVM.csv(naam, dag).drop(columns=['Date_of_report'])
+      for col in df.columns:
+        if df[col].dtype in [np.float64, np.int64, int]:
+          df[col] = df[col].fillna(0)
+        else:
+          df[col] = df[col].fillna('')
+      df.insert(0, 'id', df.index)
+      return df
+
+    vandaag = make(0)
+    if 'Date_of_publication' in vandaag:
+      dop = 'Date_of_publication'
+    else:
+      dop = 'Date_of_statistics'
+    delta = vandaag[dop].max()
+    vandaag = vandaag[vandaag[dop]!= delta]
+    gisteren = make(1)
+
+    df_all = gisteren.merge(vandaag, how='outer', on=[str(col) for col in gisteren.columns], indicator=True)
+    gisteren=df_all[df_all._merge == 'left_only'].drop(columns=['_merge'])
+    vandaag=df_all[df_all._merge == 'right_only'].drop(columns=['_merge'])
+
+    assert len(vandaag) == len(gisteren), (len(vandaag), len(gisteren))
+
+    df_all = pd.concat([gisteren.set_index('id'), vandaag.set_index('id')], axis='columns', keys=['Gisteren', 'Vandaag'])
+    df_all = df_all.swaplevel(axis='columns')[gisteren.columns[1:]]
+    def highlight_diff(data):
+      attr = 'background-color: yellow'
+      other = data.xs('Gisteren', axis='columns', level=-1)
+      return pd.DataFrame(np.where(data.ne(other, level=0), attr, ''), index=data.index, columns=data.columns)
+
+    df_all.style.apply(highlight_diff, axis=None).to_excel(f'diff-{naam}.xlsx')
+
+  diff('COVID-19_aantallen_gemeente_per_dag')
+  diff('COVID-19_ziekenhuisopnames')
+
+# %%
