@@ -40,6 +40,9 @@ class AsyncLimiter(aiolimiter.AsyncLimiter): # fills the bucket, forcing a backo
     self._level = self.max_rate
     self._last_check = get_running_loop().time()
 
+def sort(df):
+  return df[sorted(df.columns)]
+
 def on_backoff(details):
   ex_type, ex, ex_traceback = sys.exc_info()
   self = details['args'][0]
@@ -269,9 +272,9 @@ class Knack:
       print('Not executing', tasks, obj.name, 'to spare API quota. Please upload', artifact)
       self.slack(slack.msg + f"Not executing {tasks} {obj.name} actions to spare API quota. Please upload {artifact} to {obj.name}", obj.name, emoji=':no_entry:')
       if hashing:
-        pd.DataFrame([{**rec, 'Hash': hsh[mapping.Hash]} for rec, hsh in zip(df.to_dict('records'), data)]).to_csv(artifact, index=False)
+        sort(pd.DataFrame([{**rec, 'Hash': hsh[mapping.Hash]} for rec, hsh in zip(df.to_dict('records'), data)])).to_csv(artifact, index=False)
       else:
-        df.to_csv(artifact, index=False)
+        sort(df).to_csv(artifact, index=False)
       return False
 
     # because the shoddy Knack platform cannot get to more than 2-3 calls per second without parallellism, but if you *do* use parallellism
@@ -348,7 +351,7 @@ class Knack:
     print(nan.head())
 
     os.makedirs('artifacts', exist_ok = True)
-    df.to_csv(f'artifacts/{object_name}.csv', index=True)
+    sort(df).to_csv(f'artifacts/{object_name}.csv', index=True)
 
     print('updating knack')
     if await self.update(object_name=object_name, df=df, slack=Munch(msg='\n'.join(downloads.actions), emoji=None)) != False:

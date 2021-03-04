@@ -487,6 +487,7 @@ def cell():
       #df[f'{col} cumulatief'] = df[f'{col} week'].cumsum().fillna(0)
       #df[f'{col} week -1'] = df[f'{col} cumulatief'].shift(1).fillna(0)
       df[f'{col} week'] = df[f'{col} week'].fillna(0)
+      df[f'{col} week -1'] = df[f'{col} week'].shift(1).fillna(0)
 
     df.index.rename('Key', inplace=True)
     df = df[[col for col in df.columns if col != 'Land']]
