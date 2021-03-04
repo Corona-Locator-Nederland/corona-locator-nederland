@@ -270,7 +270,6 @@ class Knack:
       self.slack(slack.msg + f"Not executing {tasks} {obj.name} actions to spare API quota. Please upload {artifact} to {obj.name}", obj.name, emoji=':no_entry:')
       if hashing:
         pd.DataFrame([{**rec, 'Hash': hsh[mapping.Hash]} for rec, hsh in zip(df.to_dict('records'), data)]).to_csv(artifact, index=False)
-        pd.DataFrame([{**rec, 'Hash': hsh[mapping.Hash]} for rec, hsh in zip(df.to_dict('records'), data)]).to_json(artifact.replace('.csv', '.json'))
       else:
         df.to_csv(artifact, index=False)
       return False

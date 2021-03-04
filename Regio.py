@@ -362,7 +362,7 @@ def cell():
     'GGDregio': 'GGD regio'
   })
 
-# %% load de gewenste kolom volgorde uit een file en publiceer
+# %% publiceer RegioV2
 if knack:
   await knack.publish(regios[[col for col in regios.columns if col != 'Land']].fillna(0), 'RegioV2', Cache)
 
@@ -391,7 +391,7 @@ def cell():
     end=max(aantallen.Date.max(), ziekenhuisopnames.Date.max())
   ).strftime('%Y-%V').unique())
   print(len(weken), 'weken')
-  week = ['ma', 'di', 'wo', 'do', 'fr', 'za', 'zo']
+  week = ['ma', 'di', 'wo', 'do', 'vr', 'za', 'zo']
   metrics = [
     'Total_reported',
     'Deceased',
@@ -495,7 +495,6 @@ def cell():
   regioposten['Datum'] = regioposten['Datum'].dt.strftime('%Y-%m-%d')
   regioposten.rename(columns={'GGDregio': 'GGD regio'}, inplace=True)
 
-  regioposten.to_csv('regioposten.csv')
   display(regioposten[['Week'] + [col for col in regioposten.columns if 'Positief getest' in col]].head())
 # %%
 if knack:
