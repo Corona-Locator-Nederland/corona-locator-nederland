@@ -495,7 +495,7 @@ def cell():
   regioposten['Datum'] = regioposten['Datum'].dt.strftime('%Y-%m-%d')
   regioposten.rename(columns={'GGDregio': 'GGD regio'}, inplace=True)
 
-  regioposten.to_excel('regioposten.xlsx')
+  regioposten.to_csv('regioposten.csv')
   display(regioposten[['Week'] + [col for col in regioposten.columns if 'Positief getest' in col]].head())
 # %%
 if knack:
