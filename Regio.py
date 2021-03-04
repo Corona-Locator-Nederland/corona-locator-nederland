@@ -391,6 +391,12 @@ def cell():
     end=max(aantallen.Date.max(), ziekenhuisopnames.Date.max())
   ).strftime('%Y-%V').unique())
   print(len(weken), 'weken')
+  week = ['ma', 'di', 'wo', 'do', 'fr', 'za', 'zo']
+  metrics = [
+    'Total_reported',
+    'Deceased',
+    'Hospital_admission',
+  ]
 
   global regioposten
   regioposten = []
@@ -400,13 +406,16 @@ def cell():
     code = regiotype + 'Code'
 
     df = (rivm
+      .sort_values(by=[code, 'Date'])
       .groupby([code, 'Week', 'Date'])
-      .agg({
-        'Total_reported': 'sum',
-        'Deceased': 'sum',
-        'Hospital_admission': 'sum',
-      })
+      .agg({ metric: 'sum' for metric in metrics })
       .reset_index()
+    )
+    for dow, dayname in enumerate(week):
+      for metric in metrics:
+        df.loc[df['Date'].dt.dayofweek == dow, f'{metric} {dayname}'] = df[metric]
+
+    df = (df
       .sort_values(by=[code, 'Date'])
       .groupby([code, 'Week'])
       .agg({
@@ -414,6 +423,11 @@ def cell():
         'Total_reported': [ 'sum', 'last' ],
         'Deceased': [ 'sum', 'last' ],
         'Hospital_admission': [ 'sum', 'last' ],
+        **{
+          f'{metric} {day}': 'sum'
+          for metric in metrics
+          for day in week
+        }
       })
       .reset_index()
     )
@@ -428,6 +442,9 @@ def cell():
       'Deceased last': 'Overleden laatste dag',
       'Hospital_admission sum': 'Ziekenhuisopname week',
       'Hospital_admission last': 'Ziekenhuisopname laatste dag',
+      **{ f'Total_reported {day} sum': f'Positief getest {day}' for day in week },
+      **{ f'Deceased {day} sum': f'Overleden {day}' for day in week },
+      **{ f'Hospital_admission {day} sum': f'Ziekenhuisopname {day}' for day in week },
     }, inplace=True)
 
     regio = groupregio(regiotype)
@@ -477,14 +494,12 @@ def cell():
   regioposten = pd.concat(regioposten, axis=0)
   regioposten['Datum'] = regioposten['Datum'].dt.strftime('%Y-%m-%d')
   regioposten.rename(columns={'GGDregio': 'GGD regio'}, inplace=True)
-  display(regioposten[['Code', 'Naam', 'Datum']])
+
+  regioposten.to_excel('regioposten.xlsx')
+  display(regioposten[['Week'] + [col for col in regioposten.columns if 'Positief getest' in col]].head())
 # %%
 if knack:
   await knack.publish(regioposten, 'Regioposten', Cache)
-#from sqlalchemy import create_engine
-#engine = create_engine('sqlite:////Users/emile/CLN.sqlite', echo=True)
-#sqlite_connection = engine.connect()
-#regioposten.rename(columns = {col: col.replace(' ', '_').replace('-', '') for col in regioposten.columns}).to_sql('Regioposten', sqlite_connection, if_exists='fail')
 
 # %%
 @ignore
@@ -526,5 +541,3 @@ def cell():
 
   diff('COVID-19_aantallen_gemeente_per_dag')
   diff('COVID-19_ziekenhuisopnames')
-
-# %%
