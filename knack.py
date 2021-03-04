@@ -248,16 +248,16 @@ class Knack:
 
     hashing = 'Hash' in mapping
     force = not hashing
-    if hashing:
-      for rec in data:
-        assert mapping.Hash not in rec
-        rec[mapping.Hash] = self.hash(rec)
 
     create = self.safe_dict([ (rec[key.field], rec) for rec in data ])
     update = []
     delete = []
     for ist in self.getall(obj.key):
       if soll:= create.get(ist[key.field]):
+        if hashing:
+          assert mapping.Hash not in soll
+          soll = {**{k: v for k, v in ist.items() if k not in ['id', mapping.Hash]}, **soll}
+          soll[mapping.Hash] = self.hash(soll)
         if force or ist[mapping.Hash] != soll[mapping.Hash]:
           update.append((ist.id, soll))
         del create[soll[key.field]]
@@ -265,14 +265,13 @@ class Knack:
         delete.append(ist.id)
 
     tasks = len(create) + len(update) + len(delete)
-    print(tasks, 'knack actions ahead')
     if tasks > 2000: # Knack can't deal with even miniscule amounts of data
       os.makedirs('artifacts', exist_ok = True)
       artifact = os.path.join('artifacts', f'bulk-{obj.name}.csv')
       print('Not executing', tasks, obj.name, 'to spare API quota. Please upload', artifact)
       self.slack(slack.msg + f"Not executing {tasks} {obj.name} actions to spare API quota. Please upload {artifact} to {obj.name}", obj.name, emoji=':no_entry:')
       if hashing:
-        sort(pd.DataFrame([{**rec, 'Hash': hsh[mapping.Hash]} for rec, hsh in zip(df.to_dict('records'), data)])).to_csv(artifact, index=False)
+        sort(pd.DataFrame([{**rec, mapping.Hash: self.hash(rec)} for rec in data])).to_csv(artifact, index=False)
       else:
         sort(df).to_csv(artifact, index=False)
       return False
