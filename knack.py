@@ -58,8 +58,8 @@ def on_backoff(details):
 def on_giveup(details):
   ex_type, ex, ex_traceback = sys.exc_info()
   task = details['args'][1]
-  print(task.action)
-  print(task.data)
+  print(task.action, flush=True)
+  print(task.data, flush=True)
 
 class Knack:
   class Calls:
@@ -105,6 +105,7 @@ class Knack:
       'X-Knack-Application-Id': app_id,
       'X-Knack-REST-API-KEY': api_key,
     }
+    self.fill = {}
     self.connection_field_map = {}
     with urlopen(f'https://loader.knack.com/v1/applications/{app_id}') as response:
       self.metadata = json.load(response)
@@ -176,10 +177,15 @@ class Knack:
     obj, mapping = self.object_spec(object_key)
     if hashcol := mapping.get('Hash'):
       try:
-        records = [{**self.unhash(record[hashcol]), 'id': record['id'], hashcol: record[hashcol]} for record in records]
-        print('restored', obj.name, 'from hash')
-      except (binascii.Error, zlib.error):
-        print('failed to restore', obj.name, 'from hash')
+        restored = [{**self.unhash(record[hashcol]), 'id': record['id'], hashcol: record[hashcol]} for record in records]
+        if len(records) > 0:
+          assert all(key.startswith('field_') or key == 'id' for key in restored[0].keys())
+        print('restored', obj.name, 'from hash', flush=True)
+        self.fill[obj.name] = True
+        records = restored
+      except (binascii.Error, zlib.error, AssertionError):
+        print('failed to restore', obj.name, 'from hash', flush=True)
+        self.fill[obj.name] = False
     os.makedirs('metadata', exist_ok = True)
     with open(os.path.join('metadata', 'data-' + obj.name + '.json'), 'w') as f:
       json.dump(records, f, indent='  ')
@@ -215,6 +221,7 @@ class Knack:
   async def update(self, object_name, df, force=False, rate_limit=7, slack=Munch(msg='',emoji=None)):
     self.calls = self.Calls()
     assert df is not None, 'df parameter is required'
+    assert 'Hash' not in df.columns
 
     obj, mapping = self.object_spec(object_name)
 
@@ -247,33 +254,37 @@ class Knack:
     assert len(unmapped) == 0, unmapped
 
     hashing = 'Hash' in mapping
-    force = not hashing
+    force = force or not hashing
 
     create = self.safe_dict([ (rec[key.field], rec) for rec in data ])
     update = []
     delete = []
     for ist in self.getall(obj.key):
-      if soll:= create.get(ist[key.field]):
+      if soll:= create.pop(ist[key.field], None):
         if hashing:
-          assert mapping.Hash not in soll
-          soll = {**{k: v for k, v in ist.items() if k not in ['id', mapping.Hash]}, **soll}
+          assert mapping.Hash not in soll, (soll.keys(), mapping)
+          if self.fill.get(obj.name):
+            soll = {**{k: v for k, v in ist.items() if k not in ['id', mapping.Hash]}, **soll}
           soll[mapping.Hash] = self.hash(soll)
         if force or ist[mapping.Hash] != soll[mapping.Hash]:
           update.append((ist.id, soll))
-        del create[soll[key.field]]
       else:
         delete.append(ist.id)
+
+    if hashing:
+      for soll in create.values():
+        soll[mapping.Hash] = self.hash(soll)
 
     tasks = len(create) + len(update) + len(delete)
     if tasks > 2000: # Knack can't deal with even miniscule amounts of data
       os.makedirs('artifacts', exist_ok = True)
       artifact = os.path.join('artifacts', f'bulk-{obj.name}.csv')
-      print('Not executing', tasks, obj.name, 'to spare API quota. Please upload', artifact)
+      print('Not executing', tasks, obj.name, 'to spare API quota. Please upload', artifact, flush=True)
       self.slack(slack.msg + f"Not executing {tasks} {obj.name} actions to spare API quota. Please upload {artifact} to {obj.name}", obj.name, emoji=':no_entry:')
+      df = sort(df)
       if hashing:
-        sort(pd.DataFrame([{**rec, mapping.Hash: self.hash(rec)} for rec in df.to_dict('records')])).to_csv(artifact, index=False)
-      else:
-        sort(df).to_csv(artifact, index=False)
+        df['Hash'] = [self.hash(rec) for rec in df.to_dict('records')]
+      df.to_csv(artifact, index=False)
       return False
 
     # because the shoddy Knack platform cannot get to more than 2-3 calls per second without parallellism, but if you *do* use parallellism
@@ -295,16 +306,16 @@ class Knack:
       if slack.msg.strip() != '':
         slack.msg = slack.msg.strip() + '\n'
       if len(tasks) == 0:
-        print(f'nothing to do for {obj.name}')
+        print(f'nothing to do for {obj.name}', flush=True)
         self.slack(slack.msg + f'nothing to do for {obj.name}', obj.name, emoji=':sleeping:')
       else:
         responses = [await req for req in tqdm.tqdm(asyncio.as_completed(tasks), total=len(tasks))]
         self.slack(slack.msg + f'{obj.name} API calls: {self.calls}', obj.name, emoji=slack.emoji or ':white_check_mark:')
-      print('\nrate limit:', rate_limit, f'\n{obj.name} API calls:', self.calls)
+      print('\nrate limit:', rate_limit, f'\n{obj.name} API calls:', self.calls, flush=True)
     return len(tasks)
 
   async def timestamps(self, object_name, timestamps):
-    print([{'Key': 1, **{ f'Timestamp {object_name} {provider}': ts for provider, ts in timestamps.items() }}])
+    print([{'Key': 1, **{ f'Timestamp {object_name} {provider}': ts for provider, ts in timestamps.items() }}], flush=True)
     msg = ''
     for provider, ts in timestamps.items():
       msg += f"• *{provider}*: {ts}\n"
@@ -340,18 +351,18 @@ class Knack:
     Slack(url=os.environ['SLACK_WEBHOOK']).post(text=prefix + msg)
 
   async def publish(self, df, object_name, downloads):
-    print('infinities:')
+    print('infinities:', flush=True)
     m = (df == np.inf)
     inf = df.loc[m.any(axis=1), m.any(axis=0)]
-    print(inf.head())
-    print('nan:')
+    print(inf.head(), flush=True)
+    print('nan:', flush=True)
     m = (df == np.nan)
     nan = df.loc[m.any(axis=1), m.any(axis=0)]
-    print(nan.head())
+    print(nan.head(), flush=True)
 
     os.makedirs('artifacts', exist_ok = True)
     sort(df).to_csv(f'artifacts/{object_name}.csv', index=True)
 
-    print('updating knack')
+    print('updating knack', flush=True)
     if await self.update(object_name=object_name, df=df, slack=Munch(msg='\n'.join(downloads.actions), emoji=None)) != False:
       await self.timestamps(object_name, downloads.timestamps)

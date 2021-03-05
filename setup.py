@@ -41,7 +41,7 @@ else:
 
 if 'GSHEET' in os.environ:
   def gsheet(df):
-    print('updating GSheet')
+    print('updating GSheet', flush=True)
     gc = gspread.service_account()
     sh = gc.open_by_key(os.environ['GSHEET'])
     ws = sh.get_worksheet(0)
@@ -57,7 +57,7 @@ class Cache:
 
   @classmethod
   def say(cls, msg):
-    print(msg)
+    print(msg, flush=True)
     cls.actions.append(msg)
 
   @classmethod
@@ -102,12 +102,12 @@ class Cache:
         for chunk in r.iter_content(chunk_size=8192):
           f.write(chunk)
     elif n == 0:
-      print(latest, 'exists')
+      print(latest, 'exists', flush=True)
 
     if 'CI' in os.environ:
       for f in glob.glob(datafiles):
         if not f.endswith('.gz'):
-          print(provider, name, 'zipping', f)
+          print(provider, name, 'zipping', f, flush=True)
           with open(f, 'rb') as f_in, gzip.open(f + '.gz', 'wb') as f_out:
             shutil.copyfileobj(f_in, f_out)
             os.remove(f)
@@ -115,7 +115,7 @@ class Cache:
     # delete local duplicates
     for f in glob.glob(datafiles):
       if os.path.exists(f + '.gz'):
-        print(provider, name, 'removing unzipped', f)
+        print(provider, name, 'removing unzipped', f, flush=True)
         os.remove(f)
 
     dated = {}
@@ -225,19 +225,19 @@ class RIVM:
   @classmethod
   def csv(cls, naam, n=0):
     data = Cache.fetch(f'https://data.rivm.nl/covid-19/{naam}.csv', n)
-    print('loading', data)
+    print('loading', data, flush=True)
     return pd.read_csv(data, sep=';', header=0)
   @classmethod
   def json(cls, naam, n=0):
     data = Cache.fetch(f'https://data.rivm.nl/covid-19/{naam}.json', n)
-    print('loading', data)
+    print('loading', data, flush=True)
     return pd.read_json(data)
 
 class LCPS:
   @classmethod
   def csv(cls, naam, n=0):
     data = Cache.fetch(f'https://lcps.nu/wp-content/uploads/{naam}.csv', n)
-    print('loading', data)
+    print('loading', data, flush=True)
     return pd.read_csv(data, header=0)
 
 class GitHub:
@@ -251,7 +251,7 @@ class GitHub:
     if path[0] != '/':
       url += '/'
     url += path
-    print(url)
+    print(url, flush=True)
     return pd.read_csv(Cache.fetch(url, keep=1, headers=headers))
 
 class NICE:
@@ -259,10 +259,10 @@ class NICE:
   def json(cls, name, jsonpath=None):
     cached = Cache.fetch(f'https://www.stichting-nice.nl/covid-19/public/{name}/', keep=1, provider='nice', name=f'{name.replace("/", "-")}.json')
     if jsonpath is None:
-      print('loading', cached)
+      print('loading', cached, flush=True)
       return pd.read_json(cached)
     else:
-      print('loading', jsonpath, 'from', cached)
+      print('loading', jsonpath, 'from', cached, flush=True)
       with open(cached) as f:
         data = JSONPath(jsonpath).parse(json.load(f))
         assert type(data) == list, type(data)
@@ -273,7 +273,7 @@ class ArcGIS:
   @classmethod
   def nice(cls, naam, n=0):
     data = Cache.fetch(f'https://opendata.arcgis.com/datasets/{naam}_0.csv', n, provider='nice', keep=1)
-    print('loading', data)
+    print('loading', data, flush=True)
     return pd.read_csv(data, header=0)
 
 # if __name__ == "__main__": does not work, notebooks run in main
