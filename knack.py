@@ -285,8 +285,17 @@ class Knack:
       if hashing:
         df['Hash'] = [self.hash(rec) for rec in df.replace(connections).rename(columns=mapping).to_dict('records')]
       df.to_csv(artifact, index=False)
-      artifact = os.path.join('artifacts', f'bulk-{obj.name}-nl.csv')
-      df.to_csv(artifact, decimal = ',', sep = ';', index = False)
+
+      # mangle data for ridiculous knack upload format
+      artifact = os.path.join('artifacts', f'bulk-{obj.name}-mangle-for-knack.csv')
+      for col, coltype in zip(df.columns, df.dtypes):
+        if coltype in (int, np.int64, np.float64, float):
+          df[col] = df[col].astype(str).str.replace(".", ",").fillna('')
+        elif coltype == object:
+          df[col] = df[col].fillna('')
+        else:
+          raise ValueError(str(coltype))
+      df.to_csv(artifact)
 
       return False
 
