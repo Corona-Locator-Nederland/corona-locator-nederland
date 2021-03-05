@@ -178,6 +178,11 @@ class Knack:
           self.calls.error(res.status_code, msg)
 
       obj = self.object_metadata(object_key)
+
+      os.makedirs('metadata', exist_ok = True)
+      with open(os.path.join('metadata', 'data-' + obj.meta.name + '.json'), 'w') as f:
+        json.dump(records, f, indent='  ')
+
       if hashcol := obj.mapping.get('Hash'):
         try:
           restored = [{**self.unhash(record[hashcol]), 'id': record['id'], hashcol: record[hashcol]} for record in records]
@@ -189,9 +194,6 @@ class Knack:
         except (binascii.Error, zlib.error, AssertionError):
           print('failed to restore', obj.meta.name, 'from hash', flush=True)
           self.fill[obj.meta.name] = False
-      os.makedirs('metadata', exist_ok = True)
-      with open(os.path.join('metadata', 'data-' + obj.meta.name + '.json'), 'w') as f:
-        json.dump(records, f, indent='  ')
 
       self.all[object_key] = records
 
