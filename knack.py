@@ -285,6 +285,9 @@ class Knack:
       if hashing:
         df['Hash'] = [self.hash(rec) for rec in df.replace(connections).rename(columns=mapping).to_dict('records')]
       df.to_csv(artifact, index=False)
+      artifact = os.path.join('artifacts', f'bulk-{obj.name}-nl.csv')
+      df.to_csv(artifact, decimal = ',', sep = ';', index = False)
+
       return False
 
     # because the shoddy Knack platform cannot get to more than 2-3 calls per second without parallellism, but if you *do* use parallellism
