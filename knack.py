@@ -106,6 +106,7 @@ class Knack:
       'X-Knack-REST-API-KEY': api_key,
     }
     self.fill = {}
+    self.all = {}
     self.connection_field_map = {}
     with urlopen(f'https://loader.knack.com/v1/applications/{app_id}') as response:
       self.metadata = json.load(response)
@@ -146,6 +147,9 @@ class Knack:
         raise ValueError(f'Unexpected task action {json.dumps(task.action)}')
 
   def getall(self, object_key):
+    if object_key in self.all:
+      return self.all
+
     url = f'https://api.knack.com/v1/objects/{object_key}/records?rows_per_page=1000'
     records = []
     page = 1
@@ -189,7 +193,9 @@ class Knack:
     os.makedirs('metadata', exist_ok = True)
     with open(os.path.join('metadata', 'data-' + obj.name + '.json'), 'w') as f:
       json.dump(records, f, indent='  ')
-    return self.munch(records)
+
+    self.all[object_key] = self.munch(record)
+    return self.all[object_key]
 
   def munch(self, records):
     if type(records) == list:
@@ -295,7 +301,7 @@ class Knack:
           df[col] = df[col].fillna('')
         else:
           raise ValueError(str(coltype))
-      df.to_csv(artifact)
+      df.to_csv(artifact, index=False)
 
       return False
 
