@@ -194,7 +194,7 @@ class Knack:
     with open(os.path.join('metadata', 'data-' + obj.name + '.json'), 'w') as f:
       json.dump(records, f, indent='  ')
 
-    self.all[object_key] = self.munch(record)
+    self.all[object_key] = self.munch(records)
     return self.all[object_key]
 
   def munch(self, records):
