@@ -22,6 +22,7 @@ from datetime import datetime, timedelta
 import pandas as pd
 import numpy as np
 import binascii
+import copy
 
 def in_notebook():
   from IPython import get_ipython
@@ -147,55 +148,54 @@ class Knack:
         raise ValueError(f'Unexpected task action {json.dumps(task.action)}')
 
   def getall(self, object_key):
-    if object_key in self.all:
-      return self.all
+    if not object_key in self.all:
+      url = f'https://api.knack.com/v1/objects/{object_key}/records?rows_per_page=1000'
+      records = []
+      page = 1
+      while True:
+        res = requests.get(url=f'{url}&page={page}', headers=self.headers)
+        res.raise_for_status()
+        self.calls.hit('read')
 
-    url = f'https://api.knack.com/v1/objects/{object_key}/records?rows_per_page=1000'
-    records = []
-    page = 1
-    while True:
-      res = requests.get(url=f'{url}&page={page}', headers=self.headers)
-      res.raise_for_status()
-      self.calls.hit('read')
-
-      if res.status_code >= 200 and res.status_code < 300:
-        res = res.json()
-        records += res['records']
-        if res['current_page'] != res['total_pages'] and res['total_pages'] != 0: # what the actual...
-          page += 1
+        if res.status_code >= 200 and res.status_code < 300:
+          res = res.json()
+          records += res['records']
+          if res['current_page'] != res['total_pages'] and res['total_pages'] != 0: # what the actual...
+            page += 1
+          else:
+            break
         else:
-          break
-      else:
-        msg = None
+          msg = None
+          try:
+            msg = res.json()
+            if type(msg) == dict and 'errors' in msg:
+              msg = json.dumps(msg['errors'])
+          except JSONDecodeError:
+            pass
+          if msg is None:
+            msg = res.text
+
+          self.calls.error(res.status_code, msg)
+
+      obj = self.object_metadata(object_key)
+      if hashcol := obj.mapping.get('Hash'):
         try:
-          msg = res.json()
-          if type(msg) == dict and 'errors' in msg:
-            msg = json.dumps(msg['errors'])
-        except JSONDecodeError:
-          pass
-        if msg is None:
-          msg = res.text
+          restored = [{**self.unhash(record[hashcol]), 'id': record['id'], hashcol: record[hashcol]} for record in records]
+          if len(records) > 0:
+            assert all(key.startswith('field_') or key == 'id' for key in restored[0].keys())
+          print('restored', obj.meta.name, 'from hash', flush=True)
+          self.fill[obj.meta.name] = True
+          records = restored
+        except (binascii.Error, zlib.error, AssertionError):
+          print('failed to restore', obj.meta.name, 'from hash', flush=True)
+          self.fill[obj.meta.name] = False
+      os.makedirs('metadata', exist_ok = True)
+      with open(os.path.join('metadata', 'data-' + obj.meta.name + '.json'), 'w') as f:
+        json.dump(records, f, indent='  ')
 
-        self.calls.error(res.status_code, msg)
+      self.all[object_key] = records
 
-    obj, mapping = self.object_spec(object_key)
-    if hashcol := mapping.get('Hash'):
-      try:
-        restored = [{**self.unhash(record[hashcol]), 'id': record['id'], hashcol: record[hashcol]} for record in records]
-        if len(records) > 0:
-          assert all(key.startswith('field_') or key == 'id' for key in restored[0].keys())
-        print('restored', obj.name, 'from hash', flush=True)
-        self.fill[obj.name] = True
-        records = restored
-      except (binascii.Error, zlib.error, AssertionError):
-        print('failed to restore', obj.name, 'from hash', flush=True)
-        self.fill[obj.name] = False
-    os.makedirs('metadata', exist_ok = True)
-    with open(os.path.join('metadata', 'data-' + obj.name + '.json'), 'w') as f:
-      json.dump(records, f, indent='  ')
-
-    self.all[object_key] = self.munch(records)
-    return self.all[object_key]
+    return self.munch(copy.deepcopy(self.all[object_key]))
 
   def munch(self, records):
     if type(records) == list:
@@ -213,39 +213,39 @@ class Knack:
       m[k] = v
     return m
 
-  def object_spec(self, object_name):
+  def object_metadata(self, object_name):
     paths = [f'$.application.objects[?(@.{field}=={json.dumps(object_name)})]' for field in ['name', 'key']]
-    obj = self.find(paths)
-    mapping = self.safe_dict([ (field.name, field.key) for field in obj.fields ])
+    meta = self.find(paths)
+    mapping = self.safe_dict([ (field.name, field.key) for field in meta.fields ])
 
     os.makedirs('metadata', exist_ok = True)
     with open(os.path.join('metadata', object_name + '-mapping.json'), 'w') as f:
       json.dump(mapping, f, indent='  ')
 
-    return (obj, mapping)
+    return Munch(meta=meta, mapping=mapping)
 
   async def update(self, object_name, df, force=False, rate_limit=7, slack=Munch(msg='',emoji=None)):
     self.calls = self.Calls()
     assert df is not None, 'df parameter is required'
     assert 'Hash' not in df.columns
 
-    obj, mapping = self.object_spec(object_name)
+    obj = self.object_metadata(object_name)
 
     os.makedirs('metadata', exist_ok = True)
     with open(os.path.join('metadata', object_name + '.json'), 'w') as f:
-      json.dump(obj, f, indent='  ')
+      json.dump(obj.meta, f, indent='  ')
 
-    key = [field.name for field in obj.fields if field.get('unique')]
+    key = [field.name for field in obj.meta.fields if field.get('unique')]
     assert len(key) == 1
 
     key = Munch(name=key[0])
-    key.field = mapping[key.name]
+    key.field = obj.mapping[key.name]
 
     assert key.name in df, f'{json.dumps(key.name)} not present in {str(df.columns)}'
-    assert df.rename(columns=mapping).loc[:, key.field].is_unique, f'{json.dumps(key.name)}/{json.dumps(key.field)} is not unique in the dataset'
+    assert df.rename(columns=obj.mapping).loc[:, key.field].is_unique, f'{json.dumps(key.name)}/{json.dumps(key.field)} is not unique in the dataset'
 
     connections = {}
-    for field in obj.fields:
+    for field in obj.meta.fields:
       if field.type == 'connection':
         assert 'relationship' in field and field.relationship.get('has') == 'one' and field.relationship.get('belongs_to') == 'many'
         if field.relationship.object not in self.connection_field_map:
@@ -255,54 +255,52 @@ class Knack:
           self.connection_field_map[field.relationship.object] = { d.get(domain + '_raw', d[domain]): d['id'] for d in self.getall(field.relationship.object) }
         connections[field.name] = self.connection_field_map[field.relationship.object]
 
-    data = self.munch(df.replace(connections).rename(columns=mapping).to_dict('records'))
+    data = self.munch(df.replace(connections).rename(columns=obj.mapping).to_dict('records'))
     unmapped = [col for col in data[0].keys() if not col.startswith('field_')]
     assert len(unmapped) == 0, unmapped
 
-    hashing = 'Hash' in mapping
+    hashing = 'Hash' in obj.mapping
     force = force or not hashing
 
     create = self.safe_dict([ (rec[key.field], rec) for rec in data ])
     update = []
     delete = []
-    for ist in self.getall(obj.key):
+    for ist in self.getall(obj.meta.key):
       if soll:= create.pop(ist[key.field], None):
         if hashing:
-          assert mapping.Hash not in soll, (soll.keys(), mapping)
-          if self.fill.get(obj.name):
-            soll = {**{k: v for k, v in ist.items() if k not in ['id', mapping.Hash]}, **soll}
-          soll[mapping.Hash] = self.hash(soll)
-        if force or ist[mapping.Hash] != soll[mapping.Hash]:
+          assert obj.mapping.Hash not in soll, (soll.keys(), obj.mapping)
+          if self.fill.get(obj.meta.name):
+            soll = {**{k: v for k, v in ist.items() if k not in ['id', obj.mapping.Hash]}, **soll}
+          soll[obj.mapping.Hash] = self.hash(soll)
+        if force or ist[obj.mapping.Hash] != soll[obj.mapping.Hash]:
           update.append((ist.id, soll))
       else:
         delete.append(ist.id)
 
     if hashing:
       for soll in create.values():
-        soll[mapping.Hash] = self.hash(soll)
+        soll[obj.mapping.Hash] = self.hash(soll)
 
     tasks = len(create) + len(update) + len(delete)
+
+    # mangle data for ridiculous knack upload format
+    df = sort(df)
+    if hashing:
+      df['Hash'] = [self.hash(rec) for rec in df.replace(connections).rename(columns=obj.mapping).to_dict('records')]
+    artifact = os.path.join('artifacts', f'bulk-{obj.meta.name}-mangle-for-knack.csv')
+    for col, coltype in zip(df.columns, df.dtypes):
+      if coltype in (int, np.int64, np.float64, float):
+        df[col] = df[col].astype(str).str.replace(".", ",").fillna('')
+      elif coltype == object:
+        df[col] = df[col].fillna('')
+      else:
+        raise ValueError(str(coltype))
+    df.to_csv(artifact, index=False)
+
     if tasks > 2000: # Knack can't deal with even miniscule amounts of data
       os.makedirs('artifacts', exist_ok = True)
-      artifact = os.path.join('artifacts', f'bulk-{obj.name}.csv')
-      print('Not executing', tasks, obj.name, 'to spare API quota. Please upload', artifact, flush=True)
-      self.slack(slack.msg + f"Not executing {tasks} {obj.name} actions to spare API quota. Please upload {artifact} to {obj.name}", obj.name, emoji=':no_entry:')
-      df = sort(df)
-      if hashing:
-        df['Hash'] = [self.hash(rec) for rec in df.replace(connections).rename(columns=mapping).to_dict('records')]
-      df.to_csv(artifact, index=False)
-
-      # mangle data for ridiculous knack upload format
-      artifact = os.path.join('artifacts', f'bulk-{obj.name}-mangle-for-knack.csv')
-      for col, coltype in zip(df.columns, df.dtypes):
-        if coltype in (int, np.int64, np.float64, float):
-          df[col] = df[col].astype(str).str.replace(".", ",").fillna('')
-        elif coltype == object:
-          df[col] = df[col].fillna('')
-        else:
-          raise ValueError(str(coltype))
-      df.to_csv(artifact, index=False)
-
+      print('Not executing', tasks, obj.meta.name, 'to spare API quota. Please upload', artifact, flush=True)
+      self.slack(slack.msg + f"Not executing {tasks} {obj.meta.name} actions to spare API quota. Please upload {artifact} to {obj.meta.name}", obj.meta.name, emoji=':no_entry:')
       return False
 
     # because the shoddy Knack platform cannot get to more than 2-3 calls per second without parallellism, but if you *do* use parallellism
@@ -311,11 +309,11 @@ class Knack:
     async with aiohttp.ClientSession() as session:
       self.session = session
       tasks = [
-        Munch(action='delete', object_key=obj.key, record_id=ist) for ist in delete
+        Munch(action='delete', object_key=obj.meta.key, record_id=ist) for ist in delete
       ] + [
-        Munch(action='update', object_key=obj.key, record_id=ist, data=soll) for ist, soll in update
+        Munch(action='update', object_key=obj.meta.key, record_id=ist, data=soll) for ist, soll in update
       ] + [
-        Munch(action='create', object_key=obj.key, data=soll) for soll in create.values()
+        Munch(action='create', object_key=obj.meta.key, data=soll) for soll in create.values()
       ]
       for i, task in enumerate(tasks):
         task.id = i + 1 # skip 0 to avoid confusion between -0 and 0 in the call tracking
@@ -324,12 +322,12 @@ class Knack:
       if slack.msg.strip() != '':
         slack.msg = slack.msg.strip() + '\n'
       if len(tasks) == 0:
-        print(f'nothing to do for {obj.name}', flush=True)
-        self.slack(slack.msg + f'nothing to do for {obj.name}', obj.name, emoji=':sleeping:')
+        print(f'nothing to do for {obj.meta.name}', flush=True)
+        self.slack(slack.msg + f'nothing to do for {obj.meta.name}', obj.meta.name, emoji=':sleeping:')
       else:
         responses = [await req for req in tqdm.tqdm(asyncio.as_completed(tasks), total=len(tasks))]
-        self.slack(slack.msg + f'{obj.name} API calls: {self.calls}', obj.name, emoji=slack.emoji or ':white_check_mark:')
-      print('\nrate limit:', rate_limit, f'\n{obj.name} API calls:', self.calls, flush=True)
+        self.slack(slack.msg + f'{obj.meta.name} API calls: {self.calls}', obj.meta.name, emoji=slack.emoji or ':white_check_mark:')
+      print('\nrate limit:', rate_limit, f'\n{obj.meta.name} API calls:', self.calls, flush=True)
     return len(tasks)
 
   async def timestamps(self, object_name, timestamps):
