@@ -337,11 +337,11 @@ class Knack:
     msg = ''
     for provider, ts in timestamps.items():
       msg += f"• *{provider}*: {ts}\n"
-    await self.update(
-      object_name='LaatsteUpdate',
-      df=pd.DataFrame([{'Key': 1, **{ f'Timestamp {object_name} {provider}': ts for provider, ts in timestamps.items() }}]),
-      slack=Munch(msg=msg, emoji=':clock1:')
-    )
+
+    df = [{'Key': 1, **{ f'Timestamp {object_name} {provider}': ts for provider, ts in timestamps.items() }}]
+    print('timestamps:', df)
+    df = pd.DataFrame(df)
+    await self.update(object_name='LaatsteUpdate', df=df, slack=Munch(msg=msg, emoji=':clock1:'))
 
   def slack(self, msg, object_name, emoji=''):
     if 'SLACK_WEBHOOK' not in os.environ: return
