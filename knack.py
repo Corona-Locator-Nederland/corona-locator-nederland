@@ -288,11 +288,11 @@ class Knack:
     # mangle data for ridiculous knack upload format
     df = sort(df)
     if hashing:
-      df['Hash'] = [self.hash(rec) for rec in df.replace(connections).rename(columns=obj.mapping).to_dict('records')]
+      df['Hash'] = df.apply(lambda r: self.hash(r.to_dict()))
     artifact = os.path.join('artifacts', f'bulk-{obj.meta.name}-mangle-for-knack.csv')
     for col, coltype in zip(df.columns, df.dtypes):
       if coltype in (int, np.int64, np.float64, float):
-        df[col] = df[col].astype(str).str.replace(".", ",").fillna('')
+        df[col] = df[col].astype(str).str.replace(".", ",", regex=False).fillna('')
       elif coltype == object:
         df[col] = df[col].fillna('')
       else:
