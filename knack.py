@@ -286,7 +286,7 @@ class Knack:
     tasks = len(create) + len(update) + len(delete)
 
     # mangle data for ridiculous knack upload format
-    df = sort(df)
+    df = sort(df).copy(deep=True)
     if hashing:
       df['Hash'] = df.apply(lambda r: self.hash(r.to_dict()))
     artifact = os.path.join('artifacts', f'bulk-{obj.meta.name}-mangle-for-knack.csv')
