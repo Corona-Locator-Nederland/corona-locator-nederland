@@ -238,13 +238,15 @@ class Knack:
       json.dump(obj.meta, f, indent='  ')
 
     key = [field.name for field in obj.meta.fields if field.get('unique')]
-    assert len(key) == 1
+    assert len(key) <= 1, len(key)
+    if len(key) == 0:
+      key = None
+    else:
+      key = Munch(name=key[0])
+      key.field = obj.mapping[key.name]
 
-    key = Munch(name=key[0])
-    key.field = obj.mapping[key.name]
-
-    assert key.name in df, f'{json.dumps(key.name)} not present in {str(df.columns)}'
-    assert df.rename(columns=obj.mapping).loc[:, key.field].is_unique, f'{json.dumps(key.name)}/{json.dumps(key.field)} is not unique in the dataset'
+      assert key.name in df, f'{json.dumps(key.name)} not present in {str(df.columns)}'
+      assert df.rename(columns=obj.mapping).loc[:, key.field].is_unique, f'{json.dumps(key.name)}/{json.dumps(key.field)} is not unique in the dataset'
 
     connections = {}
     for field in obj.meta.fields:
@@ -264,20 +266,23 @@ class Knack:
     hashing = 'Hash' in obj.mapping
     force = force or not hashing
 
-    create = self.safe_dict([ (rec[key.field], rec) for rec in data ])
     update = []
     delete = []
-    for ist in self.getall(obj.meta.key):
-      if soll:= create.pop(ist[key.field], None):
-        if hashing:
-          assert obj.mapping.Hash not in soll, (soll.keys(), obj.mapping)
-          if self.fill.get(obj.meta.name):
-            soll = {**{k: v for k, v in ist.items() if k not in ['id', obj.mapping.Hash]}, **soll}
-          soll[obj.mapping.Hash] = self.hash(soll)
-        if force or ist[obj.mapping.Hash] != soll[obj.mapping.Hash]:
-          update.append((ist.id, soll))
-      else:
-        delete.append(ist.id)
+    if not key:
+      create = { id(rec): rec for rec in data }
+    else:
+      create = self.safe_dict([ (rec[key.field], rec) for rec in data ])
+      for ist in self.getall(obj.meta.key):
+        if soll:= create.pop(ist[key.field], None):
+          if hashing:
+            assert obj.mapping.Hash not in soll, (soll.keys(), obj.mapping)
+            if self.fill.get(obj.meta.name):
+              soll = {**{k: v for k, v in ist.items() if k not in ['id', obj.mapping.Hash]}, **soll}
+            soll[obj.mapping.Hash] = self.hash(soll)
+          if force or ist[obj.mapping.Hash] != soll[obj.mapping.Hash]:
+            update.append((ist.id, soll))
+        else:
+          delete.append(ist.id)
 
     if hashing:
       for soll in create.values():
@@ -344,6 +349,10 @@ class Knack:
     df = pd.DataFrame(df)
     await self.update(object_name='LaatsteUpdate', df=df, slack=Munch(msg=msg, emoji=':clock1:'))
 
+    df = [ {'ObjectName': object_name, 'Source': provider, 'Timestamp': ts } for provider, ts in timestamps.items() ]
+    df = pd.DataFrame(df)
+    await self.update(object_name='UpdateDetails', df=df, slack=Munch(msg=msg, emoji=':clock1:'))
+
   def slack(self, msg, object_name, emoji=''):
     if 'SLACK_WEBHOOK' not in os.environ: return
 
@@ -369,7 +378,7 @@ class Knack:
     prefix = prefix.strip() + '\n'
     Slack(url=os.environ['SLACK_WEBHOOK']).post(text=prefix + msg)
 
-  async def publish(self, df, object_name, downloads):
+  async def publish(self, df, object_name, downloads, update_timestamps=False):
     print('infinities:', flush=True)
     m = (df == np.inf)
     inf = df.loc[m.any(axis=1), m.any(axis=0)]
@@ -385,4 +394,6 @@ class Knack:
 
     print('updating knack', flush=True)
     if await self.update(object_name=object_name, df=df, slack=Munch(msg='\n'.join(downloads.actions), emoji=None)) != False:
+      update_timestamps = True
+    if update_timestamps:
       await self.timestamps(object_name, downloads.timestamps)
