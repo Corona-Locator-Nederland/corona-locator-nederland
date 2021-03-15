@@ -23,6 +23,7 @@ import pandas as pd
 import numpy as np
 import binascii
 import copy
+import getpass
 
 def in_notebook():
   from IPython import get_ipython
@@ -349,7 +350,9 @@ class Knack:
     df = pd.DataFrame(df)
     await self.update(object_name='LaatsteUpdate', df=df, slack=Munch(msg=msg, emoji=':clock1:'))
 
-    df = [ {'ObjectName': object_name, 'Source': provider, 'Timestamp': ts } for provider, ts in timestamps.items() ]
+    batch = os.environ.get('GITHUB_RUN_ID', f'{getpass.getuser()} @ {datetime.now().strftime("%Y-%m-%d %H:%M")}')
+
+    df = [ {'BatchName': batch, 'ObjectName': object_name, 'Source': provider, 'Timestamp': ts } for provider, ts in timestamps.items() ]
     df = pd.DataFrame(df)
     await self.update(object_name='UpdateDetails', df=df, slack=Munch(msg=msg, emoji=':clock1:'))
 
