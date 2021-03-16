@@ -350,7 +350,7 @@ class Knack:
     df = pd.DataFrame(df)
     await self.update(object_name='LaatsteUpdate', df=df, slack=Munch(msg=msg, emoji=':clock1:'))
 
-    batch = os.environ.get('GITHUB_RUN_ID', f'{getpass.getuser()} @ {datetime.now().strftime("%Y-%m-%d %H:%M")}')
+    batch = os.environ.get('GITHUB_RUN_NUMBER', f'{getpass.getuser()} @ {datetime.now().strftime("%Y-%m-%d %H:%M")}')
 
     df = [ {'BatchName': batch, 'ObjectName': object_name, 'Source': provider, 'Timestamp': ts } for provider, ts in timestamps.items() ]
     df = pd.DataFrame(df)
