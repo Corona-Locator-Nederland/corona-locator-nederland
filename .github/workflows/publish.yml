@@ -80,8 +80,8 @@ jobs:
         done
 
         # merge notebooks
-        nbmerge *.ipynb > RunAll.ipynball
-        mv RunAll.ipynball RunAll.ipynb
+        cat [A-Z]*.py > run-all.py
+        git add run-all.py
     - uses: stefanzweifel/git-auto-commit-action@v4
       if: always()
       continue-on-error: true
