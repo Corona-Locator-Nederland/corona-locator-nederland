@@ -3,7 +3,7 @@ name: Execute notebooks
 on:
   workflow_dispatch: null
   schedule:
-  - cron: '0 9,11 * * *'
+  - cron: '0 9,11,12 * * *'
   - cron: '5 13,15-19,21 * * *'
   - cron: '20 14 * * *'
   - cron: '35 15-16 * * *'
