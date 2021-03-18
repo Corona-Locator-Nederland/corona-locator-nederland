@@ -393,7 +393,7 @@ class Knack:
     print(df.dtypes)
 
     os.makedirs('artifacts', exist_ok = True)
-    sort(df).to_csv(f'artifacts/{object_name}.csv')
+    sort(df).to_csv(f'artifacts/{object_name}.csv', index=False)
 
     print('updating knack', flush=True)
     if await self.update(object_name=object_name, df=df, slack=Munch(msg='\n'.join(downloads.actions), emoji=None)) != False:
