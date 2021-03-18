@@ -107,7 +107,7 @@ class Knack:
       'X-Knack-Application-Id': app_id,
       'X-Knack-REST-API-KEY': api_key,
     }
-    self.fill = {}
+    #self.fill = {}
     self.all = {}
     self.connection_field_map = {}
     with urlopen(f'https://loader.knack.com/v1/applications/{app_id}') as response:
@@ -190,11 +190,11 @@ class Knack:
           if len(records) > 0:
             assert all(key.startswith('field_') or key == 'id' for key in restored[0].keys())
           print('restored', obj.meta.name, 'from hash', flush=True)
-          self.fill[obj.meta.name] = True
+          #self.fill[obj.meta.name] = True
           records = restored
         except (binascii.Error, zlib.error, AssertionError):
           print('failed to restore', obj.meta.name, 'from hash', flush=True)
-          self.fill[obj.meta.name] = False
+          #self.fill[obj.meta.name] = False
 
       self.all[object_key] = records
 
@@ -277,8 +277,8 @@ class Knack:
         if soll:= create.pop(ist[key.field], None):
           if hashing:
             assert obj.mapping.Hash not in soll, (soll.keys(), obj.mapping)
-            if self.fill.get(obj.meta.name):
-              soll = {**{k: v for k, v in ist.items() if k not in ['id', obj.mapping.Hash]}, **soll}
+            #if self.fill.get(obj.meta.name):
+            #  soll = {**{k: v for k, v in ist.items() if k not in ['id', obj.mapping.Hash]}, **soll}
             soll[obj.mapping.Hash] = self.hash(soll)
           if force or ist[obj.mapping.Hash] != soll[obj.mapping.Hash]:
             update.append((ist.id, soll))
