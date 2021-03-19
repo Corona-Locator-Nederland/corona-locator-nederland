@@ -244,9 +244,10 @@ class GitHub:
   @classmethod
   def csv(cls, path):
     headers = {
-      'Authorization': f'token {os.environ["GITHUB_TOKEN"]}',
       'Accept': 'application/vnd.github.v3.raw',
     }
+    if 'GITHUB_TOKEN' in os.environ:
+      headers['Authorization'] = f'token {os.environ["GITHUB_TOKEN"]}'
     url = 'https://api.github.com/repos'
     if path[0] != '/':
       url += '/'
