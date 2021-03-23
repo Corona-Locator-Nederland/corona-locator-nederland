@@ -35,6 +35,15 @@ else:
   #import tqdm
   import tqdm.asyncio as tqdm
 
+class File(object):
+  def __init__(self, file_name):
+    os.makedirs(os.path.dirname(file_name), exist_ok = True)
+    self.f = open(file_name, 'w')
+  def __enter__(self):
+    return self.f
+  def __exit__(self, type, value, traceback):
+    self.f.close()
+
 import aiolimiter
 from aiolimiter.compat import get_running_loop
 class AsyncLimiter(aiolimiter.AsyncLimiter): # fills the bucket, forcing a backoff
@@ -112,8 +121,7 @@ class Knack:
     self.connection_field_map = {}
     with urlopen(f'https://loader.knack.com/v1/applications/{app_id}') as response:
       self.metadata = json.load(response)
-      os.makedirs('metadata', exist_ok = True)
-      with open('metadata/metadata.json', 'w') as f:
+      with File('metadata/app.json') as f:
         json.dump(self.metadata, f, indent='  ')
 
   def hash(self, record):
@@ -180,8 +188,7 @@ class Knack:
 
       obj = self.object_metadata(object_key)
 
-      os.makedirs('metadata', exist_ok = True)
-      with open(os.path.join('metadata', 'data-' + obj.meta.name + '.json'), 'w') as f:
+      with File(os.path.join('artifacts', 'fetched', obj.meta.name + '.json')) as f:
         json.dump(records, f, indent='  ')
 
       if hashcol := obj.mapping.get('Hash'):
@@ -192,6 +199,8 @@ class Knack:
           print('restored', obj.meta.name, 'from hash', flush=True)
           #self.fill[obj.meta.name] = True
           records = restored
+          with File(os.path.join('artifacts', 'restored', obj.meta.name + '.json')) as f:
+            json.dump(records, f, indent='  ')
         except (binascii.Error, zlib.error, AssertionError):
           print('failed to restore', obj.meta.name, 'from hash', flush=True)
           #self.fill[obj.meta.name] = False
@@ -221,8 +230,7 @@ class Knack:
     meta = self.find(paths)
     mapping = self.safe_dict([ (field.name, field.key) for field in meta.fields ])
 
-    os.makedirs('metadata', exist_ok = True)
-    with open(os.path.join('metadata', object_name + '-mapping.json'), 'w') as f:
+    with File(os.path.join('metadata', 'mapping', meta.name + '.json')) as f:
       json.dump(mapping, f, indent='  ')
 
     return Munch(meta=meta, mapping=mapping)
@@ -234,8 +242,7 @@ class Knack:
 
     obj = self.object_metadata(object_name)
 
-    os.makedirs('metadata', exist_ok = True)
-    with open(os.path.join('metadata', object_name + '.json'), 'w') as f:
+    with File(os.path.join('metadata', obj.meta.name + '.json')) as f:
       json.dump(obj.meta, f, indent='  ')
 
     key = [field.name for field in obj.meta.fields if field.get('unique')]
@@ -296,7 +303,7 @@ class Knack:
     print(df.dtypes)
     if hashing:
       df['Hash'] = [self.hash(rec) for rec in self.munch(df.replace(connections).rename(columns=obj.mapping).to_dict('records'))]
-    artifact = os.path.join('artifacts', f'bulk-{obj.meta.name}-mangle-for-knack.csv')
+    artifact = os.path.join('artifacts', 'bulk', f'{obj.meta.name}-mangle-for-knack.csv')
     for col, coltype in zip(df.columns, df.dtypes):
       if coltype in (int, np.int64, np.float64, float):
         df[col] = df[col].astype(str).str.replace(".", ",", regex=False).fillna('')
@@ -304,19 +311,19 @@ class Knack:
         df[col] = df[col].fillna('')
       else:
         raise ValueError(str(coltype))
-    df.to_csv(artifact, index=False)
+    with File(artifact) as f:
+      df.to_csv(f, index=False)
 
     if tasks > 2000: # Knack can't deal with even miniscule amounts of data
-      os.makedirs('artifacts', exist_ok = True)
       print('Not executing', tasks, obj.meta.name, 'to spare API quota. Please upload', artifact, flush=True)
       self.slack(slack.msg + f"Not executing {tasks} {obj.meta.name} actions to spare API quota. Please upload {artifact} to {obj.meta.name}", obj.meta.name, emoji=':no_entry:')
       return False
 
     # because the shoddy Knack platform cannot get to more than 2-3 calls per second without parallellism, but if you *do* use parallellism
-    # to any significant extent you get immediate backoff errors. And lots of 'em
+    # to any significant extent you get immediate backoff errors. And lots of 'em.
     self.limiter = AsyncLimiter(max_rate=rate_limit, time_period=1)
 
-    with open(os.path.join('artifacts', f"{os.environ.get('GITHUB_RUN_NUMBER', getpass.getuser())}-{object_name}-{datetime.now().isoformat().replace('T', '@').replace(':', '-')}.json"), 'w') as f:
+    with File(os.path.join('artifacts', 'api', os.environ.get('NOTEBOOK', ''), f"{os.environ.get('GITHUB_RUN_NUMBER', getpass.getuser())}-{obj.meta.name}-{datetime.now().isoformat().replace('T', '@').replace(':', '-')}.json")) as f:
       json.dump({ 'delete': delete, 'update': update, 'create': list(create.values()) }, f)
     async with aiohttp.ClientSession() as session:
       self.session = session
@@ -395,8 +402,8 @@ class Knack:
     print(nan.head(), flush=True)
     print(df.dtypes)
 
-    os.makedirs('artifacts', exist_ok = True)
-    sort(df).to_csv(f'artifacts/{object_name}.csv', index=False)
+    with File(f'artifacts/publish/{object_name}.csv') as f:
+      sort(df).to_csv(f, index=False)
 
     print('updating knack', flush=True)
     if await self.update(object_name=object_name, df=df, slack=Munch(msg='\n'.join(downloads.actions), emoji=None)) != False:
