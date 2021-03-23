@@ -315,6 +315,9 @@ class Knack:
     # because the shoddy Knack platform cannot get to more than 2-3 calls per second without parallellism, but if you *do* use parallellism
     # to any significant extent you get immediate backoff errors. And lots of 'em
     self.limiter = AsyncLimiter(max_rate=rate_limit, time_period=1)
+
+    with open(os.path.join('artifacts', f"{os.environ.get('GITHUB_RUN_NUMBER', getpass.getuser())}-{object_name}-{datetime.now().isoformat().replace('T', '@').replace(':', '-')}.json"), 'w') as f:
+      json.dump({ 'delete': delete, 'update': update, 'create': list(create.values()) }, f)
     async with aiohttp.ClientSession() as session:
       self.session = session
       tasks = [
