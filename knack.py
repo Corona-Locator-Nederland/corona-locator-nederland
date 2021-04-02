@@ -349,6 +349,13 @@ class Knack:
       print('\nrate limit:', rate_limit, f'\n{obj.meta.name} API calls:', self.calls, flush=True)
     return len(tasks)
 
+  async def updating(self, object_name, updating):
+    df = [{'Key': 1, f'Updating {object_name}': str(updating).lower() }]
+    print('updating:', df)
+    df = pd.DataFrame(df)
+    # https://www.webfx.com/tools/emoji-cheat-sheet/
+    await self.update(object_name='LaatsteUpdate', df=df, slack=Munch(msg=('Updating ' if updating else 'Updated ') + object_name, emoji=':clapper:' if updating else ' :checkered_flag:'))
+    
   async def timestamps(self, object_name, timestamps):
     print([{'Key': 1, **{ f'Timestamp {object_name} {provider}': ts for provider, ts in timestamps.items() }}], flush=True)
     msg = ''
@@ -406,7 +413,7 @@ class Knack:
       sort(df).to_csv(f, index=False)
 
     print('updating knack', flush=True)
-    if await self.update(object_name=object_name, df=df, slack=Munch(msg='\n'.join(downloads.actions), emoji=None)) != False:
-      update_timestamps = True
-    if update_timestamps:
-      await self.timestamps(object_name, downloads.timestamps)
+    await self.updating(object_name, True)
+    await self.update(object_name=object_name, df=df, slack=Munch(msg='\n'.join(downloads.actions), emoji=None))
+    await self.timestamps(object_name, downloads.timestamps)
+    await self.updating(object_name, False)
