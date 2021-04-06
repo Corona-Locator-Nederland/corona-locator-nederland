@@ -80,7 +80,7 @@ jobs:
         done
 
         # merge notebooks
-        cat [A-Z]*.py > run-all.py
+        cat LeeftijdsgroepenLandelijk.py Regio.py Dagoverzicht.py > run-all.py
         git add run-all.py
     - uses: stefanzweifel/git-auto-commit-action@v4
       if: always()
