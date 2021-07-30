@@ -855,7 +855,7 @@ def cell():
 @run
 def cell():
   # laad dataset
-  df = LCPS.csv('covid-19').rename(columns={
+  df = LCPS.csv('covid-19-datafeed').rename(columns={  
     'IC_Bedden_COVID': 'LCPS IC Bedden COVID',
     'IC_Bedden_Non_COVID': 'LCPS IC Bedden Non COVID',
     'Kliniek_Bedden': 'LCPS Kliniek Bedden COVID',
