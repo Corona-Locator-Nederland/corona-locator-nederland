@@ -288,6 +288,6 @@ if get_ipython() is None:
   RIVM.json('COVID-19_reproductiegetal')
   RIVM.csv('COVID-19_uitgevoerde_testen')
   RIVM.csv('COVID-19_ziekenhuisopnames')
-  #LCPS.csv('covid-19') t/m 26-7-2021
+  # LCPS.csv('covid-19') t/m 26-7-2021
   LCPS.csv('covid-19-datafeed')
   ArcGIS.nice('f27f743476a142538e8054f7a7ce12e1')
