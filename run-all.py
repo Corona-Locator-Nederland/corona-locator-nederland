@@ -614,6 +614,7 @@ def cell():
       index=['-'.join(codeweek) for codeweek in base]
     )
 
+    df['Naam + Type'] = df['Naam'] + ' (' + df['Type'] + ')'
     df['Key'] = df['Code'] + '-' + df['Week']
     df.set_index('Key', inplace=True)
     df.drop(columns=['Code', 'Week'], inplace=True)
