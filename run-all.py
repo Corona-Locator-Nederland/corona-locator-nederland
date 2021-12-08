@@ -857,11 +857,12 @@ def cell():
 def cell():
   # laad dataset
   df = LCPS.csv('covid-19-datafeed').rename(columns={  
-    'IC_Bedden_COVID': 'LCPS IC Bedden COVID',
-    'IC_Bedden_Non_COVID': 'LCPS IC Bedden Non COVID',
-    'Kliniek_Bedden': 'LCPS Kliniek Bedden COVID',
-    'IC_Nieuwe_Opnames_COVID': 'LCPS IC Nieuwe Opnames COVID',
-    'Kliniek_Nieuwe_Opnames_COVID': 'LCPS Kliniek Nieuwe Opnames COVID',
+    'IC_Bedden_COVID_Nederland': 'LCPS IC Bedden COVID',
+    'IC_Bedden_COVID_Internationaal': 'LCPS IC Bedden COVID Internationaal',
+    'IC_Bedden_Non_COVID_Nederland': 'LCPS IC Bedden Non COVID',
+    'Kliniek_Bedden_Nederland': 'LCPS Kliniek Bedden COVID',
+    'IC_Nieuwe_Opnames_COVID_Nederland': 'LCPS IC Nieuwe Opnames COVID',
+    'Kliniek_Nieuwe_Opnames_COVID_Nederland': 'LCPS Kliniek Nieuwe Opnames COVID',
   })
   # datum naar datetime index voor merge
   df['Datum'] = pd.to_datetime(df['Datum'], format='%d-%m-%Y')
