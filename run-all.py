@@ -505,8 +505,8 @@ def cell():
 if knack:
   await knack.publish(regios[[col for col in regios.columns if col != 'Land']].fillna(0), 'RegioV2', Cache)
 
-# %% Regioposten
-@run
+# %% Regioposten  
+@ignore
 def cell():
   # just so the timestamps update OK
   Cache.reset()
@@ -638,8 +638,8 @@ def cell():
 
   display(regioposten[['Week'] + [col for col in regioposten.columns if 'Positief getest' in col]].head())
 # %%
-if knack:
-  await knack.publish(regioposten, 'Regioposten', Cache)
+# if knack:
+#   await knack.publish(regioposten, 'Regioposten', Cache)
 
 # %%
 @ignore
