@@ -17,7 +17,32 @@ def cell():
 @run
 def cell():
   global bevolking
-  bevolking = CBS.bevolking(leeftijdsgroepen=True)
+
+  # December 2021:
+  aantallenpercohort = {'0-9': 1757736,
+    '10-19': 1981885,
+    '20-29': 2263186,
+    '30-39': 2213705,
+    '40-49': 2137833,
+    '50-59': 2550358,
+    '60-69': 2171183,
+    '70-79': 1649291,
+    '80-89': 722027,
+    '90+': 135289}
+
+  global bevolking
+
+  bevolking = None
+  try:
+    bevolking = CBS.bevolking(leeftijdsgroepen=True)
+  except Exception as e:
+    print(e)
+    bevolking = None
+
+  if bevolking is None:
+    bevolking = aantallenpercohort
+
+
 
 # %% leeftijdsgroepen: prepareer tabel
 # Bereken de stand van zaken van besmettingen / hospitalisaties / overlijden, per cohort in absolute aantallen en aantallen per 100k, met een kleur indicator voor de aantallen.
@@ -40,7 +65,13 @@ def cell():
 
   # voeg key, gem leeftijd, kleurnummer en totaal toe
   Date_file = rivm['Date_file_date'].unique()[0].astype('M8[D]').astype('O')
-  cohorten = list(bevolking.index) + ['Onbekend']
+  # check type bevolking
+  if type(bevolking) == dict:
+    cohorten = list(bevolking.keys())
+  else:
+    cohorten = list(bevolking.index)
+  cohorten += ['Onbekend']
+
   def summarize(df, category, prefix):
     # aangezien we hier de dataframe in-place wijzigen (bijv door toevoegen kolommen)
     # en we het 'rivm' frame later nog clean nodig hebben
@@ -97,7 +128,12 @@ def cell():
     colorder = ['Key', 'Weken terug', 'Datum', 'Periode', 'Gemiddelde leeftijd', 'Totaal', 'Type']
     return df[colorder + [col for col in df if col not in colorder]]
 
-  factor = bevolking.to_dict()['per 100k']
+  if type(bevolking) == dict:
+    factor = {}
+    for c in bevolking: factor[c] = 100_000 / bevolking[c]
+  else:
+    factor = bevolking.to_dict()['per 100k']
+
   global tabel
   tabel = pd.concat(
     # flatten the result list zodat pd.concat ze onder elkaar kan plakken
@@ -110,6 +146,28 @@ def cell():
       ]
     ])
   )
+
+  if type(bevolking) == dict:
+    totale_bevolking = sum(bevolking.values())
+    print(totale_bevolking)
+  else:
+    totale_bevolking_per_cohort = bevolking.to_dict()['BevolkingOpDeEersteVanDeMaand']
+    totale_bevolking = sum( totale_bevolking_per_cohort.values())
+
+  keys = [ key for key in tabel["Key"]]
+  totals = [ x for x in tabel["Totaal"]]
+  for k in range(0, len(keys)):
+    key = keys[k]
+    if '100k' in key:
+      abskey = key[0] + key[5:]
+      kk = keys.index(abskey)
+      if isinstance(totals[k], float):
+        correctedtotal = totals[kk] * (100_000 / totale_bevolking)
+        # print([k, totals[k], totals[kk], correctedtotal])
+        totals[k] = correctedtotal
+
+  tabel["Totaal"] = totals
+
 
   # rood -> groen
   cdict = {
