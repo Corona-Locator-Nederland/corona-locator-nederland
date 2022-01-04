@@ -1,0 +1,12 @@
+Type,Naam,Code,LandCode
+Leeftijd,(niet gedefinieerd),LE0000,NL
+Leeftijd,00-09 jaar,LE0009,NL
+Leeftijd,10-19 jaar,LE1019,NL
+Leeftijd,20-29 jaar,LE2029,NL
+Leeftijd,30-39 jaar,LE3039,NL
+Leeftijd,40-49 jaar,LE4049,NL
+Leeftijd,50-59 jaar,LE5059,NL
+Leeftijd,60-69 jaar,LE6069,NL
+Leeftijd,70-79 jaar,LE7079,NL
+Leeftijd,80-89 jaar,LE8089,NL
+Leeftijd,90+ jaar,LE90+,NL
