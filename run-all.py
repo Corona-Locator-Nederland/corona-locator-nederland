@@ -18,7 +18,7 @@ def cell():
 def cell():
   global bevolking
 
-  # December 2021:
+  # December 2021 als backup:
   aantallenpercohort = {'0-9': 1757736,
     '10-19': 1981885,
     '20-29': 2263186,
@@ -35,14 +35,19 @@ def cell():
   bevolking = None
   try:
     bevolking = CBS.bevolking(leeftijdsgroepen=True)
+    bevolking.to_csv("leeftijdsgroepen_cbs.csv")
   except Exception as e:
     print(e)
-    bevolking = None
+    # gebruik laatste csv
+    try:
+      bevolking = pd.read_csv("leeftijdsgroepen_cbs.csv")
+      bevolking.set_index('Range', inplace=True)
+    except Exception as ee:
+      print(ee)
+      bevolking = None
 
   if bevolking is None:
     bevolking = aantallenpercohort
-
-
 
 # %% leeftijdsgroepen: prepareer tabel
 # Bereken de stand van zaken van besmettingen / hospitalisaties / overlijden, per cohort in absolute aantallen en aantallen per 100k, met een kleur indicator voor de aantallen.
