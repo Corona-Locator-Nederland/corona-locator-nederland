@@ -1,354 +1,354 @@
 Code,Landcode,Naam,GGD regio,Veiligheidsregio,Veiligheidsregio Code,Provincie,Landsdeel,Schoolregio,Opp land km2,Type,Personen
 GM0000,NL,(niet gedefinieerd),,,,,,,0,Gemeente,0
-GM1680,NL,Aa en Hunze,GGD Drenthe,Drenthe,VR03,Drenthe,Noord-Nederland,Noord,276,Gemeente,25366
-GM0358,NL,Aalsmeer,GGD Amsterdam,Amsterdam-Amstelland,VR13,Noord-Holland,West-Nederland,Noord,20,Gemeente,31957
-GM0197,NL,Aalten,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Midden,97,Gemeente,27133
-GM0059,NL,Achtkarspelen,GGD Fryslân,Fryslân,VR02,Friesland,Noord-Nederland,Noord,102,Gemeente,27881
-GM0482,NL,Alblasserdam,GGD Zuid-Holland Zuid,Zuid-Holland-Zuid,VR18,Zuid-Holland,West-Nederland,Midden,9,Gemeente,20193
-GM0613,NL,Albrandswaard,GGD Rotterdam-Rijnmond,Rotterdam-Rijnmond,VR17,Zuid-Holland,West-Nederland,Midden,22,Gemeente,25806
-GM0361,NL,Alkmaar,GGD Hollands-Noorden,Noord-Holland-Noord,VR10,Noord-Holland,West-Nederland,Noord,110,Gemeente,109841
-GM0141,NL,Almelo,GGD Regio Twente,Twente,VR05,Overijssel,Oost-Nederland,Noord,67,Gemeente,73180
-GM0034,NL,Almere,GGD Flevoland,Flevoland,VR25,Flevoland,Oost-Nederland,Noord,129,Gemeente,214551
-GM0484,NL,Alphen aan den Rijn,GGD Hollands-Midden,Hollands-Midden,VR16,Zuid-Holland,West-Nederland,Midden,126,Gemeente,112552
-GM1723,NL,Alphen-Chaam,GGD West-Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,93,Gemeente,10362
-GM1959,NL,Altena,GGD West-Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,201,Gemeente,56308
-GM0060,NL,Ameland,GGD Fryslân,Fryslân,VR02,Friesland,Noord-Nederland,Noord,59,Gemeente,3747
-GM0307,NL,Amersfoort,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,63,Gemeente,157547
-GM0362,NL,Amstelveen,GGD Amsterdam,Amsterdam-Amstelland,VR13,Noord-Holland,West-Nederland,Noord,41,Gemeente,90956
-GM0363,NL,Amsterdam,GGD Amsterdam,Amsterdam-Amstelland,VR13,Noord-Holland,West-Nederland,Noord,166,Gemeente,873289
-GM0200,NL,Apeldoorn,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Midden,340,Gemeente,164717
-GM0202,NL,Arnhem,GGD Gelderland-Midden,Gelderland-Midden,VR07,Gelderland,Oost-Nederland,Zuid,98,Gemeente,162353
-GM0106,NL,Assen,GGD Drenthe,Drenthe,VR03,Drenthe,Noord-Nederland,Noord,82,Gemeente,68812
-GM0743,NL,Asten,GGD Brabant-Zuidoost,Brabant-Zuidoost,VR22,Noord-Brabant,Zuid-Nederland,Zuid,70,Gemeente,16802
-GM0744,NL,Baarle-Nassau,GGD West-Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,76,Gemeente,6901
-GM0308,NL,Baarn,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,33,Gemeente,24844
-GM0489,NL,Barendrecht,GGD Rotterdam-Rijnmond,Rotterdam-Rijnmond,VR17,Zuid-Holland,West-Nederland,Midden,20,Gemeente,48635
-GM0203,NL,Barneveld,GGD Gelderland-Midden,Gelderland-Midden,VR07,Gelderland,Oost-Nederland,Midden,176,Gemeente,59938
-GM0888,NL,Beek (L.),GGD Zuid-Limburg,Limburg-Zuid,VR24,Limburg,Zuid-Nederland,Zuid,21,Gemeente,15872
-GM1954,NL,Beekdaelen,GGD Zuid-Limburg,Limburg-Zuid,VR24,Limburg,Zuid-Nederland,Zuid,78,Gemeente,36073
-GM0370,NL,Beemster,GGD Zaanstreek/Waterland,Zaanstreek-Waterland,VR11,Noord-Holland,West-Nederland,Noord,71,Gemeente,10073
-GM0889,NL,Beesel,GGD Limburg-Noord,Limburg-Noord,VR23,Limburg,Zuid-Nederland,Zuid,28,Gemeente,13464
-GM1945,NL,Berg en Dal,GGD Gelderland-Zuid,Gelderland-Zuid,VR08,Gelderland,Oost-Nederland,Zuid,86,Gemeente,35015
-GM1724,NL,Bergeijk,GGD Brabant-Zuidoost,Brabant-Zuidoost,VR22,Noord-Brabant,Zuid-Nederland,Zuid,101,Gemeente,18745
-GM0893,NL,Bergen (L.),GGD Limburg-Noord,Limburg-Noord,VR23,Limburg,Zuid-Nederland,Zuid,103,Gemeente,13111
-GM0373,NL,Bergen (NH.),GGD Hollands-Noorden,Noord-Holland-Noord,VR10,Noord-Holland,West-Nederland,Noord,99,Gemeente,29706
-GM0748,NL,Bergen op Zoom,GGD West-Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,80,Gemeente,67501
+GM1680,NL,Aa en Hunze,GGD Drenthe,Drenthe,VR03,Drenthe,Noord-Nederland,Noord,276,Gemeente,25570
+GM0358,NL,Aalsmeer,GGD Amsterdam,Amsterdam-Amstelland,VR13,Noord-Holland,West-Nederland,Noord,20,Gemeente,32386
+GM0197,NL,Aalten,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Midden,97,Gemeente,27090
+GM0059,NL,Achtkarspelen,GGD Fryslân,Fryslân,VR02,Friesland,Noord-Nederland,Noord,102,Gemeente,27951
+GM0482,NL,Alblasserdam,GGD Zuid-Holland Zuid,Zuid-Holland-Zuid,VR18,Zuid-Holland,West-Nederland,Midden,9,Gemeente,20083
+GM0613,NL,Albrandswaard,GGD Rotterdam-Rijnmond,Rotterdam-Rijnmond,VR17,Zuid-Holland,West-Nederland,Midden,22,Gemeente,25929
+GM0361,NL,Alkmaar,GGD Hollands-Noorden,Noord-Holland-Noord,VR10,Noord-Holland,West-Nederland,Noord,110,Gemeente,110609
+GM0141,NL,Almelo,GGD Regio Twente,Twente,VR05,Overijssel,Oost-Nederland,Noord,67,Gemeente,73193
+GM0034,NL,Almere,GGD Flevoland,Flevoland,VR25,Flevoland,Oost-Nederland,Noord,129,Gemeente,217707
+GM0484,NL,Alphen aan den Rijn,GGD Hollands-Midden,Hollands-Midden,VR16,Zuid-Holland,West-Nederland,Midden,126,Gemeente,112890
+GM1723,NL,Alphen-Chaam,GGD West-Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,93,Gemeente,10427
+GM1959,NL,Altena,GGD West-Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,201,Gemeente,57003
+GM0060,NL,Ameland,GGD Fryslân,Fryslân,VR02,Friesland,Noord-Nederland,Noord,59,Gemeente,3773
+GM0307,NL,Amersfoort,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,63,Gemeente,158531
+GM0362,NL,Amstelveen,GGD Amsterdam,Amsterdam-Amstelland,VR13,Noord-Holland,West-Nederland,Noord,41,Gemeente,92421
+GM0363,NL,Amsterdam,GGD Amsterdam,Amsterdam-Amstelland,VR13,Noord-Holland,West-Nederland,Noord,166,Gemeente,883487
+GM0200,NL,Apeldoorn,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Midden,340,Gemeente,165525
+GM0202,NL,Arnhem,GGD Gelderland-Midden,Gelderland-Midden,VR07,Gelderland,Oost-Nederland,Zuid,98,Gemeente,163972
+GM0106,NL,Assen,GGD Drenthe,Drenthe,VR03,Drenthe,Noord-Nederland,Noord,82,Gemeente,69010
+GM0743,NL,Asten,GGD Brabant-Zuidoost,Brabant-Zuidoost,VR22,Noord-Brabant,Zuid-Nederland,Zuid,70,Gemeente,17069
+GM0744,NL,Baarle-Nassau,GGD West-Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,76,Gemeente,6927
+GM0308,NL,Baarn,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,33,Gemeente,24805
+GM0489,NL,Barendrecht,GGD Rotterdam-Rijnmond,Rotterdam-Rijnmond,VR17,Zuid-Holland,West-Nederland,Midden,20,Gemeente,48772
+GM0203,NL,Barneveld,GGD Gelderland-Midden,Gelderland-Midden,VR07,Gelderland,Oost-Nederland,Midden,176,Gemeente,60544
+GM0888,NL,Beek (L.),GGD Zuid-Limburg,Limburg-Zuid,VR24,Limburg,Zuid-Nederland,Zuid,21,Gemeente,15842
+GM1954,NL,Beekdaelen,GGD Zuid-Limburg,Limburg-Zuid,VR24,Limburg,Zuid-Nederland,Zuid,78,Gemeente,35939
+GM0370,NL,Beemster,GGD Zaanstreek/Waterland,Zaanstreek-Waterland,VR11,Noord-Holland,West-Nederland,Noord,71,Gemeente,10691
+GM0889,NL,Beesel,GGD Limburg-Noord,Limburg-Noord,VR23,Limburg,Zuid-Nederland,Zuid,28,Gemeente,13442
+GM1945,NL,Berg en Dal,GGD Gelderland-Zuid,Gelderland-Zuid,VR08,Gelderland,Oost-Nederland,Zuid,86,Gemeente,34986
+GM1724,NL,Bergeijk,GGD Brabant-Zuidoost,Brabant-Zuidoost,VR22,Noord-Brabant,Zuid-Nederland,Zuid,101,Gemeente,18879
+GM0893,NL,Bergen (L.),GGD Limburg-Noord,Limburg-Noord,VR23,Limburg,Zuid-Nederland,Zuid,103,Gemeente,13112
+GM0373,NL,Bergen (NH.),GGD Hollands-Noorden,Noord-Holland-Noord,VR10,Noord-Holland,West-Nederland,Noord,99,Gemeente,29732
+GM0748,NL,Bergen op Zoom,GGD West-Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,80,Gemeente,67860
 GM1859,NL,Berkelland,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Midden,258,Gemeente,43821
-GM1721,NL,Bernheze,GGD Hart voor Brabant,Brabant-Noord,VR21,Noord-Brabant,Zuid-Nederland,Zuid,90,Gemeente,31398
-GM0753,NL,Best,GGD Brabant-Zuidoost,Brabant-Zuidoost,VR22,Noord-Brabant,Zuid-Nederland,Zuid,34,Gemeente,30196
-GM0209,NL,Beuningen,GGD Gelderland-Zuid,Gelderland-Zuid,VR08,Gelderland,Oost-Nederland,Zuid,44,Gemeente,26159
-GM0375,NL,Beverwijk,GGD Kennemerland,Kennemerland,VR12,Noord-Holland,West-Nederland,Noord,18,Gemeente,41830
-GM1728,NL,Bladel,GGD Brabant-Zuidoost,Brabant-Zuidoost,VR22,Noord-Brabant,Zuid-Nederland,Zuid,75,Gemeente,20552
-GM0376,NL,Blaricum,GGD Gooi en Vechtstreek,Gooi en Vechtstreek,VR14,Noord-Holland,West-Nederland,Noord,11,Gemeente,11919
-GM0377,NL,Bloemendaal,GGD Kennemerland,Kennemerland,VR12,Noord-Holland,West-Nederland,Noord,40,Gemeente,23529
-GM1901,NL,Bodegraven-Reeuwijk,GGD Hollands-Midden,Hollands-Midden,VR16,Zuid-Holland,West-Nederland,Midden,75,Gemeente,35288
-GM0755,NL,Boekel,GGD Hart voor Brabant,Brabant-Noord,VR21,Noord-Brabant,Zuid-Nederland,Zuid,35,Gemeente,10922
-GM1681,NL,Borger-Odoorn,GGD Drenthe,Drenthe,VR03,Drenthe,Noord-Nederland,Noord,275,Gemeente,25587
-GM0147,NL,Borne,GGD Regio Twente,Twente,VR05,Overijssel,Oost-Nederland,Noord,26,Gemeente,23637
-GM0654,NL,Borsele,GGD Zeeland,Zeeland,VR19,Zeeland,West-Nederland,Zuid,142,Gemeente,22779
-GM0756,NL,Boxmeer,GGD Hart voor Brabant,Brabant-Noord,VR21,Noord-Brabant,Zuid-Nederland,Zuid,111,Gemeente,29592
-GM0757,NL,Boxtel,GGD Hart voor Brabant,Brabant-Noord,VR21,Noord-Brabant,Zuid-Nederland,Zuid,64,Gemeente,32950
-GM0758,NL,Breda,GGD West-Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,126,Gemeente,184151
-GM0501,NL,Brielle,GGD Rotterdam-Rijnmond,Rotterdam-Rijnmond,VR17,Zuid-Holland,West-Nederland,Midden,28,Gemeente,17408
-GM1876,NL,Bronckhorst,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Midden,284,Gemeente,36103
-GM0213,NL,Brummen,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Midden,84,Gemeente,20867
-GM0899,NL,Brunssum,GGD Zuid-Limburg,Limburg-Zuid,VR24,Limburg,Zuid-Nederland,Zuid,17,Gemeente,27655
-GM0312,NL,Bunnik,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,37,Gemeente,15345
-GM0313,NL,Bunschoten,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,30,Gemeente,22036
-GM0214,NL,Buren,GGD Gelderland-Zuid,Gelderland-Zuid,VR08,Gelderland,Oost-Nederland,Midden,134,Gemeente,26997
-GM0502,NL,Capelle aan den IJssel,GGD Rotterdam-Rijnmond,Rotterdam-Rijnmond,VR17,Zuid-Holland,West-Nederland,Midden,14,Gemeente,67204
-GM0383,NL,Castricum,GGD Hollands-Noorden,Noord-Holland-Noord,VR10,Noord-Holland,West-Nederland,Noord,50,Gemeente,36164
-GM0109,NL,Coevorden,GGD Drenthe,Drenthe,VR03,Drenthe,Noord-Nederland,Noord,296,Gemeente,35309
-GM1706,NL,Cranendonck,GGD Brabant-Zuidoost,Brabant-Zuidoost,VR22,Noord-Brabant,Zuid-Nederland,Zuid,76,Gemeente,21007
-GM1684,NL,Cuijk,GGD Hart voor Brabant,Brabant-Noord,VR21,Noord-Brabant,Zuid-Nederland,Zuid,51,Gemeente,25373
-GM0216,NL,Culemborg,GGD Gelderland-Zuid,Gelderland-Zuid,VR08,Gelderland,Oost-Nederland,Midden,29,Gemeente,29132
-GM0148,NL,Dalfsen,GGD IJsselland,IJsselland,VR04,Overijssel,Oost-Nederland,Noord,165,Gemeente,28919
-GM1891,NL,Dantumadiel,GGD Fryslân,Fryslân,VR02,Friesland,Noord-Nederland,Noord,85,Gemeente,18927
-GM0310,NL,De Bilt,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,66,Gemeente,43371
-GM1940,NL,De Fryske Marren,GGD Fryslân,Fryslân,VR02,Friesland,Noord-Nederland,Noord,351,Gemeente,51735
-GM0736,NL,De Ronde Venen,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,100,Gemeente,44696
-GM1690,NL,De Wolden,GGD Drenthe,Drenthe,VR03,Drenthe,Noord-Nederland,Noord,225,Gemeente,24374
-GM0503,NL,Delft,GGD Haaglanden,Haaglanden,VR15,Zuid-Holland,West-Nederland,Midden,23,Gemeente,103880
-GM0400,NL,Den Helder,GGD Hollands-Noorden,Noord-Holland-Noord,VR10,Noord-Holland,West-Nederland,Noord,45,Gemeente,56531
-GM0762,NL,Deurne,GGD Brabant-Zuidoost,Brabant-Zuidoost,VR22,Noord-Brabant,Zuid-Nederland,Zuid,117,Gemeente,32482
-GM0150,NL,Deventer,GGD IJsselland,IJsselland,VR04,Overijssel,Oost-Nederland,Noord,131,Gemeente,101100
-GM0384,NL,Diemen,GGD Amsterdam,Amsterdam-Amstelland,VR13,Noord-Holland,West-Nederland,Noord,12,Gemeente,31304
-GM1774,NL,Dinkelland,GGD Regio Twente,Twente,VR05,Overijssel,Oost-Nederland,Noord,176,Gemeente,26616
-GM0221,NL,Doesburg,GGD Gelderland-Midden,Gelderland-Midden,VR07,Gelderland,Oost-Nederland,Zuid,12,Gemeente,11061
-GM0222,NL,Doetinchem,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Midden,79,Gemeente,58227
-GM0766,NL,Dongen,GGD Hart voor Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,29,Gemeente,26358
-GM0505,NL,Dordrecht,GGD Zuid-Holland Zuid,Zuid-Holland-Zuid,VR18,Zuid-Holland,West-Nederland,Midden,79,Gemeente,119184
-GM0498,NL,Drechterland,GGD Hollands-Noorden,Noord-Holland-Noord,VR10,Noord-Holland,West-Nederland,Noord,59,Gemeente,19834
-GM1719,NL,Drimmelen,GGD West-Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,95,Gemeente,27334
-GM0303,NL,Dronten,GGD Flevoland,Flevoland,VR25,Flevoland,Oost-Nederland,Noord,334,Gemeente,41936
-GM0225,NL,Druten,GGD Gelderland-Zuid,Gelderland-Zuid,VR08,Gelderland,Oost-Nederland,Zuid,38,Gemeente,18980
-GM0226,NL,Duiven,GGD Gelderland-Midden,Gelderland-Midden,VR07,Gelderland,Oost-Nederland,Zuid,34,Gemeente,25072
-GM1711,NL,Echt-Susteren,GGD Limburg-Noord,Limburg-Noord,VR23,Limburg,Zuid-Nederland,Zuid,103,Gemeente,31751
-GM0385,NL,Edam-Volendam,GGD Zaanstreek/Waterland,Zaanstreek-Waterland,VR11,Noord-Holland,West-Nederland,Noord,54,Gemeente,36247
-GM0228,NL,Ede,GGD Gelderland-Midden,Gelderland-Midden,VR07,Gelderland,Oost-Nederland,Midden,318,Gemeente,118538
-GM0317,NL,Eemnes,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Noord,31,Gemeente,9361
-GM1979,NL,Eemsdelta,GGD Groningen,Groningen,VR01,Groningen,Noord-Nederland,Noord,268,Gemeente,45606
-GM0770,NL,Eersel,GGD Brabant-Zuidoost,Brabant-Zuidoost,VR22,Noord-Brabant,Zuid-Nederland,Zuid,82,Gemeente,19494
-GM1903,NL,Eijsden-Margraten,GGD Zuid-Limburg,Limburg-Zuid,VR24,Limburg,Zuid-Nederland,Zuid,78,Gemeente,25903
-GM0772,NL,Eindhoven,GGD Brabant-Zuidoost,Brabant-Zuidoost,VR22,Noord-Brabant,Zuid-Nederland,Zuid,88,Gemeente,235728
-GM0230,NL,Elburg,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Midden,64,Gemeente,23443
-GM0114,NL,Emmen,GGD Drenthe,Drenthe,VR03,Drenthe,Noord-Nederland,Noord,335,Gemeente,106984
-GM0388,NL,Enkhuizen,GGD Hollands-Noorden,Noord-Holland-Noord,VR10,Noord-Holland,West-Nederland,Noord,13,Gemeente,18666
-GM0153,NL,Enschede,GGD Regio Twente,Twente,VR05,Overijssel,Oost-Nederland,Noord,141,Gemeente,159872
-GM0232,NL,Epe,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Midden,156,Gemeente,33198
-GM0233,NL,Ermelo,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Midden,86,Gemeente,27044
-GM0777,NL,Etten-Leur,GGD West-Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,55,Gemeente,43881
-GM0779,NL,Geertruidenberg,GGD West-Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,27,Gemeente,21792
-GM1771,NL,Geldrop-Mierlo,GGD Brabant-Zuidoost,Brabant-Zuidoost,VR22,Noord-Brabant,Zuid-Nederland,Zuid,31,Gemeente,40097
-GM1652,NL,Gemert-Bakel,GGD Brabant-Zuidoost,Brabant-Zuidoost,VR22,Noord-Brabant,Zuid-Nederland,Zuid,122,Gemeente,30751
-GM0907,NL,Gennep,GGD Limburg-Noord,Limburg-Noord,VR23,Limburg,Zuid-Nederland,Zuid,48,Gemeente,17019
-GM0784,NL,Gilze en Rijen,GGD Hart voor Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,65,Gemeente,26806
-GM1924,NL,Goeree-Overflakkee,GGD Rotterdam-Rijnmond,Rotterdam-Rijnmond,VR17,Zuid-Holland,West-Nederland,Midden,260,Gemeente,50567
-GM0664,NL,Goes,GGD Zeeland,Zeeland,VR19,Zeeland,West-Nederland,Zuid,93,Gemeente,38571
-GM0785,NL,Goirle,GGD Hart voor Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,43,Gemeente,23939
-GM1942,NL,Gooise Meren,GGD Gooi en Vechtstreek,Gooi en Vechtstreek,VR14,Noord-Holland,West-Nederland,Noord,42,Gemeente,58466
-GM0512,NL,Gorinchem,GGD Zuid-Holland Zuid,Zuid-Holland-Zuid,VR18,Zuid-Holland,West-Nederland,Midden,19,Gemeente,37405
-GM0513,NL,Gouda,GGD Hollands-Midden,Hollands-Midden,VR16,Zuid-Holland,West-Nederland,Midden,17,Gemeente,73754
-GM0786,NL,Grave,GGD Hart voor Brabant,Brabant-Noord,VR21,Noord-Brabant,Zuid-Nederland,Zuid,27,Gemeente,12429
-GM0014,NL,Groningen,GGD Groningen,Groningen,VR01,Groningen,Noord-Nederland,Noord,186,Gemeente,233456
-GM1729,NL,Gulpen-Wittem,GGD Zuid-Limburg,Limburg-Zuid,VR24,Limburg,Zuid-Nederland,Zuid,73,Gemeente,14184
-GM0158,NL,Haaksbergen,GGD Regio Twente,Twente,VR05,Overijssel,Oost-Nederland,Noord,105,Gemeente,24237
-GM0392,NL,Haarlem,GGD Kennemerland,Kennemerland,VR12,Noord-Holland,West-Nederland,Noord,29,Gemeente,162754
-GM0394,NL,Haarlemmermeer,GGD Kennemerland,Kennemerland,VR12,Noord-Holland,West-Nederland,Noord,197,Gemeente,157730
-GM1655,NL,Halderberge,GGD West-Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,74,Gemeente,30461
-GM0160,NL,Hardenberg,GGD IJsselland,IJsselland,VR04,Overijssel,Oost-Nederland,Noord,312,Gemeente,61327
-GM0243,NL,Harderwijk,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Midden,39,Gemeente,48657
-GM0523,NL,Hardinxveld-Giessendam,GGD Zuid-Holland Zuid,Zuid-Holland-Zuid,VR18,Zuid-Holland,West-Nederland,Midden,17,Gemeente,18399
-GM0072,NL,Harlingen,GGD Fryslân,Fryslân,VR02,Friesland,Noord-Nederland,Noord,25,Gemeente,15835
-GM0244,NL,Hattem,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Noord,23,Gemeente,12235
-GM0396,NL,Heemskerk,GGD Kennemerland,Kennemerland,VR12,Noord-Holland,West-Nederland,Noord,27,Gemeente,39233
-GM0397,NL,Heemstede,GGD Kennemerland,Kennemerland,VR12,Noord-Holland,West-Nederland,Noord,9,Gemeente,27494
-GM0246,NL,Heerde,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Midden,79,Gemeente,18744
-GM0074,NL,Heerenveen,GGD Fryslân,Fryslân,VR02,Friesland,Noord-Nederland,Noord,190,Gemeente,50626
-GM0398,NL,Heerhugowaard,GGD Hollands-Noorden,Noord-Holland-Noord,VR10,Noord-Holland,West-Nederland,Noord,38,Gemeente,58303
-GM0917,NL,Heerlen,GGD Zuid-Limburg,Limburg-Zuid,VR24,Limburg,Zuid-Nederland,Zuid,45,Gemeente,86829
-GM1658,NL,Heeze-Leende,GGD Brabant-Zuidoost,Brabant-Zuidoost,VR22,Noord-Brabant,Zuid-Nederland,Zuid,104,Gemeente,16222
-GM0399,NL,Heiloo,GGD Hollands-Noorden,Noord-Holland-Noord,VR10,Noord-Holland,West-Nederland,Noord,19,Gemeente,24119
-GM0163,NL,Hellendoorn,GGD Regio Twente,Twente,VR05,Overijssel,Oost-Nederland,Noord,138,Gemeente,35903
-GM0530,NL,Hellevoetsluis,GGD Rotterdam-Rijnmond,Rotterdam-Rijnmond,VR17,Zuid-Holland,West-Nederland,Midden,41,Gemeente,40235
-GM0794,NL,Helmond,GGD Brabant-Zuidoost,Brabant-Zuidoost,VR22,Noord-Brabant,Zuid-Nederland,Zuid,53,Gemeente,92614
-GM0531,NL,Hendrik-Ido-Ambacht,GGD Zuid-Holland Zuid,Zuid-Holland-Zuid,VR18,Zuid-Holland,West-Nederland,Midden,11,Gemeente,31255
-GM0164,NL,Hengelo (O.),GGD Regio Twente,Twente,VR05,Overijssel,Oost-Nederland,Noord,61,Gemeente,81099
-GM1966,NL,Het Hogeland,GGD Groningen,Groningen,VR01,Groningen,Noord-Nederland,Noord,483,Gemeente,47859
-GM0252,NL,Heumen,GGD Gelderland-Zuid,Gelderland-Zuid,VR08,Gelderland,Oost-Nederland,Zuid,40,Gemeente,16579
-GM0797,NL,Heusden,GGD Hart voor Brabant,Brabant-Noord,VR21,Noord-Brabant,Zuid-Nederland,Zuid,79,Gemeente,45008
-GM0534,NL,Hillegom,GGD Hollands-Midden,Hollands-Midden,VR16,Zuid-Holland,West-Nederland,Midden,13,Gemeente,22217
-GM0798,NL,Hilvarenbeek,GGD Hart voor Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,95,Gemeente,15683
-GM0402,NL,Hilversum,GGD Gooi en Vechtstreek,Gooi en Vechtstreek,VR14,Noord-Holland,West-Nederland,Noord,46,Gemeente,91247
-GM1963,NL,Hoeksche Waard,GGD Zuid-Holland Zuid,Zuid-Holland-Zuid,VR18,Zuid-Holland,West-Nederland,Midden,269,Gemeente,87963
-GM1735,NL,Hof van Twente,GGD Regio Twente,Twente,VR05,Overijssel,Oost-Nederland,Noord,213,Gemeente,35037
-GM1911,NL,Hollands Kroon,GGD Hollands-Noorden,Noord-Holland-Noord,VR10,Noord-Holland,West-Nederland,Noord,357,Gemeente,48532
-GM0118,NL,Hoogeveen,GGD Drenthe,Drenthe,VR03,Drenthe,Noord-Nederland,Noord,128,Gemeente,55604
-GM0405,NL,Hoorn,GGD Hollands-Noorden,Noord-Holland-Noord,VR10,Noord-Holland,West-Nederland,Noord,20,Gemeente,73579
-GM1507,NL,Horst aan de Maas,GGD Limburg-Noord,Limburg-Noord,VR23,Limburg,Zuid-Nederland,Zuid,189,Gemeente,42464
-GM0321,NL,Houten,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,55,Gemeente,50206
-GM0406,NL,Huizen,GGD Gooi en Vechtstreek,Gooi en Vechtstreek,VR14,Noord-Holland,West-Nederland,Noord,16,Gemeente,41130
-GM0677,NL,Hulst,GGD Zeeland,Zeeland,VR19,Zeeland,West-Nederland,Zuid,202,Gemeente,27563
-GM0353,NL,IJsselstein,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,21,Gemeente,33855
-GM1884,NL,Kaag en Braassem,GGD Hollands-Midden,Hollands-Midden,VR16,Zuid-Holland,West-Nederland,Midden,63,Gemeente,27547
-GM0166,NL,Kampen,GGD IJsselland,IJsselland,VR04,Overijssel,Oost-Nederland,Noord,142,Gemeente,54438
-GM0678,NL,Kapelle,GGD Zeeland,Zeeland,VR19,Zeeland,West-Nederland,Zuid,37,Gemeente,12842
-GM0537,NL,Katwijk,GGD Hollands-Midden,Hollands-Midden,VR16,Zuid-Holland,West-Nederland,Midden,25,Gemeente,66005
-GM0928,NL,Kerkrade,GGD Zuid-Limburg,Limburg-Zuid,VR24,Limburg,Zuid-Nederland,Zuid,22,Gemeente,45499
-GM1598,NL,Koggenland,GGD Hollands-Noorden,Noord-Holland-Noord,VR10,Noord-Holland,West-Nederland,Noord,80,Gemeente,22932
-GM0542,NL,Krimpen aan den IJssel,GGD Rotterdam-Rijnmond,Rotterdam-Rijnmond,VR17,Zuid-Holland,West-Nederland,Midden,8,Gemeente,29443
-GM1931,NL,Krimpenerwaard,GGD Hollands-Midden,Hollands-Midden,VR16,Zuid-Holland,West-Nederland,Midden,148,Gemeente,56559
-GM1659,NL,Laarbeek,GGD Brabant-Zuidoost,Brabant-Zuidoost,VR22,Noord-Brabant,Zuid-Nederland,Zuid,55,Gemeente,22787
-GM1685,NL,Landerd,GGD Hart voor Brabant,Brabant-Noord,VR21,Noord-Brabant,Zuid-Nederland,Zuid,70,Gemeente,15838
-GM0882,NL,Landgraaf,GGD Zuid-Limburg,Limburg-Zuid,VR24,Limburg,Zuid-Nederland,Zuid,25,Gemeente,37325
-GM0415,NL,Landsmeer,GGD Zaanstreek/Waterland,Zaanstreek-Waterland,VR11,Noord-Holland,West-Nederland,Noord,23,Gemeente,11564
-GM0416,NL,Langedijk,GGD Hollands-Noorden,Noord-Holland-Noord,VR10,Noord-Holland,West-Nederland,Noord,24,Gemeente,28332
-GM1621,NL,Lansingerland,GGD Rotterdam-Rijnmond,Rotterdam-Rijnmond,VR17,Zuid-Holland,West-Nederland,Midden,53,Gemeente,63295
-GM0417,NL,Laren (NH.),GGD Gooi en Vechtstreek,Gooi en Vechtstreek,VR14,Noord-Holland,West-Nederland,Noord,12,Gemeente,11401
-GM0080,NL,Leeuwarden,GGD Fryslân,Fryslân,VR02,Friesland,Noord-Nederland,Noord,238,Gemeente,124517
-GM0546,NL,Leiden,GGD Hollands-Midden,Hollands-Midden,VR16,Zuid-Holland,West-Nederland,Midden,22,Gemeente,124121
-GM0547,NL,Leiderdorp,GGD Hollands-Midden,Hollands-Midden,VR16,Zuid-Holland,West-Nederland,Midden,12,Gemeente,27374
-GM1916,NL,Leidschendam-Voorburg,GGD Haaglanden,Haaglanden,VR15,Zuid-Holland,West-Nederland,Midden,33,Gemeente,76451
-GM0995,NL,Lelystad,GGD Flevoland,Flevoland,VR25,Flevoland,Oost-Nederland,Noord,230,Gemeente,79703
-GM1640,NL,Leudal,GGD Limburg-Noord,Limburg-Noord,VR23,Limburg,Zuid-Nederland,Zuid,163,Gemeente,36027
-GM0327,NL,Leusden,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,59,Gemeente,30522
-GM1705,NL,Lingewaard,GGD Gelderland-Midden,Gelderland-Midden,VR07,Gelderland,Oost-Nederland,Zuid,62,Gemeente,46781
-GM0553,NL,Lisse,GGD Hollands-Midden,Hollands-Midden,VR16,Zuid-Holland,West-Nederland,Midden,16,Gemeente,22999
-GM0262,NL,Lochem,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Midden,213,Gemeente,33907
-GM0809,NL,Loon op Zand,GGD Hart voor Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,50,Gemeente,23497
-GM0331,NL,Lopik,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,76,Gemeente,14455
-GM0168,NL,Losser,GGD Regio Twente,Twente,VR05,Overijssel,Oost-Nederland,Noord,99,Gemeente,22867
-GM0263,NL,Maasdriel,GGD Gelderland-Zuid,Gelderland-Zuid,VR08,Gelderland,Oost-Nederland,Zuid,66,Gemeente,25441
-GM1641,NL,Maasgouw,GGD Limburg-Noord,Limburg-Noord,VR23,Limburg,Zuid-Nederland,Zuid,46,Gemeente,23976
-GM0556,NL,Maassluis,GGD Rotterdam-Rijnmond,Rotterdam-Rijnmond,VR17,Zuid-Holland,West-Nederland,Midden,8,Gemeente,33557
-GM0935,NL,Maastricht,GGD Zuid-Limburg,Limburg-Zuid,VR24,Limburg,Zuid-Nederland,Zuid,56,Gemeente,120379
-GM0420,NL,Medemblik,GGD Hollands-Noorden,Noord-Holland-Noord,VR10,Noord-Holland,West-Nederland,Noord,121,Gemeente,45194
-GM0938,NL,Meerssen,GGD Zuid-Limburg,Limburg-Zuid,VR24,Limburg,Zuid-Nederland,Zuid,27,Gemeente,18710
-GM1948,NL,Meierijstad,GGD Hart voor Brabant,Brabant-Noord,VR21,Noord-Brabant,Zuid-Nederland,Zuid,184,Gemeente,81653
-GM0119,NL,Meppel,GGD Drenthe,Drenthe,VR03,Drenthe,Noord-Nederland,Noord,56,Gemeente,34324
-GM0687,NL,Middelburg (Z.),GGD Zeeland,Zeeland,VR19,Zeeland,West-Nederland,Zuid,48,Gemeente,48973
-GM1842,NL,Midden-Delfland,GGD Haaglanden,Haaglanden,VR15,Zuid-Holland,West-Nederland,Midden,47,Gemeente,19378
-GM1731,NL,Midden-Drenthe,GGD Drenthe,Drenthe,VR03,Drenthe,Noord-Nederland,Noord,341,Gemeente,33357
-GM1952,NL,Midden-Groningen,GGD Groningen,Groningen,VR01,Groningen,Noord-Nederland,Noord,280,Gemeente,60745
-GM0815,NL,Mill en Sint Hubert,GGD Hart voor Brabant,Brabant-Noord,VR21,Noord-Brabant,Zuid-Nederland,Zuid,52,Gemeente,11003
-GM1709,NL,Moerdijk,GGD West-Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,159,Gemeente,37193
-GM1978,NL,Molenlanden,GGD Zuid-Holland Zuid,Zuid-Holland-Zuid,VR18,Zuid-Holland,West-Nederland,Midden,182,Gemeente,44105
-GM1955,NL,Montferland,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Midden,106,Gemeente,36062
-GM0335,NL,Montfoort,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,38,Gemeente,13878
-GM0944,NL,Mook en Middelaar,GGD Limburg-Noord,Limburg-Noord,VR23,Limburg,Zuid-Nederland,Zuid,17,Gemeente,7901
-GM1740,NL,Neder-Betuwe,GGD Gelderland-Zuid,Gelderland-Zuid,VR08,Gelderland,Oost-Nederland,Midden,60,Gemeente,24634
-GM0946,NL,Nederweert,GGD Limburg-Noord,Limburg-Noord,VR23,Limburg,Zuid-Nederland,Zuid,100,Gemeente,17171
-GM0356,NL,Nieuwegein,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,24,Gemeente,63811
-GM0569,NL,Nieuwkoop,GGD Hollands-Midden,Hollands-Midden,VR16,Zuid-Holland,West-Nederland,Midden,78,Gemeente,29146
-GM0267,NL,Nijkerk,GGD Gelderland-Midden,Gelderland-Midden,VR07,Gelderland,Oost-Nederland,Midden,69,Gemeente,43577
-GM0268,NL,Nijmegen,GGD Gelderland-Zuid,Gelderland-Zuid,VR08,Gelderland,Oost-Nederland,Zuid,53,Gemeente,177463
-GM1930,NL,Nissewaard,GGD Rotterdam-Rijnmond,Rotterdam-Rijnmond,VR17,Zuid-Holland,West-Nederland,Midden,74,Gemeente,85302
-GM1970,NL,Noardeast-Fryslân,GGD Fryslân,Fryslân,VR02,Friesland,Noord-Nederland,Noord,374,Gemeente,45479
-GM1695,NL,Noord-Beveland,GGD Zeeland,Zeeland,VR19,Zeeland,West-Nederland,Zuid,86,Gemeente,7570
-GM1699,NL,Noordenveld,GGD Drenthe,Drenthe,VR03,Drenthe,Noord-Nederland,Noord,199,Gemeente,31216
-GM0171,NL,Noordoostpolder,GGD Flevoland,Flevoland,VR25,Flevoland,Oost-Nederland,Noord,458,Gemeente,47597
-GM0575,NL,Noordwijk,GGD Hollands-Midden,Hollands-Midden,VR16,Zuid-Holland,West-Nederland,Midden,58,Gemeente,43998
-GM0820,NL,"Nuenen, Gerwen en Nederwetten",GGD Brabant-Zuidoost,Brabant-Zuidoost,VR22,Noord-Brabant,Zuid-Nederland,Zuid,34,Gemeente,23657
-GM0302,NL,Nunspeet,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Midden,129,Gemeente,28017
-GM0579,NL,Oegstgeest,GGD Hollands-Midden,Hollands-Midden,VR16,Zuid-Holland,West-Nederland,Midden,7,Gemeente,25061
-GM0823,NL,Oirschot,GGD Brabant-Zuidoost,Brabant-Zuidoost,VR22,Noord-Brabant,Zuid-Nederland,Zuid,102,Gemeente,18838
-GM0824,NL,Oisterwijk,GGD Hart voor Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,64,Gemeente,32140
-GM1895,NL,Oldambt,GGD Groningen,Groningen,VR01,Groningen,Noord-Nederland,Noord,227,Gemeente,38281
-GM0269,NL,Oldebroek,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Midden,98,Gemeente,23749
-GM0173,NL,Oldenzaal,GGD Regio Twente,Twente,VR05,Overijssel,Oost-Nederland,Noord,22,Gemeente,31734
-GM1773,NL,Olst-Wijhe,GGD IJsselland,IJsselland,VR04,Overijssel,Oost-Nederland,Noord,114,Gemeente,18348
-GM0175,NL,Ommen,GGD IJsselland,IJsselland,VR04,Overijssel,Oost-Nederland,Noord,180,Gemeente,18272
-GM1586,NL,Oost Gelre,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Midden,110,Gemeente,29574
-GM0826,NL,Oosterhout,GGD West-Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,71,Gemeente,56184
-GM0085,NL,Ooststellingwerf,GGD Fryslân,Fryslân,VR02,Friesland,Noord-Nederland,Noord,223,Gemeente,25437
-GM0431,NL,Oostzaan,GGD Zaanstreek/Waterland,Zaanstreek-Waterland,VR11,Noord-Holland,West-Nederland,Noord,12,Gemeente,9685
-GM0432,NL,Opmeer,GGD Hollands-Noorden,Noord-Holland-Noord,VR10,Noord-Holland,West-Nederland,Noord,42,Gemeente,11988
-GM0086,NL,Opsterland,GGD Fryslân,Fryslân,VR02,Friesland,Noord-Nederland,Noord,224,Gemeente,29812
-GM0828,NL,Oss,GGD Hart voor Brabant,Brabant-Noord,VR21,Noord-Brabant,Zuid-Nederland,Zuid,163,Gemeente,92442
-GM1509,NL,Oude IJsselstreek,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Midden,136,Gemeente,39348
-GM0437,NL,Ouder-Amstel,GGD Amsterdam,Amsterdam-Amstelland,VR13,Noord-Holland,West-Nederland,Noord,24,Gemeente,14120
-GM0589,NL,Oudewater,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,39,Gemeente,10156
-GM1734,NL,Overbetuwe,GGD Gelderland-Midden,Gelderland-Midden,VR07,Gelderland,Oost-Nederland,Zuid,109,Gemeente,48147
-GM0590,NL,Papendrecht,GGD Zuid-Holland Zuid,Zuid-Holland-Zuid,VR18,Zuid-Holland,West-Nederland,Midden,9,Gemeente,32142
-GM1894,NL,Peel en Maas,GGD Limburg-Noord,Limburg-Noord,VR23,Limburg,Zuid-Nederland,Zuid,159,Gemeente,43695
-GM0765,NL,Pekela,GGD Groningen,Groningen,VR01,Groningen,Noord-Nederland,Noord,49,Gemeente,12163
-GM1926,NL,Pijnacker-Nootdorp,GGD Haaglanden,Haaglanden,VR15,Zuid-Holland,West-Nederland,Midden,37,Gemeente,55592
-GM0439,NL,Purmerend,GGD Zaanstreek/Waterland,Zaanstreek-Waterland,VR11,Noord-Holland,West-Nederland,Noord,23,Gemeente,81708
-GM0273,NL,Putten,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Midden,85,Gemeente,24384
-GM0177,NL,Raalte,GGD IJsselland,IJsselland,VR04,Overijssel,Oost-Nederland,Noord,171,Gemeente,37920
+GM1721,NL,Bernheze,GGD Hart voor Brabant,Brabant-Noord,VR21,Noord-Brabant,Zuid-Nederland,Zuid,90,Gemeente,31677
+GM0753,NL,Best,GGD Brabant-Zuidoost,Brabant-Zuidoost,VR22,Noord-Brabant,Zuid-Nederland,Zuid,34,Gemeente,30572
+GM0209,NL,Beuningen,GGD Gelderland-Zuid,Gelderland-Zuid,VR08,Gelderland,Oost-Nederland,Zuid,44,Gemeente,26225
+GM0375,NL,Beverwijk,GGD Kennemerland,Kennemerland,VR12,Noord-Holland,West-Nederland,Noord,18,Gemeente,42113
+GM1728,NL,Bladel,GGD Brabant-Zuidoost,Brabant-Zuidoost,VR22,Noord-Brabant,Zuid-Nederland,Zuid,75,Gemeente,20713
+GM0376,NL,Blaricum,GGD Gooi en Vechtstreek,Gooi en Vechtstreek,VR14,Noord-Holland,West-Nederland,Noord,11,Gemeente,12357
+GM0377,NL,Bloemendaal,GGD Kennemerland,Kennemerland,VR12,Noord-Holland,West-Nederland,Noord,40,Gemeente,23725
+GM1901,NL,Bodegraven-Reeuwijk,GGD Hollands-Midden,Hollands-Midden,VR16,Zuid-Holland,West-Nederland,Midden,75,Gemeente,35684
+GM0755,NL,Boekel,GGD Hart voor Brabant,Brabant-Noord,VR21,Noord-Brabant,Zuid-Nederland,Zuid,35,Gemeente,11037
+GM1681,NL,Borger-Odoorn,GGD Drenthe,Drenthe,VR03,Drenthe,Noord-Nederland,Noord,275,Gemeente,25685
+GM0147,NL,Borne,GGD Regio Twente,Twente,VR05,Overijssel,Oost-Nederland,Noord,26,Gemeente,23941
+GM0654,NL,Borsele,GGD Zeeland,Zeeland,VR19,Zeeland,West-Nederland,Zuid,142,Gemeente,22859
+GM0756,NL,Boxmeer,GGD Hart voor Brabant,Brabant-Noord,VR21,Noord-Brabant,Zuid-Nederland,Zuid,111,Gemeente,29750
+GM0757,NL,Boxtel,GGD Hart voor Brabant,Brabant-Noord,VR21,Noord-Brabant,Zuid-Nederland,Zuid,69,Gemeente,33106
+GM0758,NL,Breda,GGD West-Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,126,Gemeente,184762
+GM0501,NL,Brielle,GGD Rotterdam-Rijnmond,Rotterdam-Rijnmond,VR17,Zuid-Holland,West-Nederland,Midden,28,Gemeente,17701
+GM1876,NL,Bronckhorst,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Midden,284,Gemeente,36062
+GM0213,NL,Brummen,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Midden,84,Gemeente,20902
+GM0899,NL,Brunssum,GGD Zuid-Limburg,Limburg-Zuid,VR24,Limburg,Zuid-Nederland,Zuid,17,Gemeente,27674
+GM0312,NL,Bunnik,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,37,Gemeente,15555
+GM0313,NL,Bunschoten,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,30,Gemeente,22338
+GM0214,NL,Buren,GGD Gelderland-Zuid,Gelderland-Zuid,VR08,Gelderland,Oost-Nederland,Midden,134,Gemeente,27184
+GM0502,NL,Capelle aan den IJssel,GGD Rotterdam-Rijnmond,Rotterdam-Rijnmond,VR17,Zuid-Holland,West-Nederland,Midden,14,Gemeente,67141
+GM0383,NL,Castricum,GGD Hollands-Noorden,Noord-Holland-Noord,VR10,Noord-Holland,West-Nederland,Noord,50,Gemeente,36251
+GM0109,NL,Coevorden,GGD Drenthe,Drenthe,VR03,Drenthe,Noord-Nederland,Noord,296,Gemeente,35533
+GM1706,NL,Cranendonck,GGD Brabant-Zuidoost,Brabant-Zuidoost,VR22,Noord-Brabant,Zuid-Nederland,Zuid,76,Gemeente,20647
+GM1684,NL,Cuijk,GGD Hart voor Brabant,Brabant-Noord,VR21,Noord-Brabant,Zuid-Nederland,Zuid,51,Gemeente,25711
+GM0216,NL,Culemborg,GGD Gelderland-Zuid,Gelderland-Zuid,VR08,Gelderland,Oost-Nederland,Midden,29,Gemeente,29425
+GM0148,NL,Dalfsen,GGD IJsselland,IJsselland,VR04,Overijssel,Oost-Nederland,Noord,165,Gemeente,29133
+GM1891,NL,Dantumadiel,GGD Fryslân,Fryslân,VR02,Friesland,Noord-Nederland,Noord,85,Gemeente,18961
+GM0310,NL,De Bilt,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,66,Gemeente,43483
+GM1940,NL,De Fryske Marren,GGD Fryslân,Fryslân,VR02,Friesland,Noord-Nederland,Noord,351,Gemeente,51641
+GM0736,NL,De Ronde Venen,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,100,Gemeente,44929
+GM1690,NL,De Wolden,GGD Drenthe,Drenthe,VR03,Drenthe,Noord-Nederland,Noord,225,Gemeente,24529
+GM0503,NL,Delft,GGD Haaglanden,Haaglanden,VR15,Zuid-Holland,West-Nederland,Midden,23,Gemeente,104550
+GM0400,NL,Den Helder,GGD Hollands-Noorden,Noord-Holland-Noord,VR10,Noord-Holland,West-Nederland,Noord,45,Gemeente,56369
+GM0762,NL,Deurne,GGD Brabant-Zuidoost,Brabant-Zuidoost,VR22,Noord-Brabant,Zuid-Nederland,Zuid,117,Gemeente,32608
+GM0150,NL,Deventer,GGD IJsselland,IJsselland,VR04,Overijssel,Oost-Nederland,Noord,131,Gemeente,101453
+GM0384,NL,Diemen,GGD Amsterdam,Amsterdam-Amstelland,VR13,Noord-Holland,West-Nederland,Noord,12,Gemeente,31850
+GM1774,NL,Dinkelland,GGD Regio Twente,Twente,VR05,Overijssel,Oost-Nederland,Noord,176,Gemeente,26607
+GM0221,NL,Doesburg,GGD Gelderland-Midden,Gelderland-Midden,VR07,Gelderland,Oost-Nederland,Zuid,12,Gemeente,11051
+GM0222,NL,Doetinchem,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Midden,79,Gemeente,58563
+GM0766,NL,Dongen,GGD Hart voor Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,29,Gemeente,26494
+GM0505,NL,Dordrecht,GGD Zuid-Holland Zuid,Zuid-Holland-Zuid,VR18,Zuid-Holland,West-Nederland,Midden,79,Gemeente,119509
+GM0498,NL,Drechterland,GGD Hollands-Noorden,Noord-Holland-Noord,VR10,Noord-Holland,West-Nederland,Noord,59,Gemeente,19976
+GM1719,NL,Drimmelen,GGD West-Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,95,Gemeente,27445
+GM0303,NL,Dronten,GGD Flevoland,Flevoland,VR25,Flevoland,Oost-Nederland,Noord,334,Gemeente,42927
+GM0225,NL,Druten,GGD Gelderland-Zuid,Gelderland-Zuid,VR08,Gelderland,Oost-Nederland,Zuid,38,Gemeente,19167
+GM0226,NL,Duiven,GGD Gelderland-Midden,Gelderland-Midden,VR07,Gelderland,Oost-Nederland,Zuid,34,Gemeente,24945
+GM1711,NL,Echt-Susteren,GGD Limburg-Noord,Limburg-Noord,VR23,Limburg,Zuid-Nederland,Zuid,103,Gemeente,31746
+GM0385,NL,Edam-Volendam,GGD Zaanstreek/Waterland,Zaanstreek-Waterland,VR11,Noord-Holland,West-Nederland,Noord,54,Gemeente,36474
+GM0228,NL,Ede,GGD Gelderland-Midden,Gelderland-Midden,VR07,Gelderland,Oost-Nederland,Midden,318,Gemeente,119970
+GM0317,NL,Eemnes,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Noord,31,Gemeente,9456
+GM1979,NL,Eemsdelta,GGD Groningen,Groningen,VR01,Groningen,Noord-Nederland,Noord,268,Gemeente,45404
+GM0770,NL,Eersel,GGD Brabant-Zuidoost,Brabant-Zuidoost,VR22,Noord-Brabant,Zuid-Nederland,Zuid,82,Gemeente,19817
+GM1903,NL,Eijsden-Margraten,GGD Zuid-Limburg,Limburg-Zuid,VR24,Limburg,Zuid-Nederland,Zuid,78,Gemeente,25889
+GM0772,NL,Eindhoven,GGD Brabant-Zuidoost,Brabant-Zuidoost,VR22,Noord-Brabant,Zuid-Nederland,Zuid,88,Gemeente,238376
+GM0230,NL,Elburg,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Midden,64,Gemeente,23745
+GM0114,NL,Emmen,GGD Drenthe,Drenthe,VR03,Drenthe,Noord-Nederland,Noord,335,Gemeente,107846
+GM0388,NL,Enkhuizen,GGD Hollands-Noorden,Noord-Holland-Noord,VR10,Noord-Holland,West-Nederland,Noord,13,Gemeente,18653
+GM0153,NL,Enschede,GGD Regio Twente,Twente,VR05,Overijssel,Oost-Nederland,Noord,141,Gemeente,160698
+GM0232,NL,Epe,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Midden,156,Gemeente,33256
+GM0233,NL,Ermelo,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Midden,86,Gemeente,27294
+GM0777,NL,Etten-Leur,GGD West-Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,55,Gemeente,44104
+GM0779,NL,Geertruidenberg,GGD West-Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,27,Gemeente,21945
+GM1771,NL,Geldrop-Mierlo,GGD Brabant-Zuidoost,Brabant-Zuidoost,VR22,Noord-Brabant,Zuid-Nederland,Zuid,31,Gemeente,40153
+GM1652,NL,Gemert-Bakel,GGD Brabant-Zuidoost,Brabant-Zuidoost,VR22,Noord-Brabant,Zuid-Nederland,Zuid,122,Gemeente,31047
+GM0907,NL,Gennep,GGD Limburg-Noord,Limburg-Noord,VR23,Limburg,Zuid-Nederland,Zuid,48,Gemeente,17212
+GM0784,NL,Gilze en Rijen,GGD Hart voor Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,65,Gemeente,26573
+GM1924,NL,Goeree-Overflakkee,GGD Rotterdam-Rijnmond,Rotterdam-Rijnmond,VR17,Zuid-Holland,West-Nederland,Midden,260,Gemeente,51029
+GM0664,NL,Goes,GGD Zeeland,Zeeland,VR19,Zeeland,West-Nederland,Zuid,93,Gemeente,38983
+GM0785,NL,Goirle,GGD Hart voor Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,43,Gemeente,23988
+GM1942,NL,Gooise Meren,GGD Gooi en Vechtstreek,Gooi en Vechtstreek,VR14,Noord-Holland,West-Nederland,Noord,42,Gemeente,58878
+GM0512,NL,Gorinchem,GGD Zuid-Holland Zuid,Zuid-Holland-Zuid,VR18,Zuid-Holland,West-Nederland,Midden,19,Gemeente,37608
+GM0513,NL,Gouda,GGD Hollands-Midden,Hollands-Midden,VR16,Zuid-Holland,West-Nederland,Midden,17,Gemeente,74105
+GM0786,NL,Grave,GGD Hart voor Brabant,Brabant-Noord,VR21,Noord-Brabant,Zuid-Nederland,Zuid,27,Gemeente,12488
+GM0014,NL,Groningen,GGD Groningen,Groningen,VR01,Groningen,Noord-Nederland,Noord,186,Gemeente,235287
+GM1729,NL,Gulpen-Wittem,GGD Zuid-Limburg,Limburg-Zuid,VR24,Limburg,Zuid-Nederland,Zuid,73,Gemeente,14164
+GM0158,NL,Haaksbergen,GGD Regio Twente,Twente,VR05,Overijssel,Oost-Nederland,Noord,105,Gemeente,24282
+GM0392,NL,Haarlem,GGD Kennemerland,Kennemerland,VR12,Noord-Holland,West-Nederland,Noord,29,Gemeente,162923
+GM0394,NL,Haarlemmermeer,GGD Kennemerland,Kennemerland,VR12,Noord-Holland,West-Nederland,Noord,197,Gemeente,159248
+GM1655,NL,Halderberge,GGD West-Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,74,Gemeente,30782
+GM0160,NL,Hardenberg,GGD IJsselland,IJsselland,VR04,Overijssel,Oost-Nederland,Noord,312,Gemeente,61787
+GM0243,NL,Harderwijk,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Midden,39,Gemeente,48810
+GM0523,NL,Hardinxveld-Giessendam,GGD Zuid-Holland Zuid,Zuid-Holland-Zuid,VR18,Zuid-Holland,West-Nederland,Midden,17,Gemeente,18491
+GM0072,NL,Harlingen,GGD Fryslân,Fryslân,VR02,Friesland,Noord-Nederland,Noord,25,Gemeente,15868
+GM0244,NL,Hattem,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Noord,23,Gemeente,12311
+GM0396,NL,Heemskerk,GGD Kennemerland,Kennemerland,VR12,Noord-Holland,West-Nederland,Noord,27,Gemeente,39185
+GM0397,NL,Heemstede,GGD Kennemerland,Kennemerland,VR12,Noord-Holland,West-Nederland,Noord,9,Gemeente,27589
+GM0246,NL,Heerde,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Midden,79,Gemeente,18974
+GM0074,NL,Heerenveen,GGD Fryslân,Fryslân,VR02,Friesland,Noord-Nederland,Noord,190,Gemeente,51088
+GM0398,NL,Heerhugowaard,GGD Hollands-Noorden,Noord-Holland-Noord,VR10,Noord-Holland,West-Nederland,Noord,38,Gemeente,59116
+GM0917,NL,Heerlen,GGD Zuid-Limburg,Limburg-Zuid,VR24,Limburg,Zuid-Nederland,Zuid,45,Gemeente,86874
+GM1658,NL,Heeze-Leende,GGD Brabant-Zuidoost,Brabant-Zuidoost,VR22,Noord-Brabant,Zuid-Nederland,Zuid,104,Gemeente,16475
+GM0399,NL,Heiloo,GGD Hollands-Noorden,Noord-Holland-Noord,VR10,Noord-Holland,West-Nederland,Noord,19,Gemeente,24377
+GM0163,NL,Hellendoorn,GGD Regio Twente,Twente,VR05,Overijssel,Oost-Nederland,Noord,138,Gemeente,35956
+GM0530,NL,Hellevoetsluis,GGD Rotterdam-Rijnmond,Rotterdam-Rijnmond,VR17,Zuid-Holland,West-Nederland,Midden,41,Gemeente,40537
+GM0794,NL,Helmond,GGD Brabant-Zuidoost,Brabant-Zuidoost,VR22,Noord-Brabant,Zuid-Nederland,Zuid,53,Gemeente,93458
+GM0531,NL,Hendrik-Ido-Ambacht,GGD Zuid-Holland Zuid,Zuid-Holland-Zuid,VR18,Zuid-Holland,West-Nederland,Midden,11,Gemeente,31654
+GM0164,NL,Hengelo (O.),GGD Regio Twente,Twente,VR05,Overijssel,Oost-Nederland,Noord,61,Gemeente,81422
+GM1966,NL,Het Hogeland,GGD Groningen,Groningen,VR01,Groningen,Noord-Nederland,Noord,482,Gemeente,47942
+GM0252,NL,Heumen,GGD Gelderland-Zuid,Gelderland-Zuid,VR08,Gelderland,Oost-Nederland,Zuid,40,Gemeente,17142
+GM0797,NL,Heusden,GGD Hart voor Brabant,Brabant-Noord,VR21,Noord-Brabant,Zuid-Nederland,Zuid,79,Gemeente,45532
+GM0534,NL,Hillegom,GGD Hollands-Midden,Hollands-Midden,VR16,Zuid-Holland,West-Nederland,Midden,13,Gemeente,22325
+GM0798,NL,Hilvarenbeek,GGD Hart voor Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,95,Gemeente,15809
+GM0402,NL,Hilversum,GGD Gooi en Vechtstreek,Gooi en Vechtstreek,VR14,Noord-Holland,West-Nederland,Noord,46,Gemeente,91786
+GM1963,NL,Hoeksche Waard,GGD Zuid-Holland Zuid,Zuid-Holland-Zuid,VR18,Zuid-Holland,West-Nederland,Midden,269,Gemeente,88625
+GM1735,NL,Hof van Twente,GGD Regio Twente,Twente,VR05,Overijssel,Oost-Nederland,Noord,213,Gemeente,35076
+GM1911,NL,Hollands Kroon,GGD Hollands-Noorden,Noord-Holland-Noord,VR10,Noord-Holland,West-Nederland,Noord,357,Gemeente,48829
+GM0118,NL,Hoogeveen,GGD Drenthe,Drenthe,VR03,Drenthe,Noord-Nederland,Noord,128,Gemeente,55922
+GM0405,NL,Hoorn,GGD Hollands-Noorden,Noord-Holland-Noord,VR10,Noord-Holland,West-Nederland,Noord,20,Gemeente,74257
+GM1507,NL,Horst aan de Maas,GGD Limburg-Noord,Limburg-Noord,VR23,Limburg,Zuid-Nederland,Zuid,189,Gemeente,43033
+GM0321,NL,Houten,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,55,Gemeente,50334
+GM0406,NL,Huizen,GGD Gooi en Vechtstreek,Gooi en Vechtstreek,VR14,Noord-Holland,West-Nederland,Noord,16,Gemeente,40972
+GM0677,NL,Hulst,GGD Zeeland,Zeeland,VR19,Zeeland,West-Nederland,Zuid,202,Gemeente,27531
+GM0353,NL,IJsselstein,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,21,Gemeente,33482
+GM1884,NL,Kaag en Braassem,GGD Hollands-Midden,Hollands-Midden,VR16,Zuid-Holland,West-Nederland,Midden,63,Gemeente,27883
+GM0166,NL,Kampen,GGD IJsselland,IJsselland,VR04,Overijssel,Oost-Nederland,Noord,142,Gemeente,54760
+GM0678,NL,Kapelle,GGD Zeeland,Zeeland,VR19,Zeeland,West-Nederland,Zuid,37,Gemeente,13020
+GM0537,NL,Katwijk,GGD Hollands-Midden,Hollands-Midden,VR16,Zuid-Holland,West-Nederland,Midden,25,Gemeente,66042
+GM0928,NL,Kerkrade,GGD Zuid-Limburg,Limburg-Zuid,VR24,Limburg,Zuid-Nederland,Zuid,22,Gemeente,45366
+GM1598,NL,Koggenland,GGD Hollands-Noorden,Noord-Holland-Noord,VR10,Noord-Holland,West-Nederland,Noord,80,Gemeente,23029
+GM0542,NL,Krimpen aan den IJssel,GGD Rotterdam-Rijnmond,Rotterdam-Rijnmond,VR17,Zuid-Holland,West-Nederland,Midden,8,Gemeente,29407
+GM1931,NL,Krimpenerwaard,GGD Hollands-Midden,Hollands-Midden,VR16,Zuid-Holland,West-Nederland,Midden,148,Gemeente,57042
+GM1659,NL,Laarbeek,GGD Brabant-Zuidoost,Brabant-Zuidoost,VR22,Noord-Brabant,Zuid-Nederland,Zuid,55,Gemeente,22965
+GM1685,NL,Landerd,GGD Hart voor Brabant,Brabant-Noord,VR21,Noord-Brabant,Zuid-Nederland,Zuid,70,Gemeente,15932
+GM0882,NL,Landgraaf,GGD Zuid-Limburg,Limburg-Zuid,VR24,Limburg,Zuid-Nederland,Zuid,25,Gemeente,37062
+GM0415,NL,Landsmeer,GGD Zaanstreek/Waterland,Zaanstreek-Waterland,VR11,Noord-Holland,West-Nederland,Noord,23,Gemeente,11567
+GM0416,NL,Langedijk,GGD Hollands-Noorden,Noord-Holland-Noord,VR10,Noord-Holland,West-Nederland,Noord,24,Gemeente,28623
+GM1621,NL,Lansingerland,GGD Rotterdam-Rijnmond,Rotterdam-Rijnmond,VR17,Zuid-Holland,West-Nederland,Midden,53,Gemeente,64096
+GM0417,NL,Laren (NH.),GGD Gooi en Vechtstreek,Gooi en Vechtstreek,VR14,Noord-Holland,West-Nederland,Noord,12,Gemeente,11471
+GM0080,NL,Leeuwarden,GGD Fryslân,Fryslân,VR02,Friesland,Noord-Nederland,Noord,238,Gemeente,125639
+GM0546,NL,Leiden,GGD Hollands-Midden,Hollands-Midden,VR16,Zuid-Holland,West-Nederland,Midden,22,Gemeente,125019
+GM0547,NL,Leiderdorp,GGD Hollands-Midden,Hollands-Midden,VR16,Zuid-Holland,West-Nederland,Midden,12,Gemeente,27486
+GM1916,NL,Leidschendam-Voorburg,GGD Haaglanden,Haaglanden,VR15,Zuid-Holland,West-Nederland,Midden,33,Gemeente,76674
+GM0995,NL,Lelystad,GGD Flevoland,Flevoland,VR25,Flevoland,Oost-Nederland,Noord,230,Gemeente,81048
+GM1640,NL,Leudal,GGD Limburg-Noord,Limburg-Noord,VR23,Limburg,Zuid-Nederland,Zuid,163,Gemeente,35957
+GM0327,NL,Leusden,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,59,Gemeente,30714
+GM1705,NL,Lingewaard,GGD Gelderland-Midden,Gelderland-Midden,VR07,Gelderland,Oost-Nederland,Zuid,62,Gemeente,46973
+GM0553,NL,Lisse,GGD Hollands-Midden,Hollands-Midden,VR16,Zuid-Holland,West-Nederland,Midden,16,Gemeente,22989
+GM0262,NL,Lochem,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Midden,213,Gemeente,34094
+GM0809,NL,Loon op Zand,GGD Hart voor Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,50,Gemeente,23797
+GM0331,NL,Lopik,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,76,Gemeente,14523
+GM0168,NL,Losser,GGD Regio Twente,Twente,VR05,Overijssel,Oost-Nederland,Noord,99,Gemeente,23054
+GM0263,NL,Maasdriel,GGD Gelderland-Zuid,Gelderland-Zuid,VR08,Gelderland,Oost-Nederland,Zuid,66,Gemeente,25515
+GM1641,NL,Maasgouw,GGD Limburg-Noord,Limburg-Noord,VR23,Limburg,Zuid-Nederland,Zuid,46,Gemeente,24026
+GM0556,NL,Maassluis,GGD Rotterdam-Rijnmond,Rotterdam-Rijnmond,VR17,Zuid-Holland,West-Nederland,Midden,8,Gemeente,33936
+GM0935,NL,Maastricht,GGD Zuid-Limburg,Limburg-Zuid,VR24,Limburg,Zuid-Nederland,Zuid,56,Gemeente,121552
+GM0420,NL,Medemblik,GGD Hollands-Noorden,Noord-Holland-Noord,VR10,Noord-Holland,West-Nederland,Noord,121,Gemeente,45479
+GM0938,NL,Meerssen,GGD Zuid-Limburg,Limburg-Zuid,VR24,Limburg,Zuid-Nederland,Zuid,27,Gemeente,18607
+GM1948,NL,Meierijstad,GGD Hart voor Brabant,Brabant-Noord,VR21,Noord-Brabant,Zuid-Nederland,Zuid,184,Gemeente,82548
+GM0119,NL,Meppel,GGD Drenthe,Drenthe,VR03,Drenthe,Noord-Nederland,Noord,56,Gemeente,34766
+GM0687,NL,Middelburg (Z.),GGD Zeeland,Zeeland,VR19,Zeeland,West-Nederland,Zuid,48,Gemeente,49211
+GM1842,NL,Midden-Delfland,GGD Haaglanden,Haaglanden,VR15,Zuid-Holland,West-Nederland,Midden,47,Gemeente,19525
+GM1731,NL,Midden-Drenthe,GGD Drenthe,Drenthe,VR03,Drenthe,Noord-Nederland,Noord,341,Gemeente,33656
+GM1952,NL,Midden-Groningen,GGD Groningen,Groningen,VR01,Groningen,Noord-Nederland,Noord,280,Gemeente,60953
+GM0815,NL,Mill en Sint Hubert,GGD Hart voor Brabant,Brabant-Noord,VR21,Noord-Brabant,Zuid-Nederland,Zuid,52,Gemeente,11055
+GM1709,NL,Moerdijk,GGD West-Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,159,Gemeente,37304
+GM1978,NL,Molenlanden,GGD Zuid-Holland Zuid,Zuid-Holland-Zuid,VR18,Zuid-Holland,West-Nederland,Midden,182,Gemeente,44643
+GM1955,NL,Montferland,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Midden,106,Gemeente,36303
+GM0335,NL,Montfoort,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,38,Gemeente,13844
+GM0944,NL,Mook en Middelaar,GGD Limburg-Noord,Limburg-Noord,VR23,Limburg,Zuid-Nederland,Zuid,17,Gemeente,7977
+GM1740,NL,Neder-Betuwe,GGD Gelderland-Zuid,Gelderland-Zuid,VR08,Gelderland,Oost-Nederland,Midden,60,Gemeente,25017
+GM0946,NL,Nederweert,GGD Limburg-Noord,Limburg-Noord,VR23,Limburg,Zuid-Nederland,Zuid,100,Gemeente,17307
+GM0356,NL,Nieuwegein,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,24,Gemeente,64606
+GM0569,NL,Nieuwkoop,GGD Hollands-Midden,Hollands-Midden,VR16,Zuid-Holland,West-Nederland,Midden,78,Gemeente,29319
+GM0267,NL,Nijkerk,GGD Gelderland-Midden,Gelderland-Midden,VR07,Gelderland,Oost-Nederland,Midden,69,Gemeente,44214
+GM0268,NL,Nijmegen,GGD Gelderland-Zuid,Gelderland-Zuid,VR08,Gelderland,Oost-Nederland,Zuid,53,Gemeente,179171
+GM1930,NL,Nissewaard,GGD Rotterdam-Rijnmond,Rotterdam-Rijnmond,VR17,Zuid-Holland,West-Nederland,Midden,74,Gemeente,86261
+GM1970,NL,Noardeast-Fryslân,GGD Fryslân,Fryslân,VR02,Friesland,Noord-Nederland,Noord,378,Gemeente,45540
+GM1695,NL,Noord-Beveland,GGD Zeeland,Zeeland,VR19,Zeeland,West-Nederland,Zuid,86,Gemeente,7671
+GM1699,NL,Noordenveld,GGD Drenthe,Drenthe,VR03,Drenthe,Noord-Nederland,Noord,199,Gemeente,31233
+GM0171,NL,Noordoostpolder,GGD Flevoland,Flevoland,VR25,Flevoland,Oost-Nederland,Noord,458,Gemeente,48051
+GM0575,NL,Noordwijk,GGD Hollands-Midden,Hollands-Midden,VR16,Zuid-Holland,West-Nederland,Midden,58,Gemeente,44358
+GM0820,NL,"Nuenen, Gerwen en Nederwetten",GGD Brabant-Zuidoost,Brabant-Zuidoost,VR22,Noord-Brabant,Zuid-Nederland,Zuid,34,Gemeente,23818
+GM0302,NL,Nunspeet,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Midden,129,Gemeente,28195
+GM0579,NL,Oegstgeest,GGD Hollands-Midden,Hollands-Midden,VR16,Zuid-Holland,West-Nederland,Midden,7,Gemeente,25529
+GM0823,NL,Oirschot,GGD Brabant-Zuidoost,Brabant-Zuidoost,VR22,Noord-Brabant,Zuid-Nederland,Zuid,102,Gemeente,19049
+GM0824,NL,Oisterwijk,GGD Hart voor Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,80,Gemeente,32524
+GM1895,NL,Oldambt,GGD Groningen,Groningen,VR01,Groningen,Noord-Nederland,Noord,227,Gemeente,38462
+GM0269,NL,Oldebroek,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Midden,98,Gemeente,23926
+GM0173,NL,Oldenzaal,GGD Regio Twente,Twente,VR05,Overijssel,Oost-Nederland,Noord,22,Gemeente,31759
+GM1773,NL,Olst-Wijhe,GGD IJsselland,IJsselland,VR04,Overijssel,Oost-Nederland,Noord,114,Gemeente,18487
+GM0175,NL,Ommen,GGD IJsselland,IJsselland,VR04,Overijssel,Oost-Nederland,Noord,180,Gemeente,18424
+GM1586,NL,Oost Gelre,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Midden,110,Gemeente,29641
+GM0826,NL,Oosterhout,GGD West-Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,71,Gemeente,56517
+GM0085,NL,Ooststellingwerf,GGD Fryslân,Fryslân,VR02,Friesland,Noord-Nederland,Noord,223,Gemeente,25701
+GM0431,NL,Oostzaan,GGD Zaanstreek/Waterland,Zaanstreek-Waterland,VR11,Noord-Holland,West-Nederland,Noord,12,Gemeente,9668
+GM0432,NL,Opmeer,GGD Hollands-Noorden,Noord-Holland-Noord,VR10,Noord-Holland,West-Nederland,Noord,42,Gemeente,12065
+GM0086,NL,Opsterland,GGD Fryslân,Fryslân,VR02,Friesland,Noord-Nederland,Noord,224,Gemeente,29836
+GM0828,NL,Oss,GGD Hart voor Brabant,Brabant-Noord,VR21,Noord-Brabant,Zuid-Nederland,Zuid,163,Gemeente,93243
+GM1509,NL,Oude IJsselstreek,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Midden,136,Gemeente,39393
+GM0437,NL,Ouder-Amstel,GGD Amsterdam,Amsterdam-Amstelland,VR13,Noord-Holland,West-Nederland,Noord,24,Gemeente,14209
+GM0589,NL,Oudewater,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,39,Gemeente,10148
+GM1734,NL,Overbetuwe,GGD Gelderland-Midden,Gelderland-Midden,VR07,Gelderland,Oost-Nederland,Zuid,109,Gemeente,48309
+GM0590,NL,Papendrecht,GGD Zuid-Holland Zuid,Zuid-Holland-Zuid,VR18,Zuid-Holland,West-Nederland,Midden,9,Gemeente,32207
+GM1894,NL,Peel en Maas,GGD Limburg-Noord,Limburg-Noord,VR23,Limburg,Zuid-Nederland,Zuid,159,Gemeente,44300
+GM0765,NL,Pekela,GGD Groningen,Groningen,VR01,Groningen,Noord-Nederland,Noord,49,Gemeente,12204
+GM1926,NL,Pijnacker-Nootdorp,GGD Haaglanden,Haaglanden,VR15,Zuid-Holland,West-Nederland,Midden,37,Gemeente,56465
+GM0439,NL,Purmerend,GGD Zaanstreek/Waterland,Zaanstreek-Waterland,VR11,Noord-Holland,West-Nederland,Noord,23,Gemeente,81527
+GM0273,NL,Putten,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Midden,85,Gemeente,24578
+GM0177,NL,Raalte,GGD IJsselland,IJsselland,VR04,Overijssel,Oost-Nederland,Noord,171,Gemeente,38170
 GM0703,NL,Reimerswaal,GGD Zeeland,Zeeland,VR19,Zeeland,West-Nederland,Zuid,102,Gemeente,22931
-GM0274,NL,Renkum,GGD Gelderland-Midden,Gelderland-Midden,VR07,Gelderland,Oost-Nederland,Zuid,46,Gemeente,31413
-GM0339,NL,Renswoude,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,18,Gemeente,5547
-GM1667,NL,Reusel-De Mierden,GGD Brabant-Zuidoost,Brabant-Zuidoost,VR22,Noord-Brabant,Zuid-Nederland,Zuid,78,Gemeente,13123
-GM0275,NL,Rheden,GGD Gelderland-Midden,Gelderland-Midden,VR07,Gelderland,Oost-Nederland,Zuid,82,Gemeente,43565
-GM0340,NL,Rhenen,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,42,Gemeente,20193
-GM0597,NL,Ridderkerk,GGD Rotterdam-Rijnmond,Rotterdam-Rijnmond,VR17,Zuid-Holland,West-Nederland,Midden,24,Gemeente,46633
-GM1742,NL,Rijssen-Holten,GGD Regio Twente,Twente,VR05,Overijssel,Oost-Nederland,Noord,94,Gemeente,38182
-GM0603,NL,Rijswijk (ZH.),GGD Haaglanden,Haaglanden,VR15,Zuid-Holland,West-Nederland,Midden,14,Gemeente,55236
-GM1669,NL,Roerdalen,GGD Limburg-Noord,Limburg-Noord,VR23,Limburg,Zuid-Nederland,Zuid,88,Gemeente,20612
-GM0957,NL,Roermond,GGD Limburg-Noord,Limburg-Noord,VR23,Limburg,Zuid-Nederland,Zuid,61,Gemeente,58784
-GM1674,NL,Roosendaal,GGD West-Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,107,Gemeente,77256
-GM0599,NL,Rotterdam,GGD Rotterdam-Rijnmond,Rotterdam-Rijnmond,VR17,Zuid-Holland,West-Nederland,Midden,218,Gemeente,652742
-GM0277,NL,Rozendaal,GGD Gelderland-Midden,Gelderland-Midden,VR07,Gelderland,Oost-Nederland,Zuid,28,Gemeente,1718
-GM0840,NL,Rucphen,GGD West-Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,64,Gemeente,23089
-GM0441,NL,Schagen,GGD Hollands-Noorden,Noord-Holland-Noord,VR10,Noord-Holland,West-Nederland,Noord,168,Gemeente,46546
-GM0279,NL,Scherpenzeel,GGD Gelderland-Midden,Gelderland-Midden,VR07,Gelderland,Oost-Nederland,Midden,14,Gemeente,10110
-GM0606,NL,Schiedam,GGD Rotterdam-Rijnmond,Rotterdam-Rijnmond,VR17,Zuid-Holland,West-Nederland,Midden,18,Gemeente,79316
-GM0088,NL,Schiermonnikoog,GGD Fryslân,Fryslân,VR02,Friesland,Noord-Nederland,Noord,41,Gemeente,936
-GM1676,NL,Schouwen-Duiveland,GGD Zeeland,Zeeland,VR19,Zeeland,West-Nederland,Zuid,230,Gemeente,33990
-GM0518,NL,s-Gravenhage,GGD Haaglanden,Haaglanden,VR15,Zuid-Holland,West-Nederland,Midden,82,Gemeente,548076
-GM0796,NL,s-Hertogenbosch,GGD Hart voor Brabant,Brabant-Noord,VR21,Noord-Brabant,Zuid-Nederland,Zuid,110,Gemeente,155491
-GM0965,NL,Simpelveld,GGD Zuid-Limburg,Limburg-Zuid,VR24,Limburg,Zuid-Nederland,Zuid,16,Gemeente,10495
-GM1702,NL,Sint Anthonis,GGD Hart voor Brabant,Brabant-Noord,VR21,Noord-Brabant,Zuid-Nederland,Zuid,99,Gemeente,11687
-GM0845,NL,Sint-Michielsgestel,GGD Hart voor Brabant,Brabant-Noord,VR21,Noord-Brabant,Zuid-Nederland,Zuid,58,Gemeente,29510
-GM1883,NL,Sittard-Geleen,GGD Zuid-Limburg,Limburg-Zuid,VR24,Limburg,Zuid-Nederland,Zuid,79,Gemeente,91781
-GM0610,NL,Sliedrecht,GGD Zuid-Holland Zuid,Zuid-Holland-Zuid,VR18,Zuid-Holland,West-Nederland,Midden,13,Gemeente,25570
-GM1714,NL,Sluis,GGD Zeeland,Zeeland,VR19,Zeeland,West-Nederland,Zuid,279,Gemeente,23143
-GM0090,NL,Smallingerland,GGD Fryslân,Fryslân,VR02,Friesland,Noord-Nederland,Noord,117,Gemeente,56060
-GM0342,NL,Soest,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,46,Gemeente,46906
-GM0847,NL,Someren,GGD Brabant-Zuidoost,Brabant-Zuidoost,VR22,Noord-Brabant,Zuid-Nederland,Zuid,80,Gemeente,19395
-GM0848,NL,Son en Breugel,GGD Brabant-Zuidoost,Brabant-Zuidoost,VR22,Noord-Brabant,Zuid-Nederland,Zuid,26,Gemeente,17526
-GM0037,NL,Stadskanaal,GGD Groningen,Groningen,VR01,Groningen,Noord-Nederland,Noord,118,Gemeente,31702
-GM0180,NL,Staphorst,GGD IJsselland,IJsselland,VR04,Overijssel,Oost-Nederland,Noord,134,Gemeente,17276
-GM0532,NL,Stede Broec,GGD Hollands-Noorden,Noord-Holland-Noord,VR10,Noord-Holland,West-Nederland,Noord,15,Gemeente,21768
-GM0851,NL,Steenbergen,GGD West-Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,146,Gemeente,24315
-GM1708,NL,Steenwijkerland,GGD IJsselland,IJsselland,VR04,Overijssel,Oost-Nederland,Noord,288,Gemeente,44301
-GM0971,NL,Stein (L.),GGD Zuid-Limburg,Limburg-Zuid,VR24,Limburg,Zuid-Nederland,Zuid,21,Gemeente,24876
-GM1904,NL,Stichtse Vecht,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,96,Gemeente,65142
-GM1900,NL,Súdwest-Fryslân,GGD Fryslân,Fryslân,VR02,Friesland,Noord-Nederland,Noord,523,Gemeente,89930
-GM0715,NL,Terneuzen,GGD Zeeland,Zeeland,VR19,Zeeland,West-Nederland,Zuid,250,Gemeente,54486
-GM0093,NL,Terschelling,GGD Fryslân,Fryslân,VR02,Friesland,Noord-Nederland,Noord,85,Gemeente,4883
-GM0448,NL,Texel,GGD Hollands-Noorden,Noord-Holland-Noord,VR10,Noord-Holland,West-Nederland,Noord,162,Gemeente,13658
-GM1525,NL,Teylingen,GGD Hollands-Midden,Hollands-Midden,VR16,Zuid-Holland,West-Nederland,Midden,28,Gemeente,37761
-GM0716,NL,Tholen,GGD Zeeland,Zeeland,VR19,Zeeland,West-Nederland,Zuid,147,Gemeente,26050
-GM0281,NL,Tiel,GGD Gelderland-Zuid,Gelderland-Zuid,VR08,Gelderland,Oost-Nederland,Midden,33,Gemeente,41899
-GM0855,NL,Tilburg,GGD Hart voor Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,116,Gemeente,221300
-GM0183,NL,Tubbergen,GGD Regio Twente,Twente,VR05,Overijssel,Oost-Nederland,Noord,147,Gemeente,21322
-GM1700,NL,Twenterand,GGD Regio Twente,Twente,VR05,Overijssel,Oost-Nederland,Noord,106,Gemeente,33696
-GM1730,NL,Tynaarlo,GGD Drenthe,Drenthe,VR03,Drenthe,Noord-Nederland,Noord,143,Gemeente,33927
-GM0737,NL,Tytsjerksteradiel,GGD Fryslân,Fryslân,VR02,Friesland,Noord-Nederland,Noord,149,Gemeente,32039
-GM0856,NL,Uden,GGD Hart voor Brabant,Brabant-Noord,VR21,Noord-Brabant,Zuid-Nederland,Zuid,67,Gemeente,42244
-GM0450,NL,Uitgeest,GGD Kennemerland,Kennemerland,VR12,Noord-Holland,West-Nederland,Noord,19,Gemeente,13644
-GM0451,NL,Uithoorn,GGD Amsterdam,Amsterdam-Amstelland,VR13,Noord-Holland,West-Nederland,Noord,18,Gemeente,30138
-GM0184,NL,Urk,GGD Flevoland,Flevoland,VR25,Flevoland,Oost-Nederland,Noord,13,Gemeente,21208
-GM0344,NL,Utrecht,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,94,Gemeente,359548
-GM1581,NL,Utrechtse Heuvelrug,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,132,Gemeente,49962
-GM0981,NL,Vaals,GGD Zuid-Limburg,Limburg-Zuid,VR24,Limburg,Zuid-Nederland,Zuid,24,Gemeente,10113
-GM0994,NL,Valkenburg aan de Geul,GGD Zuid-Limburg,Limburg-Zuid,VR24,Limburg,Zuid-Nederland,Zuid,37,Gemeente,16399
-GM0858,NL,Valkenswaard,GGD Brabant-Zuidoost,Brabant-Zuidoost,VR22,Noord-Brabant,Zuid-Nederland,Zuid,55,Gemeente,31253
-GM0047,NL,Veendam,GGD Groningen,Groningen,VR01,Groningen,Noord-Nederland,Noord,76,Gemeente,27416
-GM0345,NL,Veenendaal,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,19,Gemeente,66945
-GM0717,NL,Veere,GGD Zeeland,Zeeland,VR19,Zeeland,West-Nederland,Zuid,133,Gemeente,21981
-GM0861,NL,Veldhoven,GGD Brabant-Zuidoost,Brabant-Zuidoost,VR22,Noord-Brabant,Zuid-Nederland,Zuid,32,Gemeente,45562
-GM0453,NL,Velsen,GGD Kennemerland,Kennemerland,VR12,Noord-Holland,West-Nederland,Noord,45,Gemeente,68683
-GM0983,NL,Venlo,GGD Limburg-Noord,Limburg-Noord,VR23,Limburg,Zuid-Nederland,Zuid,124,Gemeente,101967
-GM0984,NL,Venray,GGD Limburg-Noord,Limburg-Noord,VR23,Limburg,Zuid-Nederland,Zuid,163,Gemeente,43704
-GM1961,NL,Vijfheerenlanden,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,146,Gemeente,57786
-GM0622,NL,Vlaardingen,GGD Rotterdam-Rijnmond,Rotterdam-Rijnmond,VR17,Zuid-Holland,West-Nederland,Midden,24,Gemeente,73950
-GM0096,NL,Vlieland,GGD Fryslân,Fryslân,VR02,Friesland,Noord-Nederland,Noord,39,Gemeente,1200
-GM0718,NL,Vlissingen,GGD Zeeland,Zeeland,VR19,Zeeland,West-Nederland,Zuid,34,Gemeente,44330
-GM0986,NL,Voerendaal,GGD Zuid-Limburg,Limburg-Zuid,VR24,Limburg,Zuid-Nederland,Zuid,32,Gemeente,12478
-GM0626,NL,Voorschoten,GGD Hollands-Midden,Hollands-Midden,VR16,Zuid-Holland,West-Nederland,Midden,11,Gemeente,25643
-GM0285,NL,Voorst,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Midden,123,Gemeente,24762
-GM0865,NL,Vught,GGD Hart voor Brabant,Brabant-Noord,VR21,Noord-Brabant,Zuid-Nederland,Zuid,34,Gemeente,31370
-GM1949,NL,Waadhoeke,GGD Fryslân,Fryslân,VR02,Friesland,Noord-Nederland,Noord,285,Gemeente,46082
-GM0866,NL,Waalre,GGD Brabant-Zuidoost,Brabant-Zuidoost,VR22,Noord-Brabant,Zuid-Nederland,Zuid,22,Gemeente,17519
-GM0867,NL,Waalwijk,GGD Hart voor Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,65,Gemeente,48826
-GM0627,NL,Waddinxveen,GGD Hollands-Midden,Hollands-Midden,VR16,Zuid-Holland,West-Nederland,Midden,28,Gemeente,30320
-GM0289,NL,Wageningen,GGD Gelderland-Midden,Gelderland-Midden,VR07,Gelderland,Oost-Nederland,Midden,30,Gemeente,39719
-GM0629,NL,Wassenaar,GGD Haaglanden,Haaglanden,VR15,Zuid-Holland,West-Nederland,Midden,51,Gemeente,26845
-GM0852,NL,Waterland,GGD Zaanstreek/Waterland,Zaanstreek-Waterland,VR11,Noord-Holland,West-Nederland,Noord,52,Gemeente,17325
-GM0988,NL,Weert,GGD Limburg-Noord,Limburg-Noord,VR23,Limburg,Zuid-Nederland,Zuid,104,Gemeente,50008
-GM0457,NL,Weesp,GGD Gooi en Vechtstreek,Gooi en Vechtstreek,VR14,Noord-Holland,West-Nederland,Noord,23,Gemeente,20459
-GM1960,NL,West Betuwe,GGD Gelderland-Zuid,Gelderland-Zuid,VR08,Gelderland,Oost-Nederland,Midden,216,Gemeente,51489
-GM0668,NL,West Maas en Waal,GGD Gelderland-Zuid,Gelderland-Zuid,VR08,Gelderland,Oost-Nederland,Zuid,77,Gemeente,19560
-GM1969,NL,Westerkwartier,GGD Groningen,Groningen,VR01,Groningen,Noord-Nederland,Noord,363,Gemeente,63603
-GM1701,NL,Westerveld,GGD Drenthe,Drenthe,VR03,Drenthe,Noord-Nederland,Noord,278,Gemeente,19638
-GM0293,NL,Westervoort,GGD Gelderland-Midden,Gelderland-Midden,VR07,Gelderland,Oost-Nederland,Zuid,7,Gemeente,15017
-GM1950,NL,Westerwolde,GGD Groningen,Groningen,VR01,Groningen,Noord-Nederland,Noord,276,Gemeente,26284
-GM1783,NL,Westland,GGD Haaglanden,Haaglanden,VR15,Zuid-Holland,West-Nederland,Midden,81,Gemeente,111342
-GM0098,NL,Weststellingwerf,GGD Fryslân,Fryslân,VR02,Friesland,Noord-Nederland,Noord,220,Gemeente,26112
-GM0614,NL,Westvoorne,GGD Rotterdam-Rijnmond,Rotterdam-Rijnmond,VR17,Zuid-Holland,West-Nederland,Midden,53,Gemeente,14893
-GM0189,NL,Wierden,GGD Regio Twente,Twente,VR05,Overijssel,Oost-Nederland,Noord,95,Gemeente,24532
-GM0296,NL,Wijchen,GGD Gelderland-Zuid,Gelderland-Zuid,VR08,Gelderland,Oost-Nederland,Zuid,66,Gemeente,41259
-GM1696,NL,Wijdemeren,GGD Gooi en Vechtstreek,Gooi en Vechtstreek,VR14,Noord-Holland,West-Nederland,Noord,48,Gemeente,24440
-GM0352,NL,Wijk bij Duurstede,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,48,Gemeente,23917
-GM0294,NL,Winterswijk,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Midden,138,Gemeente,29007
-GM0873,NL,Woensdrecht,GGD West-Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,92,Gemeente,22002
-GM0632,NL,Woerden,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,89,Gemeente,52671
-GM0880,NL,Wormerland,GGD Zaanstreek/Waterland,Zaanstreek-Waterland,VR11,Noord-Holland,West-Nederland,Noord,39,Gemeente,16295
-GM0351,NL,Woudenberg,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,37,Gemeente,13625
-GM0479,NL,Zaanstad,GGD Zaanstreek/Waterland,Zaanstreek-Waterland,VR11,Noord-Holland,West-Nederland,Noord,74,Gemeente,157106
-GM0297,NL,Zaltbommel,GGD Gelderland-Zuid,Gelderland-Zuid,VR08,Gelderland,Oost-Nederland,Zuid,79,Gemeente,29436
-GM0473,NL,Zandvoort,GGD Kennemerland,Kennemerland,VR12,Noord-Holland,West-Nederland,Noord,32,Gemeente,17168
-GM0050,NL,Zeewolde,GGD Flevoland,Flevoland,VR25,Flevoland,Oost-Nederland,Midden,247,Gemeente,22836
-GM0355,NL,Zeist,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,49,Gemeente,65005
-GM0299,NL,Zevenaar,GGD Gelderland-Midden,Gelderland-Midden,VR07,Gelderland,Oost-Nederland,Zuid,93,Gemeente,44085
-GM0637,NL,Zoetermeer,GGD Haaglanden,Haaglanden,VR15,Zuid-Holland,West-Nederland,Midden,34,Gemeente,125284
-GM0638,NL,Zoeterwoude,GGD Hollands-Midden,Hollands-Midden,VR16,Zuid-Holland,West-Nederland,Midden,21,Gemeente,8813
-GM1892,NL,Zuidplas,GGD Hollands-Midden,Hollands-Midden,VR16,Zuid-Holland,West-Nederland,Midden,58,Gemeente,45015
-GM0879,NL,Zundert,GGD West-Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,121,Gemeente,21995
-GM0301,NL,Zutphen,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Midden,41,Gemeente,48105
-GM1896,NL,Zwartewaterland,GGD IJsselland,IJsselland,VR04,Overijssel,Oost-Nederland,Noord,82,Gemeente,22797
-GM0642,NL,Zwijndrecht,GGD Zuid-Holland Zuid,Zuid-Holland-Zuid,VR18,Zuid-Holland,West-Nederland,Midden,20,Gemeente,44763
-GM0193,NL,Zwolle,GGD IJsselland,IJsselland,VR04,Overijssel,Oost-Nederland,Noord,111,Gemeente,129697
+GM0274,NL,Renkum,GGD Gelderland-Midden,Gelderland-Midden,VR07,Gelderland,Oost-Nederland,Zuid,46,Gemeente,31410
+GM0339,NL,Renswoude,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,18,Gemeente,5654
+GM1667,NL,Reusel-De Mierden,GGD Brabant-Zuidoost,Brabant-Zuidoost,VR22,Noord-Brabant,Zuid-Nederland,Zuid,78,Gemeente,13260
+GM0275,NL,Rheden,GGD Gelderland-Midden,Gelderland-Midden,VR07,Gelderland,Oost-Nederland,Zuid,82,Gemeente,43467
+GM0340,NL,Rhenen,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,42,Gemeente,20286
+GM0597,NL,Ridderkerk,GGD Rotterdam-Rijnmond,Rotterdam-Rijnmond,VR17,Zuid-Holland,West-Nederland,Midden,24,Gemeente,47108
+GM1742,NL,Rijssen-Holten,GGD Regio Twente,Twente,VR05,Overijssel,Oost-Nederland,Noord,94,Gemeente,38234
+GM0603,NL,Rijswijk (ZH.),GGD Haaglanden,Haaglanden,VR15,Zuid-Holland,West-Nederland,Midden,14,Gemeente,56862
+GM1669,NL,Roerdalen,GGD Limburg-Noord,Limburg-Noord,VR23,Limburg,Zuid-Nederland,Zuid,88,Gemeente,20585
+GM0957,NL,Roermond,GGD Limburg-Noord,Limburg-Noord,VR23,Limburg,Zuid-Nederland,Zuid,61,Gemeente,59080
+GM1674,NL,Roosendaal,GGD West-Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,107,Gemeente,77272
+GM0599,NL,Rotterdam,GGD Rotterdam-Rijnmond,Rotterdam-Rijnmond,VR17,Zuid-Holland,West-Nederland,Midden,218,Gemeente,655418
+GM0277,NL,Rozendaal,GGD Gelderland-Midden,Gelderland-Midden,VR07,Gelderland,Oost-Nederland,Zuid,28,Gemeente,1758
+GM0840,NL,Rucphen,GGD West-Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,64,Gemeente,23358
+GM0441,NL,Schagen,GGD Hollands-Noorden,Noord-Holland-Noord,VR10,Noord-Holland,West-Nederland,Noord,168,Gemeente,46805
+GM0279,NL,Scherpenzeel,GGD Gelderland-Midden,Gelderland-Midden,VR07,Gelderland,Oost-Nederland,Midden,14,Gemeente,10317
+GM0606,NL,Schiedam,GGD Rotterdam-Rijnmond,Rotterdam-Rijnmond,VR17,Zuid-Holland,West-Nederland,Midden,18,Gemeente,79764
+GM0088,NL,Schiermonnikoog,GGD Fryslân,Fryslân,VR02,Friesland,Noord-Nederland,Noord,41,Gemeente,949
+GM1676,NL,Schouwen-Duiveland,GGD Zeeland,Zeeland,VR19,Zeeland,West-Nederland,Zuid,230,Gemeente,34173
+GM0518,NL,s-Gravenhage,GGD Haaglanden,Haaglanden,VR15,Zuid-Holland,West-Nederland,Midden,82,Gemeente,553277
+GM0796,NL,s-Hertogenbosch,GGD Hart voor Brabant,Brabant-Noord,VR21,Noord-Brabant,Zuid-Nederland,Zuid,110,Gemeente,156488
+GM0965,NL,Simpelveld,GGD Zuid-Limburg,Limburg-Zuid,VR24,Limburg,Zuid-Nederland,Zuid,16,Gemeente,10436
+GM1702,NL,Sint Anthonis,GGD Hart voor Brabant,Brabant-Noord,VR21,Noord-Brabant,Zuid-Nederland,Zuid,99,Gemeente,11825
+GM0845,NL,Sint-Michielsgestel,GGD Hart voor Brabant,Brabant-Noord,VR21,Noord-Brabant,Zuid-Nederland,Zuid,58,Gemeente,29685
+GM1883,NL,Sittard-Geleen,GGD Zuid-Limburg,Limburg-Zuid,VR24,Limburg,Zuid-Nederland,Zuid,79,Gemeente,91857
+GM0610,NL,Sliedrecht,GGD Zuid-Holland Zuid,Zuid-Holland-Zuid,VR18,Zuid-Holland,West-Nederland,Midden,13,Gemeente,25891
+GM1714,NL,Sluis,GGD Zeeland,Zeeland,VR19,Zeeland,West-Nederland,Zuid,279,Gemeente,23168
+GM0090,NL,Smallingerland,GGD Fryslân,Fryslân,VR02,Friesland,Noord-Nederland,Noord,117,Gemeente,55959
+GM0342,NL,Soest,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,46,Gemeente,47123
+GM0847,NL,Someren,GGD Brabant-Zuidoost,Brabant-Zuidoost,VR22,Noord-Brabant,Zuid-Nederland,Zuid,80,Gemeente,19677
+GM0848,NL,Son en Breugel,GGD Brabant-Zuidoost,Brabant-Zuidoost,VR22,Noord-Brabant,Zuid-Nederland,Zuid,26,Gemeente,17755
+GM0037,NL,Stadskanaal,GGD Groningen,Groningen,VR01,Groningen,Noord-Nederland,Noord,118,Gemeente,31871
+GM0180,NL,Staphorst,GGD IJsselland,IJsselland,VR04,Overijssel,Oost-Nederland,Noord,134,Gemeente,17288
+GM0532,NL,Stede Broec,GGD Hollands-Noorden,Noord-Holland-Noord,VR10,Noord-Holland,West-Nederland,Noord,15,Gemeente,21928
+GM0851,NL,Steenbergen,GGD West-Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,146,Gemeente,24399
+GM1708,NL,Steenwijkerland,GGD IJsselland,IJsselland,VR04,Overijssel,Oost-Nederland,Noord,288,Gemeente,44710
+GM0971,NL,Stein (L.),GGD Zuid-Limburg,Limburg-Zuid,VR24,Limburg,Zuid-Nederland,Zuid,21,Gemeente,24837
+GM1904,NL,Stichtse Vecht,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,96,Gemeente,65246
+GM1900,NL,Súdwest-Fryslân,GGD Fryslân,Fryslân,VR02,Friesland,Noord-Nederland,Noord,523,Gemeente,90222
+GM0715,NL,Terneuzen,GGD Zeeland,Zeeland,VR19,Zeeland,West-Nederland,Zuid,250,Gemeente,54522
+GM0093,NL,Terschelling,GGD Fryslân,Fryslân,VR02,Friesland,Noord-Nederland,Noord,85,Gemeente,4960
+GM0448,NL,Texel,GGD Hollands-Noorden,Noord-Holland-Noord,VR10,Noord-Holland,West-Nederland,Noord,162,Gemeente,13696
+GM1525,NL,Teylingen,GGD Hollands-Midden,Hollands-Midden,VR16,Zuid-Holland,West-Nederland,Midden,28,Gemeente,37941
+GM0716,NL,Tholen,GGD Zeeland,Zeeland,VR19,Zeeland,West-Nederland,Zuid,147,Gemeente,26383
+GM0281,NL,Tiel,GGD Gelderland-Zuid,Gelderland-Zuid,VR08,Gelderland,Oost-Nederland,Midden,33,Gemeente,42236
+GM0855,NL,Tilburg,GGD Hart voor Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,126,Gemeente,224368
+GM0183,NL,Tubbergen,GGD Regio Twente,Twente,VR05,Overijssel,Oost-Nederland,Noord,147,Gemeente,21362
+GM1700,NL,Twenterand,GGD Regio Twente,Twente,VR05,Overijssel,Oost-Nederland,Noord,106,Gemeente,33697
+GM1730,NL,Tynaarlo,GGD Drenthe,Drenthe,VR03,Drenthe,Noord-Nederland,Noord,143,Gemeente,34207
+GM0737,NL,Tytsjerksteradiel,GGD Fryslân,Fryslân,VR02,Friesland,Noord-Nederland,Noord,149,Gemeente,32303
+GM0856,NL,Uden,GGD Hart voor Brabant,Brabant-Noord,VR21,Noord-Brabant,Zuid-Nederland,Zuid,67,Gemeente,42437
+GM0450,NL,Uitgeest,GGD Kennemerland,Kennemerland,VR12,Noord-Holland,West-Nederland,Noord,19,Gemeente,13583
+GM0451,NL,Uithoorn,GGD Amsterdam,Amsterdam-Amstelland,VR13,Noord-Holland,West-Nederland,Noord,18,Gemeente,30967
+GM0184,NL,Urk,GGD Flevoland,Flevoland,VR25,Flevoland,Oost-Nederland,Noord,13,Gemeente,21436
+GM0344,NL,Utrecht,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,94,Gemeente,361966
+GM1581,NL,Utrechtse Heuvelrug,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,132,Gemeente,49994
+GM0981,NL,Vaals,GGD Zuid-Limburg,Limburg-Zuid,VR24,Limburg,Zuid-Nederland,Zuid,24,Gemeente,10125
+GM0994,NL,Valkenburg aan de Geul,GGD Zuid-Limburg,Limburg-Zuid,VR24,Limburg,Zuid-Nederland,Zuid,37,Gemeente,16201
+GM0858,NL,Valkenswaard,GGD Brabant-Zuidoost,Brabant-Zuidoost,VR22,Noord-Brabant,Zuid-Nederland,Zuid,55,Gemeente,31245
+GM0047,NL,Veendam,GGD Groningen,Groningen,VR01,Groningen,Noord-Nederland,Noord,76,Gemeente,27470
+GM0345,NL,Veenendaal,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,19,Gemeente,67592
+GM0717,NL,Veere,GGD Zeeland,Zeeland,VR19,Zeeland,West-Nederland,Zuid,133,Gemeente,21871
+GM0861,NL,Veldhoven,GGD Brabant-Zuidoost,Brabant-Zuidoost,VR22,Noord-Brabant,Zuid-Nederland,Zuid,32,Gemeente,45829
+GM0453,NL,Velsen,GGD Kennemerland,Kennemerland,VR12,Noord-Holland,West-Nederland,Noord,45,Gemeente,68470
+GM0983,NL,Venlo,GGD Limburg-Noord,Limburg-Noord,VR23,Limburg,Zuid-Nederland,Zuid,124,Gemeente,102314
+GM0984,NL,Venray,GGD Limburg-Noord,Limburg-Noord,VR23,Limburg,Zuid-Nederland,Zuid,163,Gemeente,43940
+GM1961,NL,Vijfheerenlanden,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,146,Gemeente,58694
+GM0622,NL,Vlaardingen,GGD Rotterdam-Rijnmond,Rotterdam-Rijnmond,VR17,Zuid-Holland,West-Nederland,Midden,24,Gemeente,74198
+GM0096,NL,Vlieland,GGD Fryslân,Fryslân,VR02,Friesland,Noord-Nederland,Noord,39,Gemeente,1230
+GM0718,NL,Vlissingen,GGD Zeeland,Zeeland,VR19,Zeeland,West-Nederland,Zuid,34,Gemeente,44532
+GM0986,NL,Voerendaal,GGD Zuid-Limburg,Limburg-Zuid,VR24,Limburg,Zuid-Nederland,Zuid,32,Gemeente,12434
+GM0626,NL,Voorschoten,GGD Hollands-Midden,Hollands-Midden,VR16,Zuid-Holland,West-Nederland,Midden,11,Gemeente,25634
+GM0285,NL,Voorst,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Midden,123,Gemeente,24964
+GM0865,NL,Vught,GGD Hart voor Brabant,Brabant-Noord,VR21,Noord-Brabant,Zuid-Nederland,Zuid,60,Gemeente,31743
+GM1949,NL,Waadhoeke,GGD Fryslân,Fryslân,VR02,Friesland,Noord-Nederland,Noord,285,Gemeente,46324
+GM0866,NL,Waalre,GGD Brabant-Zuidoost,Brabant-Zuidoost,VR22,Noord-Brabant,Zuid-Nederland,Zuid,22,Gemeente,17623
+GM0867,NL,Waalwijk,GGD Hart voor Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,65,Gemeente,49368
+GM0627,NL,Waddinxveen,GGD Hollands-Midden,Hollands-Midden,VR16,Zuid-Holland,West-Nederland,Midden,28,Gemeente,31301
+GM0289,NL,Wageningen,GGD Gelderland-Midden,Gelderland-Midden,VR07,Gelderland,Oost-Nederland,Midden,30,Gemeente,40040
+GM0629,NL,Wassenaar,GGD Haaglanden,Haaglanden,VR15,Zuid-Holland,West-Nederland,Midden,51,Gemeente,27064
+GM0852,NL,Waterland,GGD Zaanstreek/Waterland,Zaanstreek-Waterland,VR11,Noord-Holland,West-Nederland,Noord,52,Gemeente,17318
+GM0988,NL,Weert,GGD Limburg-Noord,Limburg-Noord,VR23,Limburg,Zuid-Nederland,Zuid,104,Gemeente,50253
+GM0457,NL,Weesp,GGD Gooi en Vechtstreek,Gooi en Vechtstreek,VR14,Noord-Holland,West-Nederland,Noord,23,Gemeente,20749
+GM1960,NL,West Betuwe,GGD Gelderland-Zuid,Gelderland-Zuid,VR08,Gelderland,Oost-Nederland,Midden,216,Gemeente,51981
+GM0668,NL,West Maas en Waal,GGD Gelderland-Zuid,Gelderland-Zuid,VR08,Gelderland,Oost-Nederland,Zuid,77,Gemeente,19654
+GM1969,NL,Westerkwartier,GGD Groningen,Groningen,VR01,Groningen,Noord-Nederland,Noord,363,Gemeente,64253
+GM1701,NL,Westerveld,GGD Drenthe,Drenthe,VR03,Drenthe,Noord-Nederland,Noord,278,Gemeente,19841
+GM0293,NL,Westervoort,GGD Gelderland-Midden,Gelderland-Midden,VR07,Gelderland,Oost-Nederland,Zuid,7,Gemeente,14942
+GM1950,NL,Westerwolde,GGD Groningen,Groningen,VR01,Groningen,Noord-Nederland,Noord,276,Gemeente,26693
+GM1783,NL,Westland,GGD Haaglanden,Haaglanden,VR15,Zuid-Holland,West-Nederland,Midden,81,Gemeente,112587
+GM0098,NL,Weststellingwerf,GGD Fryslân,Fryslân,VR02,Friesland,Noord-Nederland,Noord,220,Gemeente,26258
+GM0614,NL,Westvoorne,GGD Rotterdam-Rijnmond,Rotterdam-Rijnmond,VR17,Zuid-Holland,West-Nederland,Midden,53,Gemeente,14958
+GM0189,NL,Wierden,GGD Regio Twente,Twente,VR05,Overijssel,Oost-Nederland,Noord,95,Gemeente,24626
+GM0296,NL,Wijchen,GGD Gelderland-Zuid,Gelderland-Zuid,VR08,Gelderland,Oost-Nederland,Zuid,66,Gemeente,41370
+GM1696,NL,Wijdemeren,GGD Gooi en Vechtstreek,Gooi en Vechtstreek,VR14,Noord-Holland,West-Nederland,Noord,48,Gemeente,24497
+GM0352,NL,Wijk bij Duurstede,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,48,Gemeente,23937
+GM0294,NL,Winterswijk,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Midden,138,Gemeente,29088
+GM0873,NL,Woensdrecht,GGD West-Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,92,Gemeente,22134
+GM0632,NL,Woerden,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,89,Gemeente,52918
+GM0880,NL,Wormerland,GGD Zaanstreek/Waterland,Zaanstreek-Waterland,VR11,Noord-Holland,West-Nederland,Noord,39,Gemeente,16366
+GM0351,NL,Woudenberg,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,37,Gemeente,13847
+GM0479,NL,Zaanstad,GGD Zaanstreek/Waterland,Zaanstreek-Waterland,VR11,Noord-Holland,West-Nederland,Noord,74,Gemeente,157101
+GM0297,NL,Zaltbommel,GGD Gelderland-Zuid,Gelderland-Zuid,VR08,Gelderland,Oost-Nederland,Zuid,79,Gemeente,29944
+GM0473,NL,Zandvoort,GGD Kennemerland,Kennemerland,VR12,Noord-Holland,West-Nederland,Noord,32,Gemeente,17110
+GM0050,NL,Zeewolde,GGD Flevoland,Flevoland,VR25,Flevoland,Oost-Nederland,Midden,247,Gemeente,23310
+GM0355,NL,Zeist,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,49,Gemeente,65789
+GM0299,NL,Zevenaar,GGD Gelderland-Midden,Gelderland-Midden,VR07,Gelderland,Oost-Nederland,Zuid,93,Gemeente,44649
+GM0637,NL,Zoetermeer,GGD Haaglanden,Haaglanden,VR15,Zuid-Holland,West-Nederland,Midden,34,Gemeente,125638
+GM0638,NL,Zoeterwoude,GGD Hollands-Midden,Hollands-Midden,VR16,Zuid-Holland,West-Nederland,Midden,21,Gemeente,9299
+GM1892,NL,Zuidplas,GGD Hollands-Midden,Hollands-Midden,VR16,Zuid-Holland,West-Nederland,Midden,58,Gemeente,45712
+GM0879,NL,Zundert,GGD West-Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zuid-Nederland,Zuid,121,Gemeente,22335
+GM0301,NL,Zutphen,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Midden,41,Gemeente,48372
+GM1896,NL,Zwartewaterland,GGD IJsselland,IJsselland,VR04,Overijssel,Oost-Nederland,Noord,82,Gemeente,23003
+GM0642,NL,Zwijndrecht,GGD Zuid-Holland Zuid,Zuid-Holland-Zuid,VR18,Zuid-Holland,West-Nederland,Midden,20,Gemeente,44749
+GM0193,NL,Zwolle,GGD IJsselland,IJsselland,VR04,Overijssel,Oost-Nederland,Noord,111,Gemeente,130592
