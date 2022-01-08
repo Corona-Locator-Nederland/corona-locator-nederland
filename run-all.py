@@ -35,12 +35,12 @@ def cell():
   bevolking = None
   try:
     bevolking = CBS.bevolking(leeftijdsgroepen=True)
-    bevolking.to_csv("leeftijdsgroepen_cbs.csv")
+    bevolking.to_csv("cbs/leeftijdsgroepen_cbs.csv")
   except Exception as e:
     print(e)
     # gebruik laatste csv
     try:
-      bevolking = pd.read_csv("leeftijdsgroepen_cbs.csv")
+      bevolking = pd.read_csv("cbs/leeftijdsgroepen_cbs.csv")
       bevolking.set_index('Range', inplace=True)
     except Exception as ee:
       print(ee)

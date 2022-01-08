@@ -87,5 +87,5 @@ jobs:
       continue-on-error: true
       with:
         commit_message: save data history
-        file_pattern: rivm lcps *.ipynb github nice
+        file_pattern: rivm lcps *.ipynb github nice cbs
         skip_dirty_check: false
