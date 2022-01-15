@@ -21,6 +21,5 @@ python-dotenv
 requests
 retry
 ruamel.yaml
-seaborn
 slack-webhook
 tqdm
