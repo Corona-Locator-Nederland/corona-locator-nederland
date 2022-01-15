@@ -21,11 +21,9 @@ import re
 import json
 import math
 import os
-import seaborn as sns
 import glob
 from dateutil.parser import parse as parsedate
 import functools
-import matplotlib.colors as colors
 import gzip
 import shutil
 from jsonpath import JSONPath
