@@ -35,7 +35,6 @@ if 'KNACK_APP_ID' in os.environ:
   knack = Knack(app_id = os.environ['KNACK_APP_ID'], api_key = os.environ['KNACK_API_KEY'])
 else:
   knack = None
-print(knack.app_id)
 
 class Cache:
   @classmethod
