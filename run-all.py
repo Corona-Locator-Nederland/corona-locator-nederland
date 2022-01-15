@@ -137,29 +137,6 @@ def cell():
         totals[k] = correctedtotal
   tabel["Totaal"] = totals
 
-  # rood -> groen
-  cdict = {
-    'red':   ((0.0, 0.0, 0.0),   # no red at 0
-              (0.5, 1.0, 1.0),   # all channels set to 1.0 at 0.5 to create white
-              (1.0, 0.8, 0.8)),  # set to 0.8 so its not too bright at 1
-    'green': ((0.0, 0.8, 0.8),   # set to 0.8 so its not too bright at 0
-              (0.5, 1.0, 1.0),   # all channels set to 1.0 at 0.5 to create white
-              (1.0, 0.0, 0.0)),  # no green at 1
-    'blue':  ((0.0, 0.0, 0.0),   # no blue at 0
-              (0.5, 1.0, 1.0),   # all channels set to 1.0 at 0.5 to create white
-              (1.0, 0.0, 0.0))   # no blue at 1
-  }
-  cm = colors.LinearSegmentedColormap('GnRd', cdict)
-  # geel -> paars
-  cm = sns.color_palette('viridis_r', as_cmap=True)
-  display(tabel
-    .fillna(0)
-    .head()
-    .round(1)
-    .reset_index(drop=True)
-    .style.background_gradient(cmap=cm, axis=1, subset=cohorten)
-  )
-
 # %% publish
 if knack:
   await knack.publish(tabel.fillna(0).assign(Datum=tabel.Datum.dt.strftime('%Y-%m-%d')), 'Leeftijdsgroep', Cache)
