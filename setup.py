@@ -30,7 +30,6 @@ import gzip
 import shutil
 from jsonpath import JSONPath
 from munch import Munch
-
 #from types import SimpleNamespace
 
 if 'KNACK_APP_ID' in os.environ:
@@ -38,16 +37,7 @@ if 'KNACK_APP_ID' in os.environ:
   knack = Knack(app_id = os.environ['KNACK_APP_ID'], api_key = os.environ['KNACK_API_KEY'])
 else:
   knack = None
-
-if 'GSHEET' in os.environ:
-  def gsheet(df):
-    print('updating GSheet', flush=True)
-    gc = gspread.service_account()
-    sh = gc.open_by_key(os.environ['GSHEET'])
-    ws = sh.get_worksheet(0)
-
-    sh.values_clear("'Regios'!A1:ZZ10000")
-    ws.update('A1', [df.columns.values.tolist()] + df.values.tolist())
+print(knack.app_id)
 
 class Cache:
   @classmethod
