@@ -5,15 +5,16 @@ get_ipython().run_line_magic('load_ext', 'autoreload')
 get_ipython().run_line_magic('autoreload', '2')
 get_ipython().run_line_magic('run', 'setup')
 
-# %% leeftijdsgroepen: download RIVM data
-#leeftijdsgroepen = SimpleNamespace()
+# %% Leeftijdsgroepen: download RIVM casus-data
+# Leeftijdsgroepen: download RIVM casus-data
 @run
 def cell():
   global rivm
   rivm = RIVM.csv('COVID-19_casus_landelijk')
   display(rivm.head())
 
-# %% Download de bevolkings cijfers van CBS, uitgesplitst op de leeftijds categorien in de dataset van het RIVM
+# %% Leeftijdsgroepen: download CBS bevolkingscijfers, uitgesplitst op de leeftijdscategorien zoals bij RIVM
+# Leeftijdsgroepen: download CBS bevolkingscijfers, uitgesplitst op de leeftijdscategorien zoals bij RIVM
 @run
 def cell():
   global bevolking
@@ -26,10 +27,10 @@ def cell():
     print(e)
     bevolking = pd.read_csv("cbs/leeftijdsgroepen_cbs.csv")
     bevolking.set_index('Range', inplace=True)
+  display(bevolking.head())
 
-# %% leeftijdsgroepen: prepareer tabel
-# Bereken de stand van zaken van besmettingen / hospitalisaties / overlijden, per cohort in absolute aantallen en aantallen per 100k, met een kleur indicator voor de aantallen.
-# vervang <50 en Unknown door Onbekend
+# %% Leeftijdsgroepen: bereken per cohort besmettingen / opnamen / sterfte (incl. kleurcode), in aantal en per 100k. Vervang <50 en Unknown door Onbekend
+# Leeftijdsgroepen: bereken per cohort besmettingen / opnamen / sterfte (incl. kleurcode), in aantal en per 100k. Vervang <50 en Unknown door Onbekend
 @run
 def cell():
   rivm['Cohort'] = rivm['Agegroup'].replace({'<50': 'Onbekend', 'Unknown': 'Onbekend'})
@@ -136,6 +137,8 @@ def cell():
         # print([k, totals[k], totals[kk], correctedtotal])
         totals[k] = correctedtotal
   tabel["Totaal"] = totals
+
+  display(tabel.head())
 
 # %% publish
 if knack:
