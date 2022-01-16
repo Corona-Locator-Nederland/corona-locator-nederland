@@ -300,7 +300,6 @@ class Knack:
 
     # mangle data for ridiculous knack upload format
     df = sort(df).copy(deep=True)
-    print(df.dtypes)
     if hashing:
       df['Hash'] = [self.hash(rec) for rec in self.munch(df.replace(connections).rename(columns=obj.mapping).to_dict('records'))]
     artifact = os.path.join('artifacts', 'bulk', f'{obj.meta.name}-mangle-for-knack.csv')
@@ -407,7 +406,6 @@ class Knack:
     m = (df == np.nan)
     nan = df.loc[m.any(axis=1), m.any(axis=0)]
     print(nan.head(), flush=True)
-    print(df.dtypes)
 
     with File(f'artifacts/publish/{object_name}.csv') as f:
       sort(df).to_csv(f, index=False)
