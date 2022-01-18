@@ -33,6 +33,9 @@ def cell():
 # Leeftijdsgroepen: bereken per cohort besmettingen / opnamen / sterfte (incl. kleurcode), in aantal en per 100k. Vervang <50 en Unknown door Onbekend
 @run
 def cell():
+  #  kolom is in version 2 per 18-1-22 toegevoegd, verwijderen:
+  rivm.drop('Version', inplace=True, axis=1)
+  display(rivm.head())
   rivm['Cohort'] = rivm['Agegroup'].replace({'<50': 'Onbekend', 'Unknown': 'Onbekend'})
   # aangenomen 'gemiddelde' leeftijd van een cohort: minimum waarde + 5
   assumed_cohort_age = [(cohort, [int(n) for n in cohort.replace('+', '').split('-')]) for cohort in rivm['Cohort'].unique() if cohort[0].isdigit()]
@@ -116,7 +119,6 @@ def cell():
       [summarize(df.assign(count=1), label, prefix), summarize(df.assign(count=df['Cohort'].apply(lambda x: factor.get(x, np.nan))), label + ' per 100.000', prefix + '100k')]
       for df, label, prefix in [
         (rivm, 'Positief getest', 'p'), # volledige count per cohort
-        (rivm[rivm.Hospital_admission == 'Yes'], 'Ziekenhuisopname', 'h'), # count van cohort voor Hospital_admission == 'Yes'
         (rivm[rivm.Deceased == 'Yes'], 'Overleden', 'd'), # count van cohort voor Deceased == 'Yes'
       ]
     ])
