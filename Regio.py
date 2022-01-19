@@ -256,7 +256,12 @@ def collect(regiotype):
   def datasets():
     if regiotype == 'Leeftijd':
       global casus_landelijk, casus_landelijk_1
-      return (casus_landelijk, casus_landelijk, casus_landelijk_1)
+      # ivm de nieuwe opmaak casus file per 18-1-2022
+      if not 'Hospital_admission' in casus_landelijk:
+        casus_landelijk['Hospital_admission'] = 0
+      if not 'Hospital_admission' in casus_landelijk_1:
+        casus_landelijk_1['Hospital_admission'] = 0      
+      return (casus_landelijk, casus_landelijk, casus_landelijk_1)      
     else:
       global aantallen, ziekenhuisopnames, ziekenhuisopnames_1
       return (aantallen, ziekenhuisopnames, ziekenhuisopnames_1)
