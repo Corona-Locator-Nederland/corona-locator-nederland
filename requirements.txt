@@ -23,3 +23,4 @@ retry
 ruamel.yaml
 slack-webhook
 tqdm
+typing_extensions
