@@ -3,11 +3,9 @@ name: Execute notebooks
 on:
   workflow_dispatch: null
   schedule:
-  - cron: '0 9,11 * * *'
-  - cron: '5 13,15-19,21 * * *'
-  - cron: '18 14 * * *'
-  - cron: '35 15-16 * * *'
-
+  - cron: '5 8,12,16,20 * * 1-5' # in UTC / Winter NLtime -1 Summer NLtime -2 / LCPS in Summer = 12
+  - cron: '30 13 * * 1-5'     # RIVM Summer = 13
+  
 jobs:
   publish:
     strategy:
