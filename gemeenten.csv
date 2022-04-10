@@ -15,7 +15,7 @@ GM1959,NL,Altena,GGD West-Brabant,Midden- en West-Brabant,VR20,Noord-Brabant,Zui
 GM0060,NL,Ameland,GGD Fryslân,Fryslân,VR02,Friesland,Noord-Nederland,Noord,59,Gemeente,3773
 GM0307,NL,Amersfoort,GGD Regio Utrecht,Utrecht,VR09,Utrecht,West-Nederland,Midden,63,Gemeente,158531
 GM0362,NL,Amstelveen,GGD Amsterdam,Amsterdam-Amstelland,VR13,Noord-Holland,West-Nederland,Noord,41,Gemeente,92421
-GM0363,NL,Amsterdam,GGD Amsterdam,Amsterdam-Amstelland,VR13,Noord-Holland,West-Nederland,Noord,166,Gemeente,883487
+GM0363,NL,Amsterdam,GGD Amsterdam,Amsterdam-Amstelland,VR13,Noord-Holland,West-Nederland,Noord,189,Gemeente,904236
 GM0200,NL,Apeldoorn,GGD Noord- en Oost-Gelderland,Noord- en Oost-Gelderland,VR06,Gelderland,Oost-Nederland,Midden,340,Gemeente,165525
 GM0202,NL,Arnhem,GGD Gelderland-Midden,Gelderland-Midden,VR07,Gelderland,Oost-Nederland,Zuid,98,Gemeente,163972
 GM0106,NL,Assen,GGD Drenthe,Drenthe,VR03,Drenthe,Noord-Nederland,Noord,82,Gemeente,69010
@@ -309,7 +309,6 @@ GM0289,NL,Wageningen,GGD Gelderland-Midden,Gelderland-Midden,VR07,Gelderland,Oos
 GM0629,NL,Wassenaar,GGD Haaglanden,Haaglanden,VR15,Zuid-Holland,West-Nederland,Midden,51,Gemeente,27064
 GM0852,NL,Waterland,GGD Zaanstreek/Waterland,Zaanstreek-Waterland,VR11,Noord-Holland,West-Nederland,Noord,52,Gemeente,17318
 GM0988,NL,Weert,GGD Limburg-Noord,Limburg-Noord,VR23,Limburg,Zuid-Nederland,Zuid,104,Gemeente,50253
-GM0457,NL,Weesp,GGD Gooi en Vechtstreek,Gooi en Vechtstreek,VR14,Noord-Holland,West-Nederland,Noord,23,Gemeente,20749
 GM1960,NL,West Betuwe,GGD Gelderland-Zuid,Gelderland-Zuid,VR08,Gelderland,Oost-Nederland,Midden,216,Gemeente,51981
 GM0668,NL,West Maas en Waal,GGD Gelderland-Zuid,Gelderland-Zuid,VR08,Gelderland,Oost-Nederland,Zuid,77,Gemeente,19654
 GM1969,NL,Westerkwartier,GGD Groningen,Groningen,VR01,Groningen,Noord-Nederland,Noord,363,Gemeente,64253
