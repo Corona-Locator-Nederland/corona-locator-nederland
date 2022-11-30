@@ -3,8 +3,8 @@ name: Execute notebooks
 on:
   workflow_dispatch: null
   schedule:
-  - cron: '5 13,16 * * 1-5' # in UTC / Winter NLtime -1 Summer NLtime -2 / LCPS in Summer = 12
-  - cron: '30 13 * * 1-5'   # RIVM Summer = 13
+  - cron: '5 13 * * 1-5'  # LCPS in NL 14:00 / in UTC; Winter NLtime -1 Summer NLtime -2 / LCPS in Winter = 13 and in Summer = 12
+  - cron: '30 14 * * 2,5' # RIVM in NL 15:15 / RIVM in Winter = 14 and in Summer = 13
   
 jobs:
   publish:
