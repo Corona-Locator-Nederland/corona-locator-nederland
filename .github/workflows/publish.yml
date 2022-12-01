@@ -3,7 +3,8 @@ name: Execute notebooks
 on:
   workflow_dispatch: null
   schedule:
-  - cron: '5 13 * * 1-5'  # LCPS in NL 14:00 / in UTC; Winter NLtime -1 Summer NLtime -2 / LCPS in Winter = 13 and in Summer = 12
+  # time is in UTC; in Winter NLtime -1 Summer NLtime -2
+  # skip seperate LCPS update: - cron: '5 13 * * 1-5'  # LCPS in NL 14:00 / LCPS in Winter = 13 and in Summer = 12
   - cron: '30 14 * * 2,5' # RIVM in NL 15:15 / RIVM in Winter = 14 and in Summer = 13
   
 jobs:
